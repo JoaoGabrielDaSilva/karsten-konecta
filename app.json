@@ -1,0 +1,10 @@
+{
+  "expo": {
+    "name": "yourmail",
+    "slug": "yourmail",
+    "version": "1.0.0",
+    "assetBundlePatterns": [
+      "**/*"
+    ]
+  }
+}
