@@ -4,11 +4,11 @@ export const darkTheme: Theme = {
   color: {
     background: {
       primary: "#000000",
-      secondary: "#000000",
+      secondary: "#222",
     },
     text: {
       primary: "#FFF",
-      secondary: "#FFF",
+      secondary: "#777",
     },
   },
   spacing: {
@@ -24,8 +24,8 @@ export const darkTheme: Theme = {
     lg: 50,
   },
   fontSize: {
-    sm: 13,
-    md: 18,
+    sm: 10,
+    md: 12,
     lg: 20,
     xl: 25,
   },

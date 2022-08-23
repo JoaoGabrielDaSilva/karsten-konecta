@@ -2,6 +2,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import { FlatList, ListRenderItemInfo, View } from "react-native";
 import { useTheme } from "styled-components";
+import { subDays } from "date-fns";
 import {
   ListEmail,
   ListEmailData,
@@ -19,24 +20,30 @@ type Props = NavigationProps;
 const data = [
   {
     subject: "Class",
+    sender: "João Gabriel",
+    date: new Date(),
     content:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste pariatur perferendis hic aperiam corporis tenetur? Fugiat, obcaecati quia deserunt reprehenderit, repellat odio saepe aut deleniti, laboriosam praesentium aliquid beatae vel!",
     senderImageUrl:
-      "https://lh3.googleusercontent.com/ogw/AOh-ky2-WfCo_Npg4BpqX4ye3y4WC1F2kgyXwEVc1BG7LQ=s32-c-mo",
+      "https://yt3.ggpht.com/yti/AJo0G0keGO8w7HSrgBiA83C10ruLrf9thc1QwZ3E5fRfoA=s88-c-k-c0x00ffffff-no-rj-mo",
   },
   {
     subject: "Class",
+    sender: "João Gabriel",
+    date: subDays(new Date(), 1),
     content:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste pariatur perferendis hic aperiam corporis tenetur? Fugiat, obcaecati quia deserunt reprehenderit, repellat odio saepe aut deleniti, laboriosam praesentium aliquid beatae vel!",
     senderImageUrl:
-      "https://lh3.googleusercontent.com/ogw/AOh-ky2-WfCo_Npg4BpqX4ye3y4WC1F2kgyXwEVc1BG7LQ=s32-c-mo",
+      "https://yt3.ggpht.com/yti/AJo0G0keGO8w7HSrgBiA83C10ruLrf9thc1QwZ3E5fRfoA=s88-c-k-c0x00ffffff-no-rj-mo",
   },
   {
     subject: "Class",
+    sender: "João Gabriel",
+    date: subDays(new Date(), 10),
     content:
       "Lorem ipsum dolor sit amet consectetur adipisicing elit. Iste pariatur perferendis hic aperiam corporis tenetur? Fugiat, obcaecati quia deserunt reprehenderit, repellat odio saepe aut deleniti, laboriosam praesentium aliquid beatae vel!",
     senderImageUrl:
-      "https://lh3.googleusercontent.com/ogw/AOh-ky2-WfCo_Npg4BpqX4ye3y4WC1F2kgyXwEVc1BG7LQ=s32-c-mo",
+      "https://yt3.ggpht.com/yti/AJo0G0keGO8w7HSrgBiA83C10ruLrf9thc1QwZ3E5fRfoA=s88-c-k-c0x00ffffff-no-rj-mo",
   },
 ];
 
