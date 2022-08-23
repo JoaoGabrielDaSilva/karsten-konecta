@@ -3,8 +3,8 @@ import { Theme } from "../models/theme";
 export const darkTheme: Theme = {
   color: {
     background: {
-      primary: "#FFF",
-      secondary: "#FFF",
+      primary: "#000000",
+      secondary: "#000000",
     },
     text: {
       primary: "#FFF",
@@ -22,5 +22,11 @@ export const darkTheme: Theme = {
     sm: 5,
     md: 10,
     lg: 50,
+  },
+  fontSize: {
+    sm: 13,
+    md: 18,
+    lg: 20,
+    xl: 25,
   },
 };

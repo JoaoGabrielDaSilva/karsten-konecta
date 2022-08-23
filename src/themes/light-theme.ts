@@ -7,8 +7,8 @@ export const lightTheme: Theme = {
       secondary: "#FFF",
     },
     text: {
-      primary: "#FFF",
-      secondary: "#FFF",
+      primary: "#000000",
+      secondary: "#000000",
     },
   },
   spacing: {
@@ -22,5 +22,11 @@ export const lightTheme: Theme = {
     sm: 5,
     md: 10,
     lg: 50,
+  },
+  fontSize: {
+    sm: 13,
+    md: 18,
+    lg: 20,
+    xl: 25,
   },
 };
