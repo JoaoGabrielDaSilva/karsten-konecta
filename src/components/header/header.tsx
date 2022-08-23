@@ -15,7 +15,7 @@ export const Header = ({ options, navigation }: Props) => {
           <HeaderIcon name="menu" />
         </BorderlessButton>
       </HeaderLeft>
-      <Typography variant="heading" textAlign="center">
+      <Typography variant="heading" textAlign="center" bold>
         {options.title}
       </Typography>
       <HeaderRight>

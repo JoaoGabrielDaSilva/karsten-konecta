@@ -7,9 +7,11 @@ import { View } from "react-native";
 import { useTheme } from "styled-components";
 import { Header, Drawer as DrawerComponent } from "../components";
 import { EmailList } from "../screens";
+import { Settings } from "../screens/settings/settings";
 
 export type RootPrivateStackParamList = {
   Root: undefined;
+  Settings: undefined;
 };
 export type RootPrivateDrawerParamList = {
   EmailList: undefined;
@@ -44,6 +46,15 @@ const StackNavigator = () => {
       }}
     >
       <Stack.Screen name="Root" component={DrawerNavigator} />
+      <Stack.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          title: "Settings",
+          headerShown: false,
+          presentation: "modal",
+        }}
+      />
     </Stack.Navigator>
   );
 };

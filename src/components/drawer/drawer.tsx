@@ -17,12 +17,29 @@ export const Drawer = ({ ...props }: Props) => {
         flex: 1,
         justifyContent: "space-between",
         paddingVertical: theme.spacing.xl,
+        backgroundColor: theme.color.background.secondary,
       }}
     >
       <View>
         <DrawerItemList {...props}></DrawerItemList>
       </View>
-      <DrawerItem label={"Configuration"} onPress={() => {}} />
+      <CustomDrawerItem
+        label="Settings"
+        onPress={() => props.navigation.navigate("Settings")}
+      />
     </Container>
+  );
+};
+
+type DrawerItemProps = {
+  label: string;
+  onPress: () => void;
+};
+
+export const CustomDrawerItem = ({ ...props }: DrawerItemProps) => {
+  const theme = useTheme();
+
+  return (
+    <DrawerItem {...props} inactiveTintColor={theme.color.text.secondary} />
   );
 };
