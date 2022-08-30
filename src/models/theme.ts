@@ -8,6 +8,13 @@ export type Theme = {
       primary: string;
       secondary: string;
     };
+    blue: {
+      100: string;
+      300: string;
+      500: string;
+      700: string;
+    };
+    white: string;
   };
   spacing: {
     sm: number;
@@ -22,9 +29,10 @@ export type Theme = {
     lg: number;
   };
   fontSize: {
-    sm: number;
-    md: number;
-    lg: number;
-    xl: number;
+    xsm: 10;
+    sm: 12;
+    md: 14;
+    lg: 18;
+    xl: 25;
   };
 };

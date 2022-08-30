@@ -4,12 +4,19 @@ export const lightTheme: Theme = {
   color: {
     background: {
       primary: "#FFF",
-      secondary: "#FFF",
+      secondary: "#eee",
     },
     text: {
       primary: "#000000",
       secondary: "#000000",
     },
+    blue: {
+      100: "#91baff",
+      300: "#5e98f9",
+      500: "#4285f4",
+      700: "#2571ee",
+    },
+    white: "#FFFFFF",
   },
   spacing: {
     sm: 5,
@@ -24,9 +31,10 @@ export const lightTheme: Theme = {
     lg: 50,
   },
   fontSize: {
-    sm: 10,
-    md: 12,
-    lg: 20,
+    xsm: 10,
+    sm: 12,
+    md: 14,
+    lg: 18,
     xl: 25,
   },
 };

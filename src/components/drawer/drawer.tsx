@@ -13,11 +13,12 @@ export const Drawer = ({ ...props }: Props) => {
 
   return (
     <Container
+      bounces={false}
       contentContainerStyle={{
         flex: 1,
         justifyContent: "space-between",
         paddingVertical: theme.spacing.xl,
-        backgroundColor: theme.color.background.secondary,
+        backgroundColor: theme.color.background.primary,
       }}
     >
       <View>

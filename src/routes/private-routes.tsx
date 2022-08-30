@@ -4,20 +4,25 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Constants from "expo-constants";
 
 import { View } from "react-native";
+import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { useTheme } from "styled-components";
 import { Header, Drawer as DrawerComponent } from "../components";
 import { EmailList } from "../screens";
+import { Email } from "../screens/email/email";
+import { Search } from "../screens/search/search";
 import { Settings } from "../screens/settings/settings";
 
 export type RootPrivateStackParamList = {
   Root: undefined;
   Settings: undefined;
+  Email: undefined;
+  Search: undefined;
 };
 export type RootPrivateDrawerParamList = {
   EmailList: undefined;
 };
 
-const Stack = createStackNavigator<RootPrivateStackParamList>();
+const Stack = createSharedElementStackNavigator<RootPrivateStackParamList>();
 const Drawer = createDrawerNavigator<RootPrivateDrawerParamList>();
 
 export const PrivateRoutes = () => {
@@ -55,6 +60,23 @@ const StackNavigator = () => {
           presentation: "modal",
         }}
       />
+      <Stack.Screen
+        name="Email"
+        component={Email}
+        options={{
+          title: "E-mail",
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name="Search"
+        component={Search}
+        options={{
+          title: "",
+          headerShown: false,
+          animationEnabled: false,
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -72,7 +94,7 @@ const DrawerNavigator = () => {
         name="EmailList"
         component={EmailList}
         options={{
-          title: "E-mails",
+          title: "Inbox",
         }}
       />
     </Drawer.Navigator>

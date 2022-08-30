@@ -1,17 +1,24 @@
 import React from "react";
 import { View } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import { Typography } from "../../utils";
 import { formatDateToDisplay } from "../../../utils/date/format-date-to-display";
 
-import { Container, Content, Date, Image, Sender, Title } from "./styles";
+import {
+  Container,
+  Content,
+  Date,
+  Image,
+  NotRead,
+  Sender,
+  Title,
+} from "./styles";
 
 export type ListEmailData = {
   subject: string;
   content: string;
-  senderImageUrl: string;
   date: Date;
   sender: string;
+  read?: boolean;
 };
 
 type Props = ListEmailData & {
@@ -24,12 +31,12 @@ export const ListEmail = ({
   content,
   date,
   sender,
-  senderImageUrl,
+  read,
 }: Props) => {
   return (
     <RectButton onPress={() => onPress && onPress()}>
-      <Container align="center">
-        {/* <Image source={{ uri: senderImageUrl }} resizeMode="contain" /> */}
+      <Container align="center" read={read}>
+        {read && <NotRead />}
         <View style={{ flex: 1 }}>
           <Sender variant="heading" bold>
             {sender}

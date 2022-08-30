@@ -19,7 +19,10 @@ export const Header = ({ options, navigation }: Props) => {
         {options.title}
       </Typography>
       <HeaderRight>
-        <HeaderIcon name="search" />
+        <HeaderIcon
+          name="search"
+          onPress={() => navigation.navigate("Search")}
+        />
       </HeaderRight>
     </Container>
   );
