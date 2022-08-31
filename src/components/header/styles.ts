@@ -6,9 +6,14 @@ export const Container = styled(Row)`
   background-color: ${({ theme }) => theme.color.background.primary};
 
   padding: ${({ theme }) => theme.spacing.lg}px;
+
+  border: 2px solid transparent;
+  border-bottom-color: ${({ theme }) => theme.color.background.secondary};
 `;
 
-export const HeaderLeft = styled.View`
+export const HeaderLeft = styled(Row).attrs(() => ({
+  align: "center",
+}))`
   flex: 1;
 `;
 

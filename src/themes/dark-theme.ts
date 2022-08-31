@@ -4,10 +4,13 @@ export const darkTheme: Theme = {
   color: {
     background: {
       primary: "#222",
+      inverted: "#EEE",
       secondary: "#444",
+      emphasis: "#ccc",
     },
     text: {
       primary: "#FFF",
+      inverted: "#000000",
       secondary: "#bbb",
     },
     blue: {
@@ -15,6 +18,12 @@ export const darkTheme: Theme = {
       300: "#5e98f9",
       500: "#4285f4",
       700: "#2571ee",
+    },
+    red: {
+      100: "#f99893",
+      300: "#f66b64",
+      500: "#f44b42",
+      700: "#f5281d",
     },
     white: "#FFFFFF",
   },

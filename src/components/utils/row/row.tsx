@@ -1,4 +1,5 @@
 import { FlexAlignType, StyleProp, View, ViewStyle } from "react-native";
+import Animated from "react-native-reanimated";
 import styles from "./styles";
 
 type FlexJustifyType =
@@ -24,7 +25,7 @@ export const Row = ({
   children,
 }: Props) => {
   return (
-    <View
+    <Animated.View
       style={[
         style,
         styles.row,
@@ -35,6 +36,6 @@ export const Row = ({
       ]}
     >
       {children}
-    </View>
+    </Animated.View>
   );
 };

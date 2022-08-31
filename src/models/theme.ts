@@ -3,12 +3,21 @@ export type Theme = {
     background: {
       primary: string;
       secondary: string;
+      emphasis: string;
+      inverted: string;
     };
     text: {
       primary: string;
+      inverted: string;
       secondary: string;
     };
     blue: {
+      100: string;
+      300: string;
+      500: string;
+      700: string;
+    };
+    red: {
       100: string;
       300: string;
       500: string;

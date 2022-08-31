@@ -4,17 +4,26 @@ export const lightTheme: Theme = {
   color: {
     background: {
       primary: "#FFF",
-      secondary: "#eee",
+      inverted: "#000",
+      secondary: "#E6E5DC",
+      emphasis: "#5a5959",
     },
     text: {
       primary: "#000000",
-      secondary: "#000000",
+      inverted: "#FFFFFF",
+      secondary: "#6a6969",
     },
     blue: {
       100: "#91baff",
       300: "#5e98f9",
       500: "#4285f4",
       700: "#2571ee",
+    },
+    red: {
+      100: "#f99893",
+      300: "#f66b64",
+      500: "#f44b42",
+      700: "#f5281d",
     },
     white: "#FFFFFF",
   },

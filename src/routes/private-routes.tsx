@@ -1,25 +1,18 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
-import { createStackNavigator } from "@react-navigation/stack";
 import Constants from "expo-constants";
 
 import { View } from "react-native";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { useTheme } from "styled-components";
-import { Header, Drawer as DrawerComponent } from "../components";
-import { EmailList } from "../screens";
-import { Email } from "../screens/email/email";
-import { Search } from "../screens/search/search";
-import { Settings } from "../screens/settings/settings";
+import { Drawer as DrawerComponent, Header } from "../components";
+import { NewAttendance } from "../screens";
 
 export type RootPrivateStackParamList = {
   Root: undefined;
-  Settings: undefined;
-  Email: undefined;
-  Search: undefined;
 };
 export type RootPrivateDrawerParamList = {
-  EmailList: undefined;
+  NewAttendance: undefined;
 };
 
 const Stack = createSharedElementStackNavigator<RootPrivateStackParamList>();
@@ -51,7 +44,7 @@ const StackNavigator = () => {
       }}
     >
       <Stack.Screen name="Root" component={DrawerNavigator} />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="Settings"
         component={Settings}
         options={{
@@ -59,24 +52,7 @@ const StackNavigator = () => {
           headerShown: false,
           presentation: "modal",
         }}
-      />
-      <Stack.Screen
-        name="Email"
-        component={Email}
-        options={{
-          title: "E-mail",
-          headerShown: false,
-        }}
-      />
-      <Stack.Screen
-        name="Search"
-        component={Search}
-        options={{
-          title: "",
-          headerShown: false,
-          animationEnabled: false,
-        }}
-      />
+      /> */}
     </Stack.Navigator>
   );
 };
@@ -85,16 +61,18 @@ const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
       screenOptions={{
-        header: (props) => <Header {...props} />,
         drawerType: "front",
+        drawerPosition: "right",
       }}
       drawerContent={(props) => <DrawerComponent {...props} />}
     >
       <Drawer.Screen
-        name="EmailList"
-        component={EmailList}
+        name="NewAttendance"
+        component={NewAttendance}
         options={{
-          title: "Inbox",
+          title: "Novo Atendimento",
+
+          header: (props) => <Header {...props} />,
         }}
       />
     </Drawer.Navigator>

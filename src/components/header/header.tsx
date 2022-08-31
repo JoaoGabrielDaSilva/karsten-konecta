@@ -4,25 +4,33 @@ import { Typography } from "../utils";
 import { Container, HeaderIcon, HeaderLeft, HeaderRight } from "./styles";
 import { DrawerHeaderProps } from "@react-navigation/drawer";
 import { BorderlessButton } from "react-native-gesture-handler";
+import { MaterialIcons } from "@expo/vector-icons";
 
-type Props = DrawerHeaderProps;
+type IconType = keyof typeof MaterialIcons.glyphMap;
 
-export const Header = ({ options, navigation }: Props) => {
+type Props = DrawerHeaderProps & {
+  headerLeftIcon?: IconType;
+  rightIcon?: IconType;
+};
+
+export const Header = ({ options, navigation, headerLeftIcon }: Props) => {
   return (
     <Container align="center">
       <HeaderLeft>
-        <BorderlessButton onPress={navigation.toggleDrawer}>
-          <HeaderIcon name="menu" />
-        </BorderlessButton>
+        {headerLeftIcon && (
+          <HeaderIcon
+            name={headerLeftIcon}
+            onPress={() => navigation.navigate("Search")}
+          />
+        )}
       </HeaderLeft>
       <Typography variant="heading" textAlign="center" bold>
         {options.title}
       </Typography>
       <HeaderRight>
-        <HeaderIcon
-          name="search"
-          onPress={() => navigation.navigate("Search")}
-        />
+        <BorderlessButton onPress={navigation.toggleDrawer}>
+          <HeaderIcon name="menu" />
+        </BorderlessButton>
       </HeaderRight>
     </Container>
   );

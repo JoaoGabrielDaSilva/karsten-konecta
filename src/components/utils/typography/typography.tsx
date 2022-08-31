@@ -1,5 +1,6 @@
 import React from "react";
 import { TextProps } from "react-native";
+import Animated from "react-native-reanimated";
 
 import { Text } from "./styles";
 
@@ -15,6 +16,8 @@ type Props = TextProps & {
   semibold?: boolean;
 };
 
+const AnimatedText = Animated.createAnimatedComponent(Text);
+
 const textAlignDictionary: { [key: string]: TextAlign } = {
   heading: "auto",
   paragraph: "justify",
@@ -28,8 +31,8 @@ export const Typography = ({
   ...props
 }: Props) => {
   return (
-    <Text {...props} variant={variant} textAlign={textAlign}>
+    <AnimatedText variant={variant} textAlign={textAlign} {...props}>
       {children}
-    </Text>
+    </AnimatedText>
   );
 };
