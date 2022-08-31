@@ -61,6 +61,8 @@ type Props = TextInputProps & {
   onMaxLength?: (value: string) => void;
   loading?: boolean;
   showError?: boolean;
+  disableFloatingPlaceholder?: boolean;
+  size?: "small" | "normal";
 };
 
 const INPUT_RANGE = [InputState.FOCUSED, InputState.UNFOCUSED];
@@ -74,6 +76,9 @@ export const TextInput = ({
   mask,
   loading,
   showError,
+  placeholder,
+  size,
+  disableFloatingPlaceholder,
   ...props
 }: Props) => {
   const {
@@ -90,13 +95,17 @@ export const TextInput = ({
   );
 
   const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    state.value = withTiming(InputState.FOCUSED);
+    if (!disableFloatingPlaceholder) {
+      state.value = withTiming(InputState.FOCUSED);
+    }
 
     props.onBlur && props.onBlur(e);
   };
 
   const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    state.value = withTiming(InputState.UNFOCUSED);
+    if (!disableFloatingPlaceholder) {
+      state.value = withTiming(InputState.UNFOCUSED);
+    }
 
     props.onFocus && props.onFocus(e);
   };
@@ -133,7 +142,7 @@ export const TextInput = ({
 
   return (
     <Container style={style}>
-      <InputContainer style={[containerStyles]} align="center">
+      <InputContainer style={[containerStyles]} align="center" size={size}>
         <Controller
           name={name}
           control={control}
@@ -153,11 +162,17 @@ export const TextInput = ({
                 maxLength={props?.maxLength || maskList[mask]?.maxLength || 100}
                 onFocus={handleFocus}
                 onBlur={handleBlur}
+                placeholder={disableFloatingPlaceholder ? placeholder : ""}
+                placeholderTextColor={
+                  disableFloatingPlaceholder
+                    ? theme.color.text.secondary
+                    : "transparent"
+                }
                 {...props}
               />
-              {props.placeholder ? (
+              {placeholder && !disableFloatingPlaceholder ? (
                 <Placeholder style={placeholderStyles}>
-                  {props.placeholder}
+                  {placeholder}
                 </Placeholder>
               ) : null}
               {loading && (

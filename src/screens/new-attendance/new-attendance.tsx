@@ -17,8 +17,8 @@ type NavigationProps = DrawerScreenProps<
 
 type Props = NavigationProps;
 
-export const NewAttendance = ({}: Props) => {
-  const { control, handleSubmit } = useForm({
+export const NewAttendance = ({ navigation }: Props) => {
+  const { control, handleSubmit, reset } = useForm({
     resolver: yupResolver(cpfSchema),
   });
 
@@ -27,7 +27,11 @@ export const NewAttendance = ({}: Props) => {
   const getAttendance = () => {
     Keyboard.dismiss();
     setLoading(true);
-    setTimeout(() => setLoading(false), 3000);
+    setTimeout(() => {
+      setLoading(false);
+      reset();
+      navigation.navigate("Attendance");
+    }, 1500);
   };
 
   return (
@@ -41,7 +45,7 @@ export const NewAttendance = ({}: Props) => {
           name="cpf"
           placeholder="CPF"
           mask="cpf"
-          onMaxLength={handleSubmit(getAttendance)}
+          onMaxLength={() => handleSubmit(getAttendance)()}
           loading={loading}
           showError
         />

@@ -19,7 +19,7 @@ export const Button = ({ text, onPress, loading, disabled, style }: Props) => {
     <BorderlessButton onPress={onPress} enabled={!disabled}>
       <Container style={style} disabled={disabled}>
         {!loading ? (
-          <Text>{text}</Text>
+          <Text textAlign="center"> {text}</Text>
         ) : (
           <ActivityIndicator color={theme.color.text.primary} />
         )}

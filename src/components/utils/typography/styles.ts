@@ -29,5 +29,5 @@ export const Text = styled.Text<{
   text-align: ${({ textAlign }) => textAlign};
   color: ${({ theme }) => theme.color.text.primary};
   font-weight: ${({ bold, semibold }) =>
-    bold ? "bold" : semibold ? "700" : "normal"};
+    bold ? "bold" : semibold ? "500" : "normal"};
 `;

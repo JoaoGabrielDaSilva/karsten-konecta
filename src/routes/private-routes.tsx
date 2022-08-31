@@ -5,11 +5,17 @@ import Constants from "expo-constants";
 import { View } from "react-native";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { useTheme } from "styled-components";
-import { Drawer as DrawerComponent, Header } from "../components";
+import { Drawer as DrawerComponent } from "../components";
+import { DrawerNavbar } from "../components/navigation/drawer-navbar/drawer-navbar";
+import { StackNavbar } from "../components/navigation/stack-navbar/stack-navbar";
 import { NewAttendance } from "../screens";
+import { Attendance } from "../screens/attendance/attendance";
+import { ProductList } from "../screens/product-list/product-list";
 
 export type RootPrivateStackParamList = {
   Root: undefined;
+  Attendance: undefined;
+  ProductList: undefined;
 };
 export type RootPrivateDrawerParamList = {
   NewAttendance: undefined;
@@ -38,21 +44,42 @@ export const PrivateRoutes = () => {
 
 const StackNavigator = () => {
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerShown: false,
-      }}
-    >
-      <Stack.Screen name="Root" component={DrawerNavigator} />
-      {/* <Stack.Screen
-        name="Settings"
-        component={Settings}
+    <Stack.Navigator initialRouteName="ProductList">
+      <Stack.Screen
+        name="Root"
+        component={DrawerNavigator}
         options={{
-          title: "Settings",
           headerShown: false,
-          presentation: "modal",
         }}
-      /> */}
+      />
+      <Stack.Screen
+        name="Attendance"
+        component={Attendance}
+        options={{
+          title: "Carrinho",
+
+          header: (props) => (
+            <StackNavbar
+              {...props}
+              headerLeftIcon="close"
+              onLeftIconPress={props.navigation.goBack}
+              rightIcon="search"
+              onRightIconPress={() => props.navigation.navigate("ProductList")}
+              {...props}
+            />
+          ),
+        }}
+      />
+      <Stack.Screen
+        name="ProductList"
+        component={ProductList}
+        options={{
+          // title: "Produtos",
+          headerShown: false,
+          animationEnabled: false,
+          // header: (props) => <StackNavbar {...props} />,
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -72,7 +99,7 @@ const DrawerNavigator = () => {
         options={{
           title: "Novo Atendimento",
 
-          header: (props) => <Header {...props} />,
+          header: (props) => <DrawerNavbar {...props} />,
         }}
       />
     </Drawer.Navigator>

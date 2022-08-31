@@ -10,8 +10,8 @@ const { width } = Dimensions.get("window");
 
 export const Container = styled.View``;
 
-export const InputContainer = styled(Row)`
-  height: ${width * 0.15}px;
+export const InputContainer = styled(Row)<{ size: "normal" | "small" }>`
+  height: ${({ size }) => (size === "normal" ? width * 0.15 : width * 0.11)}px;
 
   background-color: ${({ theme }) => theme.color.background.primary};
 

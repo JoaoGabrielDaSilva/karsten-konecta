@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
-import { Row } from "../utils";
+import { Row } from "../../utils";
 
 export const Container = styled(Row)`
   background-color: ${({ theme }) => theme.color.background.primary};
