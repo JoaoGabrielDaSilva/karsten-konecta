@@ -47,7 +47,7 @@ type AttendanceState = {
   decreaseProductAmount: (where: { code: string }) => void;
 };
 
-const mockAddress = (): Address => {
+export const mockAddress = (): Address => {
   return {
     name: "João",
     street: faker.address.street(),

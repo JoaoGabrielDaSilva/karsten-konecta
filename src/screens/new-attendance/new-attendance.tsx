@@ -54,7 +54,6 @@ export const NewAttendance = ({ navigation }: Props) => {
           mask="cpf"
           onMaxLength={handleSubmit(getAttendance)}
           loading={loading}
-          showError
         />
         <Button
           text="Atendimento sem Cliente"

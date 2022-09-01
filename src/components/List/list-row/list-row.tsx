@@ -23,7 +23,7 @@ export const ListRow = ({
 }: ListRowProps) => {
   return (
     <Container justify="space-between" align="center" {...props}>
-      <Label color={color}>{label}</Label>
+      {label ? <Label color={color}>{label}</Label> : null}
       <RightSide>
         {value ? <Value color={color}>{value}</Value> : null}
         {icon && <Icon name={icon} />}

@@ -40,10 +40,11 @@ export type Theme = {
     lg: number;
   };
   fontSize: {
-    xsm: 10;
-    sm: 12;
-    md: 14;
-    lg: 18;
-    xl: 25;
+    xsm: number;
+    sm: number;
+    md: number;
+    lg: number;
+    xl: number;
+    xxl: number;
   };
 };

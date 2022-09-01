@@ -10,6 +10,7 @@ import { DrawerNavbar } from "../components/navigation/drawer-navbar/drawer-navb
 import { StackNavbar } from "../components/navigation/stack-navbar/stack-navbar";
 import { NewAttendance } from "../screens";
 import { Attendance } from "../screens/attendance/attendance";
+import { CustomerRegister } from "../screens/customer-register/customer-register";
 import { ProductDetails } from "../screens/product-details/product-details";
 import { ProductList } from "../screens/product-list/product-list";
 
@@ -18,6 +19,7 @@ export type RootPrivateStackParamList = {
   Attendance: undefined;
   ProductList: undefined;
   ProductDetails: undefined;
+  CustomerRegister: undefined;
 };
 export type RootPrivateDrawerParamList = {
   NewAttendance: undefined;
@@ -46,7 +48,7 @@ export const PrivateRoutes = () => {
 
 const StackNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="CustomerRegister">
       <Stack.Screen
         name="Root"
         component={DrawerNavigator}
@@ -84,6 +86,15 @@ const StackNavigator = () => {
         component={ProductDetails}
         options={{
           title: "Detalhes do Produto",
+
+          header: (props) => <StackNavbar {...props} />,
+        }}
+      />
+      <Stack.Screen
+        name="CustomerRegister"
+        component={CustomerRegister}
+        options={{
+          title: "Consumidor",
 
           header: (props) => <StackNavbar {...props} />,
         }}

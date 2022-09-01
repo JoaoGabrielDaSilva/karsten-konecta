@@ -6,7 +6,7 @@ import { Address } from "../../components/address/address";
 import { ShippingInfo } from "../../components/shipping-info/shipping-info";
 import { AttendanceProductModel } from "../../models/Attendance";
 
-import { RootPrivateDrawerParamList } from "../../routes";
+import { RootPrivateStackParamList } from "../../routes";
 import { useAttendanceStore } from "../../store/attendance";
 import { AttendanceFooter } from "./layout/attendance-footer/attendance-footer";
 import { AttendanceHeader } from "./layout/attendance-header/attendance-header";
@@ -14,7 +14,7 @@ import { AttendanceHeader } from "./layout/attendance-header/attendance-header";
 import { Container, Content, ListProduct } from "./styles";
 
 type NavigationProps = DrawerScreenProps<
-  RootPrivateDrawerParamList,
+  RootPrivateStackParamList,
   "Attendance"
 >;
 
@@ -23,8 +23,6 @@ type Props = NavigationProps;
 export const Attendance = ({}: Props) => {
   const { loading, productList, address, shippingInfo, getAttendance } =
     useAttendanceStore();
-
-  const theme = useTheme();
 
   useEffect(() => getAttendance(), []);
 

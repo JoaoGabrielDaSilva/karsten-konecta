@@ -8,11 +8,9 @@ const fontSizeDictionary = (
 ) => {
   switch (variant) {
     case "heading":
-      return theme.fontSize.md;
+      return theme.fontSize.lg;
     case "subtitle":
-      return theme.fontSize.sm;
-    case "paragraph":
-      return theme.fontSize.sm;
+      return theme.fontSize.md;
     case "text":
       return theme.fontSize.sm;
   }

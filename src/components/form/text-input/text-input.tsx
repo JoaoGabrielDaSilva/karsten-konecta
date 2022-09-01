@@ -20,6 +20,7 @@ import {
 import { useTheme } from "styled-components/native";
 import { cepMask } from "../../../utils/mask/cep-mask";
 import { cpfMask } from "../../../utils/mask/cpf-mask";
+import { phoneMask } from "../../../utils/mask/phone-mask";
 import {
   Container,
   Input,
@@ -48,9 +49,9 @@ const PLACEHOLDER_POSITIONS = {
 };
 
 type TypeConfig = {
-  maxLength: number;
+  maxLength?: number;
   onChange: (value: string) => string;
-  keyboardType: KeyboardTypeOptions;
+  keyboardType?: KeyboardTypeOptions;
 };
 
 const inputConfigObject: { [key: string]: TypeConfig } = {
@@ -64,6 +65,11 @@ const inputConfigObject: { [key: string]: TypeConfig } = {
     onChange: cepMask,
     keyboardType: "number-pad",
   },
+  phone: {
+    maxLength: 15,
+    onChange: phoneMask,
+    keyboardType: "number-pad",
+  },
 };
 
 type Props = TextInputProps & {
@@ -74,7 +80,6 @@ type Props = TextInputProps & {
   style?: StyleProp<ViewStyle>;
   onMaxLength?: () => void;
   loading?: boolean;
-  showError?: boolean;
   disableFloatingPlaceholder?: boolean;
   size?: "small" | "normal";
 };
@@ -89,7 +94,6 @@ export const TextInput = ({
   onMaxLength,
   mask,
   loading,
-  showError,
   placeholder,
   keyboardType,
   size = "normal",
@@ -115,7 +119,7 @@ export const TextInput = ({
       state.value = withTiming(InputState.FOCUSED);
     }
 
-    props.onBlur && props.onBlur(e);
+    props.onBlur && props.onFocus(e);
   };
 
   const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
@@ -123,24 +127,28 @@ export const TextInput = ({
       state.value = withTiming(InputState.UNFOCUSED);
     }
 
-    props.onFocus && props.onFocus(e);
+    props.onFocus && props.onBlur(e);
   };
 
   const containerStyles = useAnimatedStyle(() => {
     return {
-      borderColor: interpolateColor(state.value, INPUT_RANGE, [
-        theme.color.background.emphasis,
-        theme.color.background.secondary,
-      ]),
+      borderColor: !error
+        ? interpolateColor(state.value, INPUT_RANGE, [
+            theme.color.background.emphasis,
+            theme.color.background.secondary,
+          ])
+        : theme.color.red[500],
     };
   });
   const placeholderStyles = useAnimatedStyle(() => {
     return {
       fontSize: value ? 12 : interpolate(state.value, INPUT_RANGE, [12, 15]),
-      color: interpolateColor(state.value, INPUT_RANGE, [
-        theme.color.text.primary,
-        theme.color.text.secondary,
-      ]),
+      color: !error
+        ? interpolateColor(state.value, INPUT_RANGE, [
+            theme.color.text.primary,
+            theme.color.text.secondary,
+          ])
+        : theme.color.red[500],
       top: !value
         ? interpolate(state.value, INPUT_RANGE, [
             PLACEHOLDER_POSITIONS[InputState.FOCUSED].top,
@@ -171,6 +179,7 @@ export const TextInput = ({
           render={() => (
             <>
               <Input
+                error={!!error}
                 value={value}
                 onChangeText={(value) => {
                   mask
@@ -190,9 +199,11 @@ export const TextInput = ({
                 onBlur={handleBlur}
                 placeholder={disableFloatingPlaceholder ? placeholder : ""}
                 placeholderTextColor={
-                  disableFloatingPlaceholder
-                    ? theme.color.text.secondary
-                    : "transparent"
+                  !error
+                    ? disableFloatingPlaceholder
+                      ? theme.color.text.secondary
+                      : "transparent"
+                    : theme.color.red[500]
                 }
                 editable={!loading && editable}
                 keyboardType={
@@ -217,7 +228,7 @@ export const TextInput = ({
           <ClearIcon name="ios-close-circle-outline" onPress={clearValue} />
         )}
       </InputContainer>
-      {showError && error?.message ? (
+      {error?.message ? (
         <CustomErrorMessage>{error.message}</CustomErrorMessage>
       ) : null}
     </Container>

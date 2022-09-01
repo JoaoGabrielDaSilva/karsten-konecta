@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Dimensions, TextInput } from "react-native";
-import Animated from "react-native-reanimated";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
 import { ErrorMessage } from "../../error/error-message/error-message";
@@ -11,10 +10,9 @@ const { width } = Dimensions.get("window");
 export const Container = styled.View``;
 
 export const InputContainer = styled(Row)<{
-  size: "normal" | "small";
   editable: boolean;
 }>`
-  height: ${({ size }) => (size === "normal" ? width * 0.15 : width * 0.11)}px;
+  height: ${width * 0.15}px;
 
   background-color: ${({ theme }) => theme.color.background.primary};
 
@@ -27,15 +25,15 @@ export const InputContainer = styled(Row)<{
   opacity: ${({ editable }) => (editable ? 1 : 0.5)};
 `;
 
-export const Input = styled(TextInput)<{ error: boolean }>`
+export const Input = styled(Row)`
   flex: 1;
   height: 100%;
 
   padding: ${({ theme }) => theme.spacing.md}px;
-
-  color: ${({ theme, error }) =>
-    !error ? theme.color.text.secondary : theme.color.red[500]};
+  padding-right: 0px;
 `;
+
+export const Value = styled(Typography)``;
 
 export const ClearIcon = styled(Ionicons)`
   color: ${({ theme }) => theme.color.text.secondary};
@@ -45,6 +43,8 @@ export const ClearIcon = styled(Ionicons)`
 
 export const Placeholder = styled(Typography)`
   position: absolute;
+
+  color: ${({ theme }) => theme.color.text.secondary};
 
   font-size: ${({ theme }) => RFValue(theme.fontSize.sm)}px;
 `;
