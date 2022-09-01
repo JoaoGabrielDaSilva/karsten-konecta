@@ -8,7 +8,7 @@ export type TypographyVariant = "heading" | "paragraph" | "text" | "subtitle";
 
 export type TextAlign = "auto" | "left" | "right" | "center" | "justify";
 
-type Props = TextProps & {
+export type TypographyProps = TextProps & {
   children?: React.ReactNode;
   variant?: TypographyVariant;
   textAlign?: TextAlign;
@@ -29,7 +29,7 @@ export const Typography = ({
   variant = "text",
   textAlign = textAlignDictionary.text,
   ...props
-}: Props) => {
+}: TypographyProps) => {
   return (
     <AnimatedText variant={variant} textAlign={textAlign} {...props}>
       {children}

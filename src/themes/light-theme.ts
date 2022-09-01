@@ -13,6 +13,8 @@ export const lightTheme: Theme = {
       inverted: "#FFFFFF",
       secondary: "#6a6969",
     },
+    focused: "#000000",
+    unfocused: "#bebdbd",
     blue: {
       100: "#91baff",
       300: "#5e98f9",

@@ -10,7 +10,10 @@ const { width } = Dimensions.get("window");
 
 export const Container = styled.View``;
 
-export const InputContainer = styled(Row)<{ size: "normal" | "small" }>`
+export const InputContainer = styled(Row)<{
+  size: "normal" | "small";
+  editable: boolean;
+}>`
   height: ${({ size }) => (size === "normal" ? width * 0.15 : width * 0.11)}px;
 
   background-color: ${({ theme }) => theme.color.background.primary};
@@ -20,6 +23,8 @@ export const InputContainer = styled(Row)<{ size: "normal" | "small" }>`
   border: 1.5px solid ${({ theme }) => theme.color.background.secondary};
 
   padding-right: ${({ theme }) => theme.spacing.md}px;
+
+  opacity: ${({ editable }) => (editable ? 1 : 0.5)};
 `;
 
 export const Input = styled(TextInput)`

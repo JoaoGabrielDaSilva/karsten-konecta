@@ -11,6 +11,8 @@ export type Theme = {
       inverted: string;
       secondary: string;
     };
+    focused: string;
+    unfocused: string;
     blue: {
       100: string;
       300: string;

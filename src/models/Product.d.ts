@@ -4,3 +4,11 @@ export type ProductModel = {
   uri: string;
   ean: string;
 };
+
+export type ProductDetailsModel = {
+  name: string;
+  code: string;
+  images: string[];
+  ean: string;
+  sizes: string[];
+};

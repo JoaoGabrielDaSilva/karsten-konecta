@@ -3,6 +3,7 @@ import { Control, Controller, useController } from "react-hook-form";
 import {
   ActivityIndicator,
   Dimensions,
+  KeyboardTypeOptions,
   NativeSyntheticEvent,
   StyleProp,
   TextInputFocusEventData,
@@ -17,6 +18,7 @@ import {
   withTiming,
 } from "react-native-reanimated";
 import { useTheme } from "styled-components/native";
+import { cepMask } from "../../../utils/mask/cep-mask";
 import { cpfMask } from "../../../utils/mask/cpf-mask";
 import {
   Container,
@@ -45,20 +47,32 @@ const PLACEHOLDER_POSITIONS = {
   },
 };
 
-const maskList = {
+type TypeConfig = {
+  maxLength: number;
+  onChange: (value: string) => string;
+  keyboardType: KeyboardTypeOptions;
+};
+
+const inputConfigObject: { [key: string]: TypeConfig } = {
   cpf: {
     maxLength: 14,
     onChange: cpfMask,
+    keyboardType: "number-pad",
+  },
+  cep: {
+    maxLength: 9,
+    onChange: cepMask,
+    keyboardType: "number-pad",
   },
 };
 
 type Props = TextInputProps & {
   name: string;
   control: any;
-  mask?: keyof typeof maskList;
+  mask?: keyof typeof inputConfigObject;
   defaultValue?: Control<any, any>;
   style?: StyleProp<ViewStyle>;
-  onMaxLength?: (value: string) => void;
+  onMaxLength?: () => void;
   loading?: boolean;
   showError?: boolean;
   disableFloatingPlaceholder?: boolean;
@@ -77,7 +91,9 @@ export const TextInput = ({
   loading,
   showError,
   placeholder,
-  size,
+  keyboardType,
+  size = "normal",
+  editable = true,
   disableFloatingPlaceholder,
   ...props
 }: Props) => {
@@ -142,7 +158,12 @@ export const TextInput = ({
 
   return (
     <Container style={style}>
-      <InputContainer style={[containerStyles]} align="center" size={size}>
+      <InputContainer
+        style={[containerStyles]}
+        align="center"
+        size={size}
+        editable={editable && !loading}
+      >
         <Controller
           name={name}
           control={control}
@@ -152,14 +173,19 @@ export const TextInput = ({
               <Input
                 value={value}
                 onChangeText={(value) => {
-                  if (onMaxLength && value.length === maskList[mask]?.maxLength)
-                    onMaxLength(value);
-
                   mask
-                    ? onChange(maskList[mask].onChange(value))
+                    ? onChange(inputConfigObject[mask].onChange(value))
                     : onChange(value);
+
+                  if (
+                    onMaxLength &&
+                    value.length === inputConfigObject[mask]?.maxLength
+                  )
+                    onMaxLength();
                 }}
-                maxLength={props?.maxLength || maskList[mask]?.maxLength || 100}
+                maxLength={
+                  props?.maxLength || inputConfigObject[mask]?.maxLength || 100
+                }
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 placeholder={disableFloatingPlaceholder ? placeholder : ""}
@@ -167,6 +193,12 @@ export const TextInput = ({
                   disableFloatingPlaceholder
                     ? theme.color.text.secondary
                     : "transparent"
+                }
+                editable={!loading && editable}
+                keyboardType={
+                  keyboardType ||
+                  inputConfigObject[mask]?.keyboardType ||
+                  "default"
                 }
                 {...props}
               />

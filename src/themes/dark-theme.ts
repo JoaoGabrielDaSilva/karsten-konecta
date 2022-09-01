@@ -13,6 +13,8 @@ export const darkTheme: Theme = {
       inverted: "#000000",
       secondary: "#bbb",
     },
+    focused: "",
+    unfocused: "",
     blue: {
       100: "#91baff",
       300: "#5e98f9",

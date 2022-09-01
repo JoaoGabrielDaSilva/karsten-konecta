@@ -14,6 +14,7 @@ import { Theme } from "../../constants/enums/Theme";
 import { useTheme } from "styled-components/native";
 import { SearchNavbar } from "../../components/navigation/search-navbar/search-navbar";
 import { useForm } from "react-hook-form";
+import { RectButton } from "react-native-gesture-handler";
 
 type NavigationProps = StackScreenProps<
   RootPrivateStackParamList,
@@ -187,13 +188,15 @@ export const ProductList = ({ navigation }: Props) => {
       <PaginatedList
         data={data}
         loading={loading}
-        contentContainerStyle={{
-          paddingHorizontal: theme.spacing.lg,
-        }}
         onEndReached={onEndReached}
         keyExtractor={(_, index) => String(index)}
         renderItem={({ item }: ListRenderItemInfo<ProductModel>) => (
-          <ListProduct {...item} />
+          <RectButton onPress={() => navigation.push("ProductDetails")}>
+            <ListProduct
+              {...item}
+              style={{ marginHorizontal: theme.spacing.lg }}
+            />
+          </RectButton>
         )}
       />
     </Container>
