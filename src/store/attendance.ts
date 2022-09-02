@@ -58,6 +58,7 @@ export const mockAddress = (): Address => {
     complement: "Casa",
     state: "RS",
     cep: "93054-190",
+    isMain: true,
   };
 };
 

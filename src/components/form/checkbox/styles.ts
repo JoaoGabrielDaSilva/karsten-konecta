@@ -2,8 +2,10 @@ import { MaterialIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 import { Row } from "../../utils";
 
-export const StyledRow = styled(Row)`
+export const StyledRow = styled(Row)<{ disabled: boolean }>`
   align-self: flex-start;
+
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 `;
 
 export const Container = styled.View`

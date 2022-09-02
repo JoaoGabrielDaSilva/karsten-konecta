@@ -142,11 +142,11 @@ export const ProductDetails = ({}: Props) => {
         />
         <StockSection stocks={stocks} />
         <AdditionalInfo>
-          <ListRow label="Descrição" icon="chevron-right" />
-          <ListRow label="Informações Adicionais" icon="chevron-right" />
+          <ListRow label="Descrição" rightIcon="chevron-right" />
+          <ListRow label="Informações Adicionais" rightIcon="chevron-right" />
           <ListRow
             label="Especificação do Produto"
-            icon="chevron-right"
+            rightIcon="chevron-right"
             borderless
           />
         </AdditionalInfo>

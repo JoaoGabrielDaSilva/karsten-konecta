@@ -34,13 +34,13 @@ export const Input = styled(TextInput)<{ error: boolean }>`
   padding: ${({ theme }) => theme.spacing.md}px;
 
   color: ${({ theme, error }) =>
-    !error ? theme.color.text.secondary : theme.color.red[500]};
+    !error ? theme.color.text.primary : theme.color.red[500]};
 `;
 
 export const ClearIcon = styled(Ionicons)`
   color: ${({ theme }) => theme.color.text.secondary};
 
-  font-size: ${({ theme }) => RFValue(theme.fontSize.md)}px;
+  font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
 `;
 
 export const Placeholder = styled(Typography)`

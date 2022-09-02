@@ -1,6 +1,8 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
+import { CommonActions, StackActions } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import { FlatList, ListRenderItemInfo } from "react-native";
+import { BorderlessButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
 import { Address } from "../../components/address/address";
 import { ShippingInfo } from "../../components/shipping-info/shipping-info";
@@ -20,7 +22,7 @@ type NavigationProps = DrawerScreenProps<
 
 type Props = NavigationProps;
 
-export const Attendance = ({}: Props) => {
+export const Attendance = ({ navigation: { navigate } }: Props) => {
   const { loading, productList, address, shippingInfo, getAttendance } =
     useAttendanceStore();
 
@@ -38,10 +40,12 @@ export const Attendance = ({}: Props) => {
             item,
             index,
           }: ListRenderItemInfo<AttendanceProductModel>) => (
-            <ListProduct
-              {...item}
-              borderless={productList.length - 1 === index}
-            />
+            <BorderlessButton onPress={() => navigate("ProductDetails")}>
+              <ListProduct
+                {...item}
+                borderless={productList.length - 1 === index}
+              />
+            </BorderlessButton>
           )}
           ListFooterComponent={
             <>

@@ -16,9 +16,9 @@ export const lightTheme: Theme = {
     focused: "#000000",
     unfocused: "#bebdbd",
     blue: {
-      100: "#91baff",
-      300: "#5e98f9",
-      500: "#4285f4",
+      100: "#ddecff",
+      300: "#60a5e7",
+      500: "#2779fc",
       700: "#2571ee",
     },
     red: {

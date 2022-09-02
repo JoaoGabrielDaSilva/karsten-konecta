@@ -3,7 +3,7 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView } from "react-native";
-import { BorderlessButton } from "react-native-gesture-handler";
+import { BorderlessButton, RectButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
 import { Address } from "../../components/address/address";
 import { Button } from "../../components/buttons/button/button";
@@ -49,7 +49,7 @@ const genderOptions = [
   },
 ];
 
-export const CustomerRegister = ({}: Props) => {
+export const CustomerRegister = ({ navigation: { navigate } }: Props) => {
   const loading = false;
   const { control, handleSubmit } = useForm({
     resolver: yupResolver(customerRegisterSchema),
@@ -96,13 +96,29 @@ export const CustomerRegister = ({}: Props) => {
         </Form>
         <StyledRow align="center" justify="space-between">
           <SectionTitle>Endereços</SectionTitle>
-          <BorderlessButton>
+          <BorderlessButton onPress={() => navigate("AddressRegister")}>
             <AddIcon name="add" />
           </BorderlessButton>
         </StyledRow>
         <Content>
-          <Address {...mockAddress()} />
-          <Address {...mockAddress()} />
+          <RectButton
+            onPress={() =>
+              navigate("AddressRegister", {
+                address: mockAddress(),
+              })
+            }
+          >
+            <Address {...mockAddress()} />
+          </RectButton>
+          <RectButton
+            onPress={() =>
+              navigate("AddressRegister", {
+                address: mockAddress(),
+              })
+            }
+          >
+            <Address {...mockAddress()} />
+          </RectButton>
         </Content>
         <StyledSectionTitle>Opcionais</StyledSectionTitle>
 

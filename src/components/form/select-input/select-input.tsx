@@ -123,9 +123,9 @@ export const SelectInput = ({
 
   const onBlur = () => {
     closeModal();
-    focus.value = withTiming(FocusState.UNFOCUSED);
 
-    if (value === undefined || value === "") {
+    focus.value = withTiming(FocusState.UNFOCUSED);
+    if (value === undefined || value === "" || !label) {
       state.value = withTiming(InputState.CLOSED);
     }
   };
@@ -142,7 +142,7 @@ export const SelectInput = ({
     };
   });
   const placeholderStyles = useAnimatedStyle(() => {
-    const isValid = !!value || value === 0;
+    const isValid = (!!value || value === 0) && label;
 
     return {
       fontSize: isValid ? 12 : interpolate(state.value, INPUT_RANGE, [12, 15]),
@@ -187,13 +187,11 @@ export const SelectInput = ({
               render={() => (
                 <>
                   <Input align="center" justify="space-between" {...props}>
-                    {!!String(value) && label ? (
-                      <Value>{String(label)}</Value>
-                    ) : null}
+                    {label ? <Value>{String(label)}</Value> : null}
                     {loading && (
                       <ActivityIndicator color={theme.color.text.primary} />
                     )}
-                    {!!String(value) && !loading && (
+                    {!!String(value) && !loading && label && (
                       <ClearIcon
                         name="ios-close-circle-outline"
                         onPress={clearValue}

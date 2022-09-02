@@ -1,4 +1,5 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { Feather, MaterialIcons } from "@expo/vector-icons";
+import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
 import { Row, Typography } from "../../utils";
 
@@ -21,6 +22,8 @@ export const Container = styled(Row)<{
 
 export const RightSide = styled(Row)``;
 
+export const LeftSide = styled(Row)``;
+
 export const Label = styled(Typography)<{ color: string }>`
   font-size: ${({ theme }) => theme.fontSize.lg}px;
   color: ${({ theme, color }) => color || theme.color.text.secondary};
@@ -31,7 +34,23 @@ export const Value = styled(Typography)<{ color: string }>`
   color: ${({ theme, color }) => color || theme.color.text.secondary};
 `;
 
-export const Icon = styled(MaterialIcons)`
-  font-size: ${({ theme }) => theme.fontSize.lg}px;
-  color: ${({ theme }) => theme.color.text.primary};
+export const MaterialLeftIcon = styled(MaterialIcons)<{ color: string }>`
+  margin: 0px ${({ theme }) => theme.spacing.md}px;
+
+  font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
+  color: ${({ theme, color }) => color || theme.color.text.secondary};
+`;
+export const MaterialRightIcon = styled(MaterialIcons)<{ color: string }>`
+  font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
+  color: ${({ theme, color }) => color || theme.color.text.secondary};
+`;
+export const FeatherLeftIcon = styled(Feather)<{ color: string }>`
+  margin: 0px ${({ theme }) => theme.spacing.md}px;
+
+  font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
+  color: ${({ theme, color }) => color || theme.color.text.secondary};
+`;
+export const FeatherRightIcon = styled(Feather)<{ color: string }>`
+  font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
+  color: ${({ theme, color }) => color || theme.color.text.secondary};
 `;

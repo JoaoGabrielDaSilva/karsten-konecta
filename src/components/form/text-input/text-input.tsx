@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Control, Controller, useController } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -10,6 +10,7 @@ import {
   TextInputProps,
   ViewStyle,
 } from "react-native";
+import { BorderlessButton } from "react-native-gesture-handler";
 import {
   interpolate,
   interpolateColor,
@@ -114,12 +115,15 @@ export const TextInput = ({
     defaultValue ? InputState.FOCUSED : InputState.UNFOCUSED
   );
 
+  const [isFocused, setIsFocused] = useState(!!state.value);
+
   const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
     if (!disableFloatingPlaceholder) {
       state.value = withTiming(InputState.FOCUSED);
     }
 
     props.onBlur && props.onFocus(e);
+    setIsFocused(true);
   };
 
   const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
@@ -128,6 +132,7 @@ export const TextInput = ({
     }
 
     props.onFocus && props.onBlur(e);
+    setIsFocused(false);
   };
 
   const containerStyles = useAnimatedStyle(() => {
@@ -224,8 +229,10 @@ export const TextInput = ({
             </>
           )}
         />
-        {value && !loading && (
-          <ClearIcon name="ios-close-circle-outline" onPress={clearValue} />
+        {value && !loading && isFocused && (
+          <BorderlessButton onPress={clearValue}>
+            <ClearIcon name="ios-close-circle-outline" />
+          </BorderlessButton>
         )}
       </InputContainer>
       {error?.message ? (

@@ -16,12 +16,12 @@ export const Button = ({ text, onPress, loading, disabled, style }: Props) => {
   const theme = useTheme();
 
   return (
-    <BorderlessButton onPress={onPress} enabled={!disabled}>
-      <Container style={style} disabled={disabled}>
+    <BorderlessButton onPress={onPress} enabled={!disabled || loading}>
+      <Container style={style} disabled={disabled || loading}>
         {!loading ? (
           <Text textAlign="center"> {text}</Text>
         ) : (
-          <ActivityIndicator color={theme.color.text.primary} />
+          <ActivityIndicator color={theme.color.text.inverted} />
         )}
       </Container>
     </BorderlessButton>

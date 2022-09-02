@@ -1,11 +1,12 @@
 export type Address = {
   name: string;
+  cep: string;
   street: string;
   number: string;
   district: string;
-  cep: string;
+  complement?: string;
   city: string;
   state: string;
   reference?: string;
-  complement?: string;
+  isMain?: boolean;
 };
