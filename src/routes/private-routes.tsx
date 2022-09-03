@@ -1,24 +1,30 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { NavigationContainer } from "@react-navigation/native";
 import Constants from "expo-constants";
 
 import { View } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { useTheme } from "styled-components";
 import { Drawer as DrawerComponent } from "../components";
-import { DrawerNavbar } from "../components/navigation/drawer-navbar/drawer-navbar";
 import { StackNavbar } from "../components/navigation/stack-navbar/stack-navbar";
 import { Address } from "../models/Address";
 import { NewAttendance } from "../screens";
 import { AddressRegister } from "../screens/address-register/address-register";
+import { AttendanceList } from "../screens/attendance-list/attendance-list";
 import { Attendance } from "../screens/attendance/attendance";
 import { CustomerRegister } from "../screens/customer-register/customer-register";
+import { OrderList } from "../screens/order-list/order-list";
 import { ProductDetails } from "../screens/product-details/product-details";
 import { ProductList } from "../screens/product-list/product-list";
+import { Sales } from "../screens/sales/sales";
 import { StoreSelect } from "../screens/store-select/store-select";
 
 export type RootPrivateStackParamList = {
-  Root: undefined;
+  Sales: undefined;
+  NewAttendance: undefined;
   Attendance: undefined;
   ProductList: undefined;
   ProductDetails: undefined;
@@ -27,9 +33,12 @@ export type RootPrivateStackParamList = {
     address: Address;
   };
   StoreSelect: undefined;
+  AttendanceList: undefined;
+  OrderList: undefined;
 };
+
 export type RootPrivateDrawerParamList = {
-  NewAttendance: undefined;
+  Root: undefined;
 };
 
 const Stack = createSharedElementStackNavigator<RootPrivateStackParamList>();
@@ -47,7 +56,7 @@ export const PrivateRoutes = () => {
       }}
     >
       <NavigationContainer>
-        <StackNavigator />
+        <DrawerNavigator />
       </NavigationContainer>
     </View>
   );
@@ -55,12 +64,13 @@ export const PrivateRoutes = () => {
 
 const StackNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="Sales">
       <Stack.Screen
-        name="Root"
-        component={DrawerNavigator}
+        name="NewAttendance"
+        component={NewAttendance}
         options={{
-          headerShown: false,
+          title: "Novo Atendimento",
+          header: (props) => <StackNavbar {...props} />,
         }}
       />
       <Stack.Screen
@@ -80,14 +90,7 @@ const StackNavigator = () => {
           ),
         }}
       />
-      <Stack.Screen
-        name="ProductList"
-        component={ProductList}
-        options={{
-          headerShown: false,
-          animationEnabled: false,
-        }}
-      />
+
       <Stack.Screen
         name="ProductDetails"
         component={ProductDetails}
@@ -121,6 +124,38 @@ const StackNavigator = () => {
           header: (props) => <StackNavbar {...props} />,
         }}
       />
+      <Stack.Screen
+        name="Sales"
+        component={Sales}
+        options={{
+          title: "Vendas",
+          header: (props) => <StackNavbar drawer {...props} />,
+        }}
+      />
+      <Stack.Screen
+        name="ProductList"
+        component={ProductList}
+        options={{
+          headerShown: false,
+          animationEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="AttendanceList"
+        component={AttendanceList}
+        options={{
+          title: "Atendimentos em Aberto",
+          header: (props) => <StackNavbar {...props} />,
+        }}
+      />
+      <Stack.Screen
+        name="OrderList"
+        component={OrderList}
+        options={{
+          title: "Pedidos",
+          header: (props) => <StackNavbar {...props} />,
+        }}
+      />
     </Stack.Navigator>
   );
 };
@@ -134,18 +169,12 @@ const DrawerNavigator = () => {
         drawerStyle: {
           width: "80%",
         },
+        headerShown: false,
+        swipeEnabled: false,
       }}
       drawerContent={(props) => <DrawerComponent {...props} />}
     >
-      <Drawer.Screen
-        name="NewAttendance"
-        component={NewAttendance}
-        options={{
-          title: "Novo Atendimento",
-
-          header: (props) => <DrawerNavbar {...props} />,
-        }}
-      />
+      <Drawer.Screen name="Root" component={StackNavigator} />
     </Drawer.Navigator>
   );
 };

@@ -23,7 +23,7 @@ export const lightTheme: Theme = {
     },
     red: {
       100: "#f99893",
-      300: "#f66b64",
+      300: "#fa5f6c",
       500: "#f44b42",
       700: "#f5281d",
     },

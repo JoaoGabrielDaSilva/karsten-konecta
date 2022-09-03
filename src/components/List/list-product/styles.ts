@@ -4,6 +4,8 @@ import { Row, Typography } from "../../utils";
 
 const { width } = Dimensions.get("window");
 
+const AMOUNT_SIZE = 28;
+
 export const Container = styled(Row)<{ borderless: boolean }>`
   padding: ${({ theme }) => theme.spacing.lg}px 0px;
 
@@ -32,6 +34,28 @@ export const ImageWrapper = styled.View`
 
 export const Image = styled.Image`
   flex: 1;
+`;
+
+export const AmountContainer = styled.View`
+  width: ${AMOUNT_SIZE}px;
+  height: ${AMOUNT_SIZE}px;
+
+  justify-content: center;
+  align-items: center;
+
+  border-radius: ${AMOUNT_SIZE * 0.5}px;
+
+  background-color: ${({ theme }) => theme.color.red[300]};
+
+  position: absolute;
+  right: -10px;
+  top: -10px;
+`;
+
+export const Amount = styled(Typography)`
+  color: ${({ theme }) => theme.color.white};
+
+  font-size: ${({ theme }) => theme.fontSize.sm}px;
 `;
 
 export const Col = styled.View``;

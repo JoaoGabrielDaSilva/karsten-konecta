@@ -14,8 +14,12 @@ export const Content = styled.View``;
 
 export const Name = styled(Typography)``;
 
-export const CorporateName = styled(Typography)``;
+export const Label = styled(Typography).attrs(() => ({ bold: true }))`
+  color: ${({ theme }) => theme.color.text.secondary};
+`;
 
-export const Label = styled(Typography)``;
+export const Value = styled(Typography)`
+  margin-top: ${({ theme }) => theme.spacing.sm}px;
 
-export const Cnpj = styled(Typography)``;
+  color: ${({ theme }) => theme.color.text.secondary};
+`;

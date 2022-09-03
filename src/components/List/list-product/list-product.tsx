@@ -1,7 +1,6 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
-
-import { ProductModel } from "../../../models/Product";
+import { AttendanceProductModel } from "../../../models/Attendance";
 
 import {
   Container,
@@ -14,9 +13,11 @@ import {
   Code,
   Ean,
   Col,
+  AmountContainer,
+  Amount,
 } from "./styles";
 
-type Props = ProductModel & {
+type Props = AttendanceProductModel & {
   borderless?: boolean;
   style?: StyleProp<ViewStyle>;
 };
@@ -27,6 +28,7 @@ export const ListProduct = ({
   ean,
   uri,
   borderless,
+  amount,
   style,
 }: Props) => {
   return (
@@ -35,6 +37,11 @@ export const ListProduct = ({
         <ImageWrapper>
           <Image source={{ uri }} resizeMode="contain" />
         </ImageWrapper>
+        {amount ? (
+          <AmountContainer>
+            <Amount bold>{amount >= 100 ? "+99" : amount}</Amount>
+          </AmountContainer>
+        ) : null}
       </Left>
       <Right>
         <Name>{name}</Name>

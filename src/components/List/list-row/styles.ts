@@ -43,6 +43,7 @@ export const MaterialLeftIcon = styled(MaterialIcons)<{ color: string }>`
 export const MaterialRightIcon = styled(MaterialIcons)<{ color: string }>`
   font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
   color: ${({ theme, color }) => color || theme.color.text.secondary};
+  margin-right: ${({ theme }) => theme.spacing.md}px;
 `;
 export const FeatherLeftIcon = styled(Feather)<{ color: string }>`
   margin: 0px ${({ theme }) => theme.spacing.md}px;
@@ -53,4 +54,6 @@ export const FeatherLeftIcon = styled(Feather)<{ color: string }>`
 export const FeatherRightIcon = styled(Feather)<{ color: string }>`
   font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
   color: ${({ theme, color }) => color || theme.color.text.secondary};
+
+  margin-right: ${({ theme }) => theme.spacing.md}px;
 `;
