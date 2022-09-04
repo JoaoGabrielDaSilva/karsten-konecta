@@ -1,9 +1,11 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { CommonActions, StackActions } from "@react-navigation/native";
+import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect } from "react";
 import { FlatList, ListRenderItemInfo } from "react-native";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
+import { RemoteGetAttendance } from "../../../data/usecases/attendance/get-attendance";
 import { Address } from "../../components/address/address";
 import { ShippingInfo } from "../../components/shipping-info/shipping-info";
 import { AttendanceProductModel } from "../../models/Attendance";
@@ -15,18 +17,31 @@ import { AttendanceHeader } from "./layout/attendance-header/attendance-header";
 
 import { Container, Content, ListProduct } from "./styles";
 
-type NavigationProps = DrawerScreenProps<
+type NavigationProps = StackScreenProps<
   RootPrivateStackParamList,
   "Attendance"
 >;
 
-type Props = NavigationProps;
+type Props = NavigationProps & {
+  getAttendance: RemoteGetAttendance;
+};
 
-export const Attendance = ({ navigation: { navigate } }: Props) => {
-  const { loading, productList, address, shippingInfo, getAttendance } =
+export const Attendance = ({
+  navigation: { navigate },
+  getAttendance,
+}: Props) => {
+  const { productList, address, shippingInfo, setAttendance } =
     useAttendanceStore();
 
-  useEffect(() => getAttendance(), []);
+  const loadData = async () => {
+    const attendance = await getAttendance.get();
+
+    setAttendance({ ...attendance });
+  };
+
+  useEffect(() => {
+    loadData();
+  }, []);
 
   return (
     <Container>

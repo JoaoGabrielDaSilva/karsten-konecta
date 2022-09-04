@@ -6,6 +6,7 @@ import {
   AttendanceCard,
   AttendanceCardProps,
 } from "../../components/cards/attendance-card/attendance-card";
+
 import { PaginatedList } from "../../components/list/paginated-list/paginated-list";
 import {
   PaginatedListGetFunctionReturn,

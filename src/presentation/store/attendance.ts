@@ -4,6 +4,7 @@ import { AttendanceProductModel } from "../models/Attendance";
 
 import { faker } from "@faker-js/faker";
 import { ShippingModel } from "../models/Shipping";
+import { AttendanceModel } from "../../domain/attendance";
 
 const productList: AttendanceProductModel[] = [
   {
@@ -36,15 +37,10 @@ const productList: AttendanceProductModel[] = [
   },
 ];
 
-type AttendanceState = {
-  name: string;
-  productList: AttendanceProductModel[];
-  address: Address;
-  shippingInfo: ShippingModel;
-  loading: boolean;
-  getAttendance: () => void;
-  increaseProductAmount: (where: { code: string }) => void;
-  decreaseProductAmount: (where: { code: string }) => void;
+type AttendanceState = AttendanceModel & {
+  setAttendance?: (data: AttendanceModel) => void;
+  increaseProductAmount?: (where: { code: string }) => void;
+  decreaseProductAmount?: (where: { code: string }) => void;
 };
 
 export const mockAddress = (): Address => {
@@ -62,26 +58,25 @@ export const mockAddress = (): Address => {
   };
 };
 
-const initialState = {
-  name: "Teste",
+const initialState: AttendanceState = {
+  id: null,
+  name: "",
+  customer: null,
   address: null,
   shippingInfo: null,
   productList: [],
-  loading: true,
 };
 
 export const useAttendanceStore = create<AttendanceState>()((set) => ({
   ...initialState,
-  getAttendance: () =>
-    set({
-      productList,
-      loading: false,
-      name: "João Gabriel",
-      address: mockAddress(),
+  setAttendance: (data: AttendanceModel) =>
+    set((state) => ({
+      ...state,
+      ...data,
       shippingInfo: {
         days: 2,
       },
-    }),
+    })),
   increaseProductAmount: ({ code }) =>
     set((state) => {
       const freshProductList = state.productList.map((product) => {
