@@ -1,18 +1,18 @@
 import { UnexpectedError } from "../../../domain/errors/unexpected-error";
-import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
+import { DeleteProduct } from "../../../domain/usecases/attendance/delete-product";
 import { HttpClient, HttpStatusCode } from "../../protocols/http/http-client";
 
-export class RemoteGetAttendance implements GetAttendance {
+export class RemoteDeleteProduct implements DeleteProduct {
   constructor(
     private readonly url: string,
     private readonly httpClient: HttpClient
   ) {}
 
-  async get(params: GetAttendance.Params): Promise<GetAttendance.Model> {
+  async delete(params: DeleteProduct.Params): Promise<DeleteProduct.Model> {
     const httpResponse = await this.httpClient.request({
       url: this.url,
-      method: "get",
-      params: params,
+      method: "delete",
+      body: params,
     });
 
     switch (httpResponse.statusCode) {

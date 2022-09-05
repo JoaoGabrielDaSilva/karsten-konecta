@@ -1,18 +1,18 @@
 import { UnexpectedError } from "../../../domain/errors/unexpected-error";
-import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
+import { CreateAttendance } from "../../../domain/usecases/attendance/create-attendance";
 import { HttpClient, HttpStatusCode } from "../../protocols/http/http-client";
 
-export class RemoteGetAttendance implements GetAttendance {
+export class RemoteCreateAttendance implements CreateAttendance {
   constructor(
     private readonly url: string,
     private readonly httpClient: HttpClient
   ) {}
 
-  async get(params: GetAttendance.Params): Promise<GetAttendance.Model> {
+  async create(data: CreateAttendance.Params): Promise<CreateAttendance.Model> {
     const httpResponse = await this.httpClient.request({
       url: this.url,
-      method: "get",
-      params: params,
+      method: "post",
+      body: data,
     });
 
     switch (httpResponse.statusCode) {

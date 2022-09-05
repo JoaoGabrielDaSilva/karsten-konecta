@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1662353896459" clover="3.2.0">
+  <project timestamp="1662353896459" name="All files">
+    <metrics statements="46" coveredstatements="46" conditionals="10" coveredconditionals="10" methods="27" coveredmethods="25" elements="83" coveredelements="81" complexity="0" loc="46" ncloc="46" packages="5" files="13" classes="13"/>
+    <package name="src.data.protocols.http">
+      <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      <file name="http-client.ts" path="E:\Projects\Personal\karsten-konecta\src\data\protocols\http\http-client.ts">
+        <metrics statements="0" coveredstatements="0" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+      </file>
+    </package>
+    <package name="src.data.usecases.attendance">
+      <metrics statements="20" coveredstatements="20" conditionals="10" coveredconditionals="10" methods="10" coveredmethods="10"/>
+      <file name="add-product.ts" path="E:\Projects\Personal\karsten-konecta\src\data\usecases\attendance\add-product.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="18" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+      </file>
+      <file name="change-product-amount.ts" path="E:\Projects\Personal\karsten-konecta\src\data\usecases\attendance\change-product-amount.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+        <line num="14" count="3" type="stmt"/>
+        <line num="20" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="22" count="2" type="stmt"/>
+        <line num="24" count="1" type="stmt"/>
+      </file>
+      <file name="create-attendance.ts" path="E:\Projects\Personal\karsten-konecta\src\data\usecases\attendance\create-attendance.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="18" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+      </file>
+      <file name="delete-product.ts" path="E:\Projects\Personal\karsten-konecta\src\data\usecases\attendance\delete-product.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="18" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+      </file>
+      <file name="get-attendance.ts" path="E:\Projects\Personal\karsten-konecta\src\data\usecases\attendance\get-attendance.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="2" coveredconditionals="2" methods="2" coveredmethods="2"/>
+        <line num="12" count="3" type="stmt"/>
+        <line num="18" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="2" type="stmt"/>
+        <line num="22" count="1" type="stmt"/>
+      </file>
+    </package>
+    <package name="src.domain.errors">
+      <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+      <file name="unexpected-error.ts" path="E:\Projects\Personal\karsten-konecta\src\domain\errors\unexpected-error.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="1" coveredmethods="1"/>
+        <line num="3" count="10" type="stmt"/>
+        <line num="4" count="10" type="stmt"/>
+      </file>
+    </package>
+    <package name="tests.data.mocks">
+      <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+      <file name="mock-http.ts" path="E:\Projects\Personal\karsten-konecta\tests\data\mocks\mock-http.ts">
+        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <line num="9" count="5" type="stmt"/>
+        <line num="29" count="15" type="stmt"/>
+        <line num="34" count="15" type="stmt"/>
+        <line num="35" count="15" type="stmt"/>
+        <line num="36" count="15" type="stmt"/>
+        <line num="37" count="15" type="stmt"/>
+        <line num="38" count="15" type="stmt"/>
+        <line num="40" count="15" type="stmt"/>
+      </file>
+    </package>
+    <package name="tests.domain.mocks">
+      <metrics statements="16" coveredstatements="16" conditionals="0" coveredconditionals="0" methods="14" coveredmethods="13"/>
+      <file name="mock-add-product.ts" path="E:\Projects\Personal\karsten-konecta\tests\domain\mocks\mock-add-product.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="11" count="2" type="stmt"/>
+      </file>
+      <file name="mock-change-product-amount.ts" path="E:\Projects\Personal\karsten-konecta\tests\domain\mocks\mock-change-product-amount.ts">
+        <metrics statements="3" coveredstatements="3" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="5" count="3" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
+      </file>
+      <file name="mock-create-attendance.ts" path="E:\Projects\Personal\karsten-konecta\tests\domain\mocks\mock-create-attendance.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+      </file>
+      <file name="mock-delete-product.ts" path="E:\Projects\Personal\karsten-konecta\tests\domain\mocks\mock-delete-product.ts">
+        <metrics statements="2" coveredstatements="2" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="1"/>
+        <line num="4" count="3" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+      </file>
+      <file name="mock-get-attendance.ts" path="E:\Projects\Personal\karsten-konecta\tests\domain\mocks\mock-get-attendance.ts">
+        <metrics statements="7" coveredstatements="7" conditionals="0" coveredconditionals="0" methods="6" coveredmethods="6"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="19" count="1" type="stmt"/>
+        <line num="23" count="1" type="stmt"/>
+        <line num="29" count="1" type="stmt"/>
+        <line num="38" count="3" type="stmt"/>
+        <line num="43" count="1" type="stmt"/>
+        <line num="44" count="1" type="stmt"/>
+      </file>
+    </package>
+  </project>
+</coverage>

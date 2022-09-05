@@ -1,17 +1,28 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 import {
-  HttpGetClient,
-  HttpGetParams,
+  HttpClient,
+  HttpRequest,
   HttpResponse,
-} from "../../../data/protocols/http/http-get-client";
+} from "../../../data/protocols/http/http-client";
 
-export class AxiosHttpClient implements HttpGetClient {
-  async get(data: HttpGetParams): Promise<HttpResponse> {
-    const httpResponse = await axios.get(data.url, data.params);
+export class AxiosHttpClient implements HttpClient {
+  async request(data: HttpRequest): Promise<HttpResponse> {
+    let axiosResponse: AxiosResponse;
+    try {
+      axiosResponse = await axios.request({
+        url: data.url,
+        method: data.method,
+        data: data.body,
+        headers: data.headers,
+        params: data.params,
+      });
+    } catch (error) {
+      axiosResponse = error.response;
+    }
 
     return {
-      body: httpResponse.data,
-      statusCode: httpResponse.status,
+      body: axiosResponse.data,
+      statusCode: axiosResponse.status,
     };
   }
 }

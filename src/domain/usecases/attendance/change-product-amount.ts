@@ -1,7 +1,17 @@
 import { ProductModel } from "../../models/product";
 
-export type ChangeProductAmountParams = {};
-
 export interface ChangeProductAmount {
-  change(params: ChangeProductAmountParams): Promise<ProductModel[]>;
+  change(
+    params: ChangeProductAmount.Params
+  ): Promise<ChangeProductAmount.Model[]>;
+}
+
+export namespace ChangeProductAmount {
+  export type Params = {
+    id: string;
+    storeId: string;
+    sum?: boolean;
+  };
+
+  export type Model = ProductModel;
 }

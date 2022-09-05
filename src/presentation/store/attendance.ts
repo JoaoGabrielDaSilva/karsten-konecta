@@ -3,8 +3,7 @@ import { Address } from "../models/Address";
 import { AttendanceProductModel } from "../models/Attendance";
 
 import { faker } from "@faker-js/faker";
-import { ShippingModel } from "../models/Shipping";
-import { AttendanceModel } from "../../domain/attendance";
+import { AttendanceModel } from "../../domain/models/attendance";
 
 const productList: AttendanceProductModel[] = [
   {

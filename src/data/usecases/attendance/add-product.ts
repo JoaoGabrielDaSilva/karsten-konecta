@@ -1,18 +1,18 @@
 import { UnexpectedError } from "../../../domain/errors/unexpected-error";
-import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
+import { AddProduct } from "../../../domain/usecases/attendance/add-product";
 import { HttpClient, HttpStatusCode } from "../../protocols/http/http-client";
 
-export class RemoteGetAttendance implements GetAttendance {
+export class RemoteAddProduct implements AddProduct {
   constructor(
     private readonly url: string,
     private readonly httpClient: HttpClient
   ) {}
 
-  async get(params: GetAttendance.Params): Promise<GetAttendance.Model> {
+  async add(params: AddProduct.Params): Promise<AddProduct.Model> {
     const httpResponse = await this.httpClient.request({
       url: this.url,
-      method: "get",
-      params: params,
+      method: "post",
+      body: params,
     });
 
     switch (httpResponse.statusCode) {
