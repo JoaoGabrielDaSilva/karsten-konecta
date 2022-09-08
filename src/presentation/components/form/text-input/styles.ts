@@ -1,5 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Dimensions, TextInput } from "react-native";
+import {
+  Dimensions,
+  Pressable,
+  TextInput,
+  TouchableOpacity,
+} from "react-native";
 import Animated from "react-native-reanimated";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
@@ -7,6 +12,8 @@ import { ErrorMessage } from "../../error/error-message/error-message";
 import { Row, Typography } from "../../utils";
 
 const { width } = Dimensions.get("window");
+
+const AnimatedPressable = Animated.createAnimatedComponent(TouchableOpacity);
 
 export const Container = styled.View``;
 
@@ -43,9 +50,11 @@ export const ClearIcon = styled(Ionicons)`
   font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
 `;
 
-export const Placeholder = styled(Typography)`
+export const PlaceholderContainer = styled(AnimatedPressable)`
   position: absolute;
+`;
 
+export const Placeholder = styled(Typography)`
   font-size: ${({ theme }) => RFValue(theme.fontSize.sm)}px;
 `;
 

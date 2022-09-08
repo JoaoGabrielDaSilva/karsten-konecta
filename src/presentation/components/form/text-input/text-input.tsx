@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { TouchableOpacity } from "@gorhom/bottom-sheet";
+import React, { useEffect, useRef, useState } from "react";
 import { Control, Controller, useController } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -9,6 +10,9 @@ import {
   TextInputFocusEventData,
   TextInputProps,
   ViewStyle,
+  TextInput as TextInputBaseComponent,
+  Pressable,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { BorderlessButton } from "react-native-gesture-handler";
 import {
@@ -20,6 +24,7 @@ import {
 } from "react-native-reanimated";
 import { useTheme } from "styled-components/native";
 import { cepMask } from "../../../utils/mask/cep-mask";
+import { cnpjMask } from "../../../utils/mask/cnpj-mask";
 import { cpfMask } from "../../../utils/mask/cpf-mask";
 import { phoneMask } from "../../../utils/mask/phone-mask";
 import {
@@ -29,6 +34,7 @@ import {
   Placeholder,
   InputContainer,
   CustomErrorMessage,
+  PlaceholderContainer,
 } from "./styles";
 
 const { width } = Dimensions.get("window");
@@ -59,6 +65,11 @@ const inputConfigObject: { [key: string]: TypeConfig } = {
   cpf: {
     maxLength: 14,
     onChange: cpfMask,
+    keyboardType: "number-pad",
+  },
+  cnpj: {
+    maxLength: 18,
+    onChange: cnpjMask,
     keyboardType: "number-pad",
   },
   cep: {
@@ -110,7 +121,7 @@ export const TextInput = ({
   const theme = useTheme();
 
   const clearValue = () => onChange("");
-
+  const ref = useRef<TextInputBaseComponent>();
   const state = useSharedValue(
     defaultValue ? InputState.FOCUSED : InputState.UNFOCUSED
   );
@@ -122,7 +133,7 @@ export const TextInput = ({
       state.value = withTiming(InputState.FOCUSED);
     }
 
-    props.onBlur && props.onFocus(e);
+    props.onFocus && props.onFocus(e);
     setIsFocused(true);
   };
 
@@ -131,7 +142,7 @@ export const TextInput = ({
       state.value = withTiming(InputState.UNFOCUSED);
     }
 
-    props.onFocus && props.onBlur(e);
+    props.onBlur && props.onBlur(e);
     setIsFocused(false);
   };
 
@@ -154,6 +165,11 @@ export const TextInput = ({
             theme.color.text.secondary,
           ])
         : theme.color.red[500],
+    };
+  });
+
+  const placeholderContainerStyles = useAnimatedStyle(() => {
+    return {
       top: !value
         ? interpolate(state.value, INPUT_RANGE, [
             PLACEHOLDER_POSITIONS[InputState.FOCUSED].top,
@@ -168,6 +184,12 @@ export const TextInput = ({
         : PLACEHOLDER_POSITIONS[InputState.FOCUSED].left,
     };
   });
+
+  useEffect(() => {
+    if (value && mask) {
+      onChange(inputConfigObject[mask].onChange(value));
+    }
+  }, []);
 
   return (
     <Container style={style}>
@@ -184,6 +206,7 @@ export const TextInput = ({
           render={() => (
             <>
               <Input
+                ref={ref}
                 error={!!error}
                 value={value}
                 onChangeText={(value) => {
@@ -200,6 +223,8 @@ export const TextInput = ({
                 maxLength={
                   props?.maxLength || inputConfigObject[mask]?.maxLength || 100
                 }
+                autoComplete="off"
+                autoCapitalize="none"
                 onFocus={handleFocus}
                 onBlur={handleBlur}
                 placeholder={disableFloatingPlaceholder ? placeholder : ""}
@@ -219,9 +244,15 @@ export const TextInput = ({
                 {...props}
               />
               {placeholder && !disableFloatingPlaceholder ? (
-                <Placeholder style={placeholderStyles}>
-                  {placeholder}
-                </Placeholder>
+                <PlaceholderContainer
+                  activeOpacity={1}
+                  onPress={() => ref?.current?.focus()}
+                  style={placeholderContainerStyles}
+                >
+                  <Placeholder style={placeholderStyles}>
+                    {placeholder}
+                  </Placeholder>
+                </PlaceholderContainer>
               ) : null}
               {loading && (
                 <ActivityIndicator color={theme.color.text.primary} />

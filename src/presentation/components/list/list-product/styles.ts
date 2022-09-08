@@ -9,6 +9,8 @@ const AMOUNT_SIZE = 28;
 export const Container = styled(Row)<{ borderless: boolean }>`
   padding: ${({ theme }) => theme.spacing.lg}px 0px;
 
+  background-color: ${({ theme }) => theme.color.background.primary};
+
   border: 1px solid transparent;
   border-bottom-color: ${({ theme, borderless }) =>
     borderless ? "transparent" : theme.color.background.secondary};
@@ -24,6 +26,7 @@ export const Right = styled.View`
 
 export const ImageWrapper = styled.View`
   border: 0.5px solid ${({ theme }) => theme.color.background.inverted};
+
   padding: ${({ theme }) => theme.spacing.sm}px;
 
   border-radius: ${({ theme }) => theme.radii.md}px;
@@ -66,7 +69,9 @@ export const Name = styled(Typography).attrs(() => ({
 
 export const Label = styled(Typography).attrs(() => ({
   semibold: true,
-}))``;
+}))`
+  color: ${({ theme }) => theme.color.text.secondary};
+`;
 
 export const Code = styled(Typography)`
   color: ${({ theme }) => theme.color.text.secondary};

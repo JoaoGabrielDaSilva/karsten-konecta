@@ -1,5 +1,5 @@
 import * as yup from "yup";
-import { cpfRule } from "../../utils/yup-schemas/cpf-rule";
+import { makeCpfRule } from "../../utils/yup-schemas/cpf-rule";
 
 export const customerRegisterSchema = yup.object().shape({
   name: yup
@@ -10,7 +10,7 @@ export const customerRegisterSchema = yup.object().shape({
     .string()
     .required("O e-mail deve ser informado")
     .email("O e-mail deve ser válido"),
-  cpf: cpfRule,
+  cpf: makeCpfRule(),
   phone: yup
     .string()
     .required("O telefone deve ser informado")

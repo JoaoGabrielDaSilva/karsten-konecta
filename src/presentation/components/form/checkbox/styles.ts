@@ -1,6 +1,6 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
-import { Row } from "../../utils";
+import { Row, Typography } from "../../utils";
 
 export const StyledRow = styled(Row)<{ disabled: boolean }>`
   align-self: flex-start;
@@ -31,4 +31,8 @@ export const Check = styled(MaterialIcons)`
   font-size: ${({ theme }) => theme.fontSize.xl}px;
 
   color: ${({ theme }) => theme.color.text.inverted};
+`;
+
+export const Label = styled(Typography)`
+  color: ${({ theme }) => theme.color.text.secondary};
 `;

@@ -2,7 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
-import { ScrollView } from "react-native";
+import { KeyboardAvoidingView, ScrollView } from "react-native";
 import { useTheme } from "styled-components/native";
 import { Button } from "../../components/buttons/button/button";
 import { Checkbox } from "../../components/form/checkbox/checkbox";
@@ -153,7 +153,7 @@ export const AddressRegister = ({ navigation, route }: Props) => {
     shouldFocusError: true,
     defaultValues: {
       ...address,
-      isMain: address ? address?.isMain : hasNoAddress,
+      isMain: address ? address?.isMain : !hasNoAddress,
     },
   });
   const theme = useTheme();
@@ -167,75 +167,85 @@ export const AddressRegister = ({ navigation, route }: Props) => {
   }, []);
 
   return (
-    <Container>
-      <ScrollView
-        contentContainerStyle={{
-          paddingBottom: theme.spacing.xxl,
-        }}
-      >
-        <Form>
-          <CustomTextInput name="name" placeholder="Nome" control={control} />
-          <CustomTextInput
-            name="name"
-            placeholder="Nome (Ex: Casa, Trabalho)"
-            control={control}
-          />
-          <CustomTextInput
-            control={control}
-            name="cep"
-            placeholder="CEP"
-            mask="cep"
-            loading={loading}
-          />
-          <CustomTextInput
-            control={control}
-            name="street"
-            placeholder="Logradouro"
-          />
-          <CustomTextInput
-            control={control}
-            name="number"
-            placeholder="Número"
-          />
-          <CustomTextInput
-            control={control}
-            name="district"
-            placeholder="Bairro"
-          />
-          <CustomTextInput
-            control={control}
-            name="complement"
-            placeholder="Complemento"
-          />
-          <CustomTextInput control={control} name="city" placeholder="Cidade" />
-          <StyledSelectInput
-            control={control}
-            name="state"
-            placeholder="Estado"
-            options={stateOptions}
-          />
-          <CustomTextInput
-            control={control}
-            name="reference"
-            placeholder="Referência"
-          />
-        </Form>
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior="height"
+      keyboardVerticalOffset={100}
+    >
+      <Container>
+        <ScrollView
+          contentContainerStyle={{
+            paddingBottom: theme.spacing.xxl,
+          }}
+        >
+          <Form>
+            <CustomTextInput name="name" placeholder="Nome" control={control} />
+            <CustomTextInput
+              name="name"
+              placeholder="Nome (Ex: Casa, Trabalho)"
+              control={control}
+            />
+            <CustomTextInput
+              control={control}
+              name="cep"
+              placeholder="CEP"
+              mask="cep"
+              loading={loading}
+            />
+            <CustomTextInput
+              control={control}
+              name="street"
+              placeholder="Logradouro"
+            />
+            <CustomTextInput
+              control={control}
+              name="number"
+              placeholder="Número"
+            />
+            <CustomTextInput
+              control={control}
+              name="district"
+              placeholder="Bairro"
+            />
+            <CustomTextInput
+              control={control}
+              name="complement"
+              placeholder="Complemento"
+            />
+            <CustomTextInput
+              control={control}
+              name="city"
+              placeholder="Cidade"
+            />
+            <StyledSelectInput
+              control={control}
+              name="state"
+              placeholder="Estado"
+              options={stateOptions}
+            />
+            <CustomTextInput
+              control={control}
+              name="reference"
+              placeholder="Referência"
+            />
+          </Form>
 
-        <Form>
-          <Checkbox
-            name="isMain"
-            control={control}
-            label="Definir este endereço como Principal"
-            disabled={hasNoAddress && !address}
+          <Form>
+            <Checkbox
+              name="isMain"
+              control={control}
+              label="Definir este endereço como Principal"
+              disabled={hasNoAddress && !address}
+            />
+          </Form>
+        </ScrollView>
+        <Footer>
+          <Button
+            text={!address ? "Cadastrar" : "Concluir"}
+            onPress={handleSubmit(onSubmit)}
           />
-        </Form>
-      </ScrollView>
-      <Footer>
-        <Button
-          text={!address ? "Cadastrar" : "Concluir"}
-          onPress={handleSubmit(onSubmit)}
-        />
-      </Footer>
-    </Container>
+        </Footer>
+      </Container>
+    </KeyboardAvoidingView>
   );
 };

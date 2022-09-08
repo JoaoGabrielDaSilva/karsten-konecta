@@ -17,12 +17,19 @@ export class AxiosHttpClient implements HttpClient {
         params: data.params,
       });
     } catch (error) {
+      console.log(error.response.data);
+
       axiosResponse = error.response;
     }
-
     return {
-      body: axiosResponse.data,
       statusCode: axiosResponse.status,
+      body: axiosResponse.data,
     };
   }
 }
+
+axios.interceptors.request.use((config) => {
+  console.log(config);
+
+  return config;
+});

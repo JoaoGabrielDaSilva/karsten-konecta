@@ -15,9 +15,6 @@ export const mockHttpRequest = (): HttpRequest => ({
   headers: {
     any: faker.random.word(),
   },
-  params: {
-    any: faker.random.word(),
-  },
 });
 
 export class HttpClientSpy<R = any> implements HttpClient<R> {

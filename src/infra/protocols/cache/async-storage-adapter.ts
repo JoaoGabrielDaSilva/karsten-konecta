@@ -7,7 +7,7 @@ export class AsyncStorageAdapter implements GetStorage, SetStorage {
     return JSON.parse(await AsyncStorage.getItem(key));
   }
 
-  async set(key: string, value: string): Promise<void> {
+  async set(key: string, value: any): Promise<void> {
     if (value) {
       await AsyncStorage.setItem(key, JSON.stringify(value));
     } else {

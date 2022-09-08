@@ -6,8 +6,9 @@ import { ShippingModel } from "./shipping";
 export type AttendanceModel = {
   id: string;
   name: string;
+  cpfCnpj: string;
   productList: ProductModel[];
   customer?: CustomerModel;
-  address?: AddressModel;
+  deliveryAddress?: AddressModel;
   shippingInfo?: ShippingModel;
 };

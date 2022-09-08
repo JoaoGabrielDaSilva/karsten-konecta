@@ -10,13 +10,25 @@ type Props = {
   disabled?: boolean;
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 };
 
-export const Button = ({ text, onPress, loading, disabled, style }: Props) => {
+export const Button = ({
+  text,
+  onPress,
+  loading,
+  disabled,
+  style,
+  ...props
+}: Props) => {
   const theme = useTheme();
 
   return (
-    <BorderlessButton onPress={onPress} enabled={!disabled || loading}>
+    <BorderlessButton
+      onPress={onPress}
+      enabled={!disabled && !loading}
+      {...props}
+    >
       <Container style={style} disabled={disabled || loading}>
         {!loading ? (
           <Text textAlign="center"> {text}</Text>

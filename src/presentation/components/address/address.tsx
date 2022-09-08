@@ -1,6 +1,7 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { Address as AddressModel } from "../../models/Address";
+import { RadioButton } from "../buttons/radio-button/radio-button";
 import {
   Container,
   Title,
@@ -17,6 +18,9 @@ type Props = AddressModel & {
   borderless?: boolean;
   showRightArrow?: boolean;
   editable?: boolean;
+  selectable?: boolean;
+  selected?: boolean;
+  showMainLabel?: boolean;
 };
 
 export const Address = ({
@@ -32,7 +36,11 @@ export const Address = ({
   reference,
   borderless,
   showRightArrow = true,
+  isMain,
   editable,
+  selectable,
+  selected,
+  showMainLabel = true,
 }: Props) => {
   return (
     <Container
@@ -42,9 +50,11 @@ export const Address = ({
       borderless={borderless}
     >
       <Content>
-        <Title variant="heading" bold>
-          Endereço
-        </Title>
+        {isMain && showMainLabel ? (
+          <Title variant="heading" bold>
+            Principal{" "}
+          </Title>
+        ) : null}
         <Name bold variant="subtitle">
           {name}
         </Name>
@@ -64,8 +74,11 @@ export const Address = ({
           {reference}
         </Value>
       </Content>
-      {showRightArrow && !editable && <ArrowIcon name="chevron-right" />}
+      {showRightArrow && !editable && !selectable && (
+        <ArrowIcon name="chevron-right" />
+      )}
       {editable ? <EditLabel>Alterar</EditLabel> : null}
+      {selectable ? <RadioButton active={selected} /> : null}
     </Container>
   );
 };

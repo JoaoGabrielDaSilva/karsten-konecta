@@ -1,18 +1,12 @@
 import * as yup from "yup";
+import { makeCepRule } from "../../utils/yup-schemas/cep-rule";
 
 export const addressRegisterSchema = yup.object().shape({
   name: yup
     .string()
     .min(3, "O nome deve conter pelo menos 3 caracteres")
     .required("O nome deve ser informado"),
-  cep: yup
-    .string()
-    .required("O CEP deve ser informado")
-    .test(
-      "cep-rule",
-      "O CEP deve ser válido",
-      (value) => value && String(value).replace(/\D/g, "").length === 8
-    ),
+  cep: makeCepRule(),
   street: yup
     .string()
     .required("O logradouro deve ser informado")

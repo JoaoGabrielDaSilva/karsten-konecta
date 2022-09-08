@@ -2,16 +2,24 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useMemo, useState } from "react";
 import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
 import { useTheme } from "styled-components/native";
+import { AddProduct } from "../../../domain/usecases/attendance/add-product";
+import { GetProductDetails } from "../../../domain/usecases/product/get-product-details";
+import { GetProductGrid } from "../../../domain/usecases/product/get-product-grid";
+import { GetShippingInfo } from "../../../domain/usecases/shipping/get-shipping-info";
 import { Button } from "../../components/buttons/button/button";
 import { Carousel } from "../../components/carousel/carousel";
 import { ListRow } from "../../components/list/list-row/list-row";
-import { ProductDetailsModel } from "../../models/Product";
+import { ListRowLoader } from "../../components/list/list-row/loader/list-row-loader";
 import { StoreStockModel } from "../../models/StoreStock";
 
 import { RootPrivateStackParamList } from "../../routes";
+import { useAttendanceStore } from "../../store/attendance";
+import { ProductCarouselLoader } from "./layout/product-carousel/loader/product-carousel-loader";
 import { ProductGrid } from "./layout/product-grid/product-grid";
+import { ProductInfoLoader } from "./layout/product-info/loader/product-info-loader";
 import { ProductInfo } from "./layout/product-info/product-info";
 import { ShippingSection } from "./layout/shipping-section/shipping-section";
+import { StockSectionLoader } from "./layout/stock-section/loader/stock-section-loader";
 import { StockSection } from "./layout/stock-section/stock-section";
 import { AdditionalInfo, Container, Footer } from "./styles";
 
@@ -39,60 +47,34 @@ const stocks: StoreStockModel[] = [
   },
 ];
 
-const products: ProductDetailsModel[] = [
-  {
-    name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-    code: "1213",
-    images: [
-      "https://karsten.vtexassets.com/arquivos/ids/175888/3672192_01.jpg?v=637521280680300000",
-      "https://karsten.vtexassets.com/arquivos/ids/175890/3672192_02.jpg?v=637521280833200000",
-      "https://karsten.vtexassets.com/arquivos/ids/182641/3672192_03.jpg?v=637938558047330000",
-    ],
-    ean: "17559272547197",
-    sizes: ["KING", "QUEEN"],
-  },
-  {
-    name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-    code: "4567",
-    images: [
-      "https://karsten.vtexassets.com/arquivos/ids/175318/3671934_01.jpg?v=637515223622700000",
-      "https://karsten.vtexassets.com/arquivos/ids/175319/3671934_02.jpg?v=637515223920170000",
-      "https://karsten.vtexassets.com/arquivos/ids/182346/3671934_03.jpg?v=637938284531530000",
-      "https://karsten.vtexassets.com/arquivos/ids/182346/3671934_03.jpg?v=637938284531530000",
-    ],
-    ean: "17559272547197",
-    sizes: ["KING", "QUEEN"],
-  },
-  {
-    name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-    code: "8910",
-    images: [
-      "https://karsten.vtexassets.com/arquivos/ids/175318/3671934_01.jpg?v=637515223622700000",
-      "https://karsten.vtexassets.com/arquivos/ids/175319/3671934_02.jpg?v=637515223920170000",
-      "https://karsten.vtexassets.com/arquivos/ids/182346/3671934_03.jpg?v=637938284531530000",
-      "https://karsten.vtexassets.com/arquivos/ids/182346/3671934_03.jpg?v=637938284531530000",
-    ],
-    ean: "17559272547197",
-    sizes: ["KING", "TESTE"],
-  },
-];
+type Props = NavigationProps & {
+  addProduct: AddProduct;
+  getProductDetails: GetProductDetails;
+  getProductGrid: GetProductGrid;
+  getShippingInfo: GetShippingInfo;
+};
 
-type Props = NavigationProps;
+export const ProductDetails = ({
+  addProduct,
+  getProductDetails,
+  getProductGrid,
+  getShippingInfo,
+  route,
+  navigation: { navigate },
+}: Props) => {
+  const { code, ean } = route.params;
 
-export const ProductDetails = ({}: Props) => {
   const theme = useTheme();
+  const { id: attendanceId } = useAttendanceStore();
 
-  const [selectedProductCode, setSelectedProductCode] = useState<string>(
-    products[0].code
-  );
+  const [selectedProductColorCode, setSelectedProductColorCode] =
+    useState<string>(code);
+  const [selectedProductSizeCode, setSelectedProductSizeCode] =
+    useState<string>(code);
 
-  const product: ProductDetailsModel = useMemo(() => {
-    return products.find((product) => product.code === selectedProductCode);
-  }, [selectedProductCode]);
-
-  const [selectedProductSize, setSelectedProductSize] = useState<string>(
-    product.sizes[0]
-  );
+  const [loading, setLoading] = useState(true);
+  const [product, setProduct] = useState<GetProductDetails.Model>();
+  const [productGrid, setProductGrid] = useState<GetProductGrid.Model>();
 
   const [productAmount, setProductAmount] = useState(1);
 
@@ -100,62 +82,126 @@ export const ProductDetails = ({}: Props) => {
 
   const handleIncrease = () => setProductAmount((amount) => amount + 1);
 
-  const handleChangeProduct = (code: string) => {
-    setSelectedProductCode(code);
+  const handleChangeProductColorCode = (code: string) =>
+    setSelectedProductColorCode(code);
+
+  const handleChangeProductSizeCode = (code: string) =>
+    setSelectedProductSizeCode(code);
+
+  const handleChangeProduct = (code: string) => loadProductDetails(code);
+
+  const handleAddProduct = () => {
+    try {
+      addProduct.add({
+        amount: String(productAmount),
+        attendanceId: attendanceId,
+        productId: product.code,
+        storeId: "28",
+      });
+
+      navigate("Attendance");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleChangeProductSize = (size: string) =>
-    setSelectedProductSize(size);
+  const loadProductDetails = async (code: string) => {
+    try {
+      setLoading(true);
+      const productDetails = await getProductDetails.get({
+        code,
+        storeId: "28",
+      });
+
+      const productGrid = await getProductGrid.get({
+        code,
+        color: productDetails.color,
+      });
+
+      console.log(productGrid);
+
+      setProduct(productDetails);
+      setProductGrid(productGrid);
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    console.log("RENDER");
-
-    if (!product.sizes.includes(selectedProductSize)) {
-      setSelectedProductSize(product.sizes[0]);
-    }
-  }, [product]);
+    loadProductDetails(code);
+  }, []);
 
   return (
     <Container>
-      {/* <KeyboardAvoidingView
+      <KeyboardAvoidingView
         behavior={Platform.select({ android: "height", ios: "padding" })}
         keyboardVerticalOffset={120}
-      > */}
-      <ScrollView contentContainerStyle={{ paddingBottom: theme.spacing.xxl }}>
-        <Carousel
-          images={product.images}
-          style={{ backgroundColor: theme.color.background.primary }}
-        />
-        <ProductInfo
-          {...product}
-          uri={product.images[0]}
-          amount={productAmount}
-          decreaseAmount={handleDecrease}
-          increaseAmount={handleIncrease}
-        />
-        <ProductGrid
-          products={products}
-          selectedProduct={product}
-          selectedProductSize={selectedProductSize}
-          handleChangeProduct={handleChangeProduct}
-          handleChangeProductSize={handleChangeProductSize}
-        />
-        <StockSection stocks={stocks} />
-        <AdditionalInfo>
-          <ListRow label="Descrição" rightIcon="chevron-right" />
-          <ListRow label="Informações Adicionais" rightIcon="chevron-right" />
-          <ListRow
-            label="Especificação do Produto"
-            rightIcon="chevron-right"
-            borderless
+      >
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: theme.spacing.xxl }}
+        >
+          {!loading ? (
+            <Carousel
+              images={product?.carouselImages}
+              style={{ backgroundColor: theme.color.background.primary }}
+            />
+          ) : (
+            <ProductCarouselLoader />
+          )}
+          {!loading ? (
+            <ProductInfo
+              {...product}
+              amount={productAmount}
+              decreaseAmount={handleDecrease}
+              increaseAmount={handleIncrease}
+            />
+          ) : (
+            <ProductInfoLoader />
+          )}
+          <ProductGrid
+            grid={productGrid}
+            selectedProductColorCode={selectedProductColorCode}
+            selectedProductSizeCode={selectedProductSizeCode}
+            handleChangeProduct={handleChangeProduct}
+            handleChangeProductColorCode={handleChangeProductColorCode}
+            handleChangeProductSizeCode={handleChangeProductSizeCode}
           />
-        </AdditionalInfo>
-        <ShippingSection />
-      </ScrollView>
-      <Footer>
-        <Button text="Adicionar ao carrinho" onPress={() => {}} />
-      </Footer>
-      {/* </KeyboardAvoidingView> */}
+
+          {!loading ? <StockSection stocks={stocks} /> : <StockSectionLoader />}
+          <AdditionalInfo>
+            {!loading ? (
+              <>
+                <ListRow label="Descrição" rightIcon="chevron-right" />
+                <ListRow
+                  label="Informações Adicionais"
+                  rightIcon="chevron-right"
+                />
+                <ListRow
+                  label="Especificação do Produto"
+                  rightIcon="chevron-right"
+                  borderless
+                />
+              </>
+            ) : (
+              <>
+                <ListRowLoader value={false} rightIcon />
+                <ListRowLoader value={false} rightIcon />
+                <ListRowLoader value={false} rightIcon borderless />
+              </>
+            )}
+          </AdditionalInfo>
+
+          <ShippingSection
+            getShippingInfo={getShippingInfo}
+            loading={loading}
+          />
+        </ScrollView>
+        <Footer>
+          <Button text="Adicionar ao carrinho" onPress={handleAddProduct} />
+        </Footer>
+      </KeyboardAvoidingView>
     </Container>
   );
 };

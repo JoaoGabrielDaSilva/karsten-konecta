@@ -10,8 +10,7 @@ export const Container = styled.View`
 
 export const Content = styled.View`
   flex: 1;
-  background-color: ${({ theme }) => theme.color.background.primary};
-  padding: ${({ theme }) => theme.spacing.lg}px;
+  background-color: ${({ theme }) => theme.color.background.secondary};
 `;
 
 export const CustomTextInput = styled(TextInput)`
@@ -19,5 +18,5 @@ export const CustomTextInput = styled(TextInput)`
 `;
 
 export const ListProduct = styled(AttendanceListProduct)`
-  margin-bottom: ${({ theme }) => theme.spacing.md}px;
+  padding: 0px ${({ theme }) => theme.spacing.lg}px;
 `;

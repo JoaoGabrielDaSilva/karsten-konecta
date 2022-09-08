@@ -34,16 +34,26 @@ const productList: AttendanceProductModel[] = [
     ean: "17559272547197",
     amount: 10,
   },
+  {
+    name: "Toalha Banhão Karsten Fio Penteado Max Lumina Preto/ Cinza",
+    code: "1213",
+    uri: "https://encrypted-tbn3.gstatic.com/shopping?q=tbn:ANd9GcSywiJfzb6kSAJ5wgeUX2xN4N_zIUOrOJLkPMY_NTmhMSe74nnJjawHlhqVHFnJxQBcSocfoXEiUSc&usqp=CAc",
+    ean: "17559272547197",
+    amount: 10,
+  },
 ];
 
 type AttendanceState = AttendanceModel & {
   setAttendance?: (data: AttendanceModel) => void;
   increaseProductAmount?: (where: { code: string }) => void;
   decreaseProductAmount?: (where: { code: string }) => void;
+  setAddress?: ({ address }: { address: Address }) => void;
+  loading: boolean;
 };
 
 export const mockAddress = (): Address => {
   return {
+    id: "1",
     name: "João",
     street: faker.address.street(),
     city: faker.address.city(),
@@ -60,10 +70,14 @@ export const mockAddress = (): Address => {
 const initialState: AttendanceState = {
   id: null,
   name: "",
+  cpfCnpj: "",
   customer: null,
-  address: null,
-  shippingInfo: null,
+  deliveryAddress: null,
+  shippingInfo: {
+    days: null,
+  },
   productList: [],
+  loading: false,
 };
 
 export const useAttendanceStore = create<AttendanceState>()((set) => ({
@@ -104,4 +118,9 @@ export const useAttendanceStore = create<AttendanceState>()((set) => ({
 
       return { ...state, productList: freshProductList };
     }),
+  setAddress: ({ address }) =>
+    set((state) => ({
+      ...state,
+      address,
+    })),
 }));

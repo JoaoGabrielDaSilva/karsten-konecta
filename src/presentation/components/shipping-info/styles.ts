@@ -3,12 +3,8 @@ import { Typography } from "../utils";
 
 export const Container = styled.View`
   padding: ${({ theme }) => theme.spacing.lg}px 0px;
-`;
 
-export const Title = styled(Typography).attrs(() => ({
-  semibold: true,
-}))`
-  margin: ${({ theme }) => theme.spacing.md}px 0px;
+  background-color: ${({ theme }) => theme.color.background.primary};
 `;
 
 export const Label = styled(Typography).attrs(() => ({

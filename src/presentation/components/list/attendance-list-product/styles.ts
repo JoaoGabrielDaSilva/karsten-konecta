@@ -4,7 +4,11 @@ import { Row, Typography } from "../../utils";
 
 const { width } = Dimensions.get("window");
 
-export const Container = styled(Row)<{ borderless: boolean }>`
+export const Container = styled.View`
+  background-color: ${({ theme }) => theme.color.background.primary};
+`;
+
+export const Content = styled(Row)<{ borderless: boolean }>`
   padding: ${({ theme }) => theme.spacing.lg}px 0px;
 
   border: 1px solid transparent;
@@ -42,7 +46,9 @@ export const Name = styled(Typography).attrs(() => ({
 
 export const Label = styled(Typography).attrs(() => ({
   semibold: true,
-}))``;
+}))`
+  color: ${({ theme }) => theme.color.text.secondary};
+`;
 
 export const Code = styled(Typography)`
   color: ${({ theme }) => theme.color.text.secondary};

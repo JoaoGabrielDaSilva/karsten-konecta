@@ -28,7 +28,7 @@ export const Carousel = ({ images, style }: Props) => {
   }, [images]);
 
   const previousButtonIsDisabled = index === 0;
-  const nextButtonIsDisabled = index === images.length - 1;
+  const nextButtonIsDisabled = index === images?.length - 1;
 
   const handleNext = () => {
     if (nextButtonIsDisabled) return;
@@ -66,12 +66,12 @@ export const Carousel = ({ images, style }: Props) => {
         snapToInterval={width}
         decelerationRate="fast"
       >
-        {images.map((item, index) => (
+        {images?.map((item, index) => (
           <Image key={index} source={{ uri: item }} resizeMode="contain" />
         ))}
       </Animated.ScrollView>
       <Page textAlign="center">
-        {index + 1}/{images.length}
+        {index + 1}/{images?.length}
       </Page>
       <LeftSide>
         <Arrow

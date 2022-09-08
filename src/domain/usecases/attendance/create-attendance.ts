@@ -5,7 +5,7 @@ export interface CreateAttendance {
 export namespace CreateAttendance {
   export type Params = {
     name: string;
-    cpf?: string;
+    cpfCnpj?: string;
     customerId?: string;
     storeId?: string;
   };

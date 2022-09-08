@@ -1,20 +1,17 @@
-import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { NavigationContainer } from "@react-navigation/native";
-import Constants from "expo-constants";
 
-import { View } from "react-native";
-import { RFValue } from "react-native-responsive-fontsize";
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
-import { useTheme } from "styled-components";
+import { makeAttendance } from "../../main/factories/pages/attendance-factory";
+import { makeNewAttendance } from "../../main/factories/pages/new-attendance.factory";
+import { makeNewNoCustomerAttendance } from "../../main/factories/pages/new-no-customer-attendance-factory";
+import { makeProductDetails } from "../../main/factories/pages/product-details-factory";
+import { makeProductList } from "../../main/factories/pages/product-list-factory";
 import { Drawer as DrawerComponent } from "../components";
 import { StackNavbar } from "../components/navigation/stack-navbar/stack-navbar";
 import { Address } from "../models/Address";
-import { NewAttendance } from "../screens";
 import { AddressRegister } from "../screens/address-register/address-register";
+import { AddressSelect } from "../screens/address-select/address-select";
 import { AttendanceList } from "../screens/attendance-list/attendance-list";
-import { Attendance } from "../screens/attendance/attendance";
 import { CustomerRegister } from "../screens/customer-register/customer-register";
 import { OrderList } from "../screens/order-list/order-list";
 import { ProductDetails } from "../screens/product-details/product-details";
@@ -23,11 +20,19 @@ import { Sales } from "../screens/sales/sales";
 import { StoreSelect } from "../screens/store-select/store-select";
 
 export type RootPrivateStackParamList = {
+  Login: undefined;
   Sales: undefined;
   NewAttendance: undefined;
-  Attendance: undefined;
+  NewNoCustomerAttendance: undefined;
+  Attendance: {
+    name?: string;
+  };
+  AddressSelect: undefined;
   ProductList: undefined;
-  ProductDetails: undefined;
+  ProductDetails: {
+    code: string;
+    ean: string;
+  };
   CustomerRegister: undefined;
   AddressRegister: {
     address: Address;
@@ -45,44 +50,38 @@ const Stack = createSharedElementStackNavigator<RootPrivateStackParamList>();
 const Drawer = createDrawerNavigator<RootPrivateDrawerParamList>();
 
 export const PrivateRoutes = () => {
-  const theme = useTheme();
-
-  return (
-    <View
-      style={{
-        flex: 1,
-        backgroundColor: theme.color.background.primary,
-        paddingTop: Constants.statusBarHeight,
-      }}
-    >
-      <NavigationContainer>
-        <DrawerNavigator />
-      </NavigationContainer>
-    </View>
-  );
+  return <DrawerNavigator />;
 };
 
 const StackNavigator = () => {
   return (
-    <Stack.Navigator initialRouteName="Sales">
+    <Stack.Navigator>
       <Stack.Screen
         name="NewAttendance"
-        component={NewAttendance}
+        component={makeNewAttendance}
         options={{
           title: "Novo Atendimento",
           header: (props) => <StackNavbar {...props} />,
         }}
       />
       <Stack.Screen
+        name="NewNoCustomerAttendance"
+        component={makeNewNoCustomerAttendance}
+        options={{
+          title: "Novo Atendimento sem Cliente",
+          header: (props) => <StackNavbar {...props} />,
+        }}
+      />
+      <Stack.Screen
         name="Attendance"
-        component={Attendance}
+        component={makeAttendance}
         options={{
           title: "Carrinho",
 
           header: (props) => (
             <StackNavbar
               headerLeftIcon="close"
-              onLeftIconPress={props.navigation.goBack}
+              onLeftIconPress={() => props.navigation.navigate("Sales")}
               rightIcon="search"
               onRightIconPress={() => props.navigation.navigate("ProductList")}
               {...props}
@@ -93,7 +92,7 @@ const StackNavigator = () => {
 
       <Stack.Screen
         name="ProductDetails"
-        component={ProductDetails}
+        component={makeProductDetails}
         options={{
           title: "Detalhes do Produto",
 
@@ -117,6 +116,14 @@ const StackNavigator = () => {
         }}
       />
       <Stack.Screen
+        name="AddressSelect"
+        component={AddressSelect}
+        options={{
+          title: "Selecionar Endereço",
+          header: (props) => <StackNavbar {...props} />,
+        }}
+      />
+      <Stack.Screen
         name="StoreSelect"
         component={StoreSelect}
         options={{
@@ -134,7 +141,7 @@ const StackNavigator = () => {
       />
       <Stack.Screen
         name="ProductList"
-        component={ProductList}
+        component={makeProductList}
         options={{
           headerShown: false,
           animationEnabled: false,

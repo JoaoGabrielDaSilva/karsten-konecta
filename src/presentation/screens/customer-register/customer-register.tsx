@@ -14,6 +14,7 @@ import { Gender } from "../../constants/enums/Gender";
 
 import { RootPrivateStackParamList } from "../../routes";
 import { mockAddress } from "../../store/attendance";
+import { useCustomerStore } from "../../store/customer";
 import { customerRegisterSchema } from "./schema";
 import {
   AddIcon,
@@ -51,9 +52,13 @@ const genderOptions = [
 
 export const CustomerRegister = ({ navigation: { navigate } }: Props) => {
   const loading = false;
+
+  const { data: customer } = useCustomerStore();
+
   const { control, handleSubmit } = useForm({
     resolver: yupResolver(customerRegisterSchema),
     shouldFocusError: true,
+    defaultValues: customer,
   });
   const theme = useTheme();
 
@@ -76,10 +81,11 @@ export const CustomerRegister = ({ navigation: { navigate } }: Props) => {
           />
           <CustomTextInput
             control={control}
-            name="cpf"
+            name="cpfCnpj"
             placeholder="CPF"
             mask="cpf"
             loading={loading}
+            editable={!customer.id}
           />
           <CustomTextInput
             control={control}
@@ -113,19 +119,31 @@ export const CustomerRegister = ({ navigation: { navigate } }: Props) => {
           <RectButton
             onPress={() =>
               navigate("AddressRegister", {
-                address: mockAddress(),
+                address: {
+                  ...mockAddress(),
+                  isMain: false,
+                },
               })
             }
           >
-            <Address {...mockAddress()} />
+            <Address {...mockAddress()} isMain={false} />
           </RectButton>
         </Content>
         <StyledSectionTitle>Opcionais</StyledSectionTitle>
 
         <Form>
-          <StyledCheckbox name="whatsapp" control={control} label="Whatsapp" />
-          <StyledCheckbox name="email" control={control} label="E-mail" />
-          <Checkbox name="message" control={control} label="Mensagens" />
+          <StyledCheckbox
+            name="optWhatsapp"
+            control={control}
+            label="Whatsapp"
+          />
+          <StyledCheckbox name="optEmail" control={control} label="E-mail" />
+          <StyledCheckbox
+            name="optPhoneCall"
+            control={control}
+            label="Ligações Telefonicas"
+          />
+          <Checkbox name="optSms" control={control} label="Mensagens" />
         </Form>
       </ScrollView>
       <Footer>

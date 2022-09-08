@@ -22,7 +22,7 @@ const mockShippingInfo = (): ShippingModel => ({
 
 const mockCustomer = (): CustomerModel => ({
   name: faker.name.fullName(),
-  cpf: faker.random.numeric(11),
+  cpfCnpj: faker.random.numeric(11),
   address: mockAddress(),
 });
 

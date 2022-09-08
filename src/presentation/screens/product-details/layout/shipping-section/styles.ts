@@ -1,4 +1,6 @@
 import styled from "styled-components/native";
+import { TextInput } from "../../../../components/form/text-input/text-input";
+import { Skeleton } from "../../../../components/skeleton/skeleton";
 import { SectionTitle } from "../../../../components/utils/section-title/section-title";
 
 export const Container = styled.View`
@@ -8,6 +10,8 @@ export const Container = styled.View`
   padding: ${({ theme }) => theme.spacing.lg}px;
 `;
 
-export const Title = styled(SectionTitle)`
-  margin-bottom: ${({ theme }) => theme.spacing.lg}px;
+export const StyledTextInput = styled(TextInput)`
+  margin: ${({ theme }) => theme.spacing.lg}px 0px;
 `;
+
+export const Title = styled(SectionTitle)``;

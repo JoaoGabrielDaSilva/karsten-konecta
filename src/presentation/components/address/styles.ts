@@ -17,7 +17,9 @@ export const Content = styled.View``;
 
 export const Title = styled(Typography).attrs(() => ({
   semibold: true,
-}))``;
+}))`
+  margin-bottom: ${({ theme }) => theme.spacing.md}px;
+`;
 
 export const Label = styled(Typography).attrs(() => ({
   semibold: true,
@@ -28,7 +30,7 @@ export const Label = styled(Typography).attrs(() => ({
 export const Name = styled(Typography).attrs(() => ({
   semibold: true,
 }))`
-  margin: ${({ theme }) => theme.spacing.md}px 0px;
+  margin-bottom: ${({ theme }) => theme.spacing.md}px;
 `;
 
 export const Value = styled(Typography).attrs(() => ({ semibold: true }))`
@@ -38,7 +40,6 @@ export const Value = styled(Typography).attrs(() => ({ semibold: true }))`
 `;
 
 export const EditLabel = styled(Typography)`
-  margin: ${({ theme }) => theme.spacing.sm}px 0px;
   color: ${({ theme }) => theme.color.text.secondary};
 `;
 

@@ -1,45 +1,61 @@
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
-import { ActivityIndicator, KeyboardAvoidingView } from "react-native";
-import { useTheme } from "styled-components/native";
-import { TextInput } from "../../../../components/form/text-input/text-input";
+
+import { GetShippingInfo } from "../../../../../domain/usecases/shipping/get-shipping-info";
+import { ShippingInfoLoader } from "../../../../components/shipping-info/loader/shipping-info-loader";
 import { ShippingInfo } from "../../../../components/shipping-info/shipping-info";
 import { ShippingModel } from "../../../../models/Shipping";
-import { Container, Title } from "./styles";
+import { Container, StyledTextInput, Title } from "./styles";
 
-type Props = {};
+type Props = {
+  loading: boolean;
+  getShippingInfo: GetShippingInfo;
+};
 
-export const ShippingSection = ({}: Props) => {
-  const { control } = useForm();
-  const theme = useTheme();
+type FormValues = {
+  cep: string;
+};
+
+export const ShippingSection = ({ loading, getShippingInfo }: Props) => {
+  const { control, handleSubmit } = useForm();
 
   const [shippingInfo, setShippingInfo] = useState<ShippingModel>();
-  const [loading, setLoading] = useState(false);
+  const [loadingShippingInfo, setLoadingShippingInfo] = useState(false);
 
-  const getShippingInfo = async (): Promise<void> => {
-    setLoading(true);
-
-    setTimeout(() => {
-      setShippingInfo({
-        days: 5,
+  const loadShippingInfo = async ({ cep }: FormValues) => {
+    try {
+      setLoadingShippingInfo(true);
+      const shippingInfo = await getShippingInfo.get({
+        cep,
+        brandId: "1",
+        totalWeight: 10,
       });
-      setLoading(false);
-    }, 1500);
+
+      setShippingInfo(shippingInfo);
+    } catch (error) {
+    } finally {
+      setLoadingShippingInfo(false);
+    }
   };
 
   return (
     <Container>
       <Title>Calcule o Frete</Title>
-      <TextInput
+
+      <StyledTextInput
         control={control}
         name="cep"
         mask="cep"
         placeholder="CEP"
-        loading={loading}
-        onMaxLength={getShippingInfo}
+        loading={loadingShippingInfo}
+        editable={!loading}
+        onMaxLength={handleSubmit(loadShippingInfo)}
       />
-      {loading && <ActivityIndicator color={theme.color.background.inverted} />}
-      {shippingInfo && <ShippingInfo {...shippingInfo} />}
+      {loadingShippingInfo || shippingInfo ? (
+        <Title>Prazo de Entrega</Title>
+      ) : null}
+      {loadShippingInfo && <ShippingInfoLoader />}
+      {shippingInfo && !loadShippingInfo && <ShippingInfo {...shippingInfo} />}
     </Container>
   );
 };

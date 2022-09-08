@@ -2,12 +2,17 @@ import create from "zustand";
 import { devtools, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StoreModel } from "../models/Store";
+import { makeAsyncStorageAdapter } from "../../main/factories/cache/local-storage-adapter-factory";
+import { setCurrentAccountIdAdapter } from "../../main/adapters/current-account-id-adapter";
+import { State } from "react-native-gesture-handler";
 
 type UserState = {
   name: string;
   email: string;
   id: string;
   store: StoreModel;
+  setUserId?: (params: { id: string }) => void;
+  logoutUser?: () => void;
 };
 
 export const mockStore = (): StoreModel => ({
@@ -28,13 +33,11 @@ const initialState: UserState = {
   store: mockStore(),
 };
 
-export const useUserStore = create<UserState>()(
-  devtools(
-    persist(
-      (set) => ({
-        ...initialState,
-      }),
-      { name: "user-storage", getStorage: () => AsyncStorage }
-    )
-  )
-);
+export const useUserStore = create<UserState>((set) => ({
+  ...initialState,
+  setUserId: ({ id }) => {
+    setCurrentAccountIdAdapter(id);
+    set((state) => ({ ...state, id }));
+  },
+  logoutUser: () => set((state) => ({ ...state, id: null })),
+}));

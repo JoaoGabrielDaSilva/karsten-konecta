@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
-import { AttendanceProductModel } from "../../../models/Attendance";
+import { ProductModel } from "../../../../domain/models/product";
 
 import {
   Container,
@@ -17,7 +17,7 @@ import {
   Amount,
 } from "./styles";
 
-type Props = AttendanceProductModel & {
+type Props = ProductModel & {
   borderless?: boolean;
   style?: StyleProp<ViewStyle>;
 };
@@ -29,6 +29,7 @@ export const ListProduct = ({
   uri,
   borderless,
   amount,
+  hasAvailableAmount,
   style,
 }: Props) => {
   return (

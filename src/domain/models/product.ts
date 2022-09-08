@@ -4,4 +4,5 @@ export type ProductModel = {
   uri: string;
   ean: string;
   amount?: number;
+  hasAvailableAmount?: boolean;
 };

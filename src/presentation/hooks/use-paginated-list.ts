@@ -15,6 +15,7 @@ type UsePaginatedListReturn<T> = {
   loading: boolean;
   totalResults: number;
   onEndReached: () => void;
+  reset: () => void;
 };
 
 export const usePaginatedList = <T>({
@@ -27,6 +28,13 @@ export const usePaginatedList = <T>({
 
   const onEndReached = () =>
     data.length < totalResults && !loading && getDataMiddleware();
+
+  const reset = () => {
+    setData([]);
+    setPage(0);
+    setTotalResults(0);
+    getDataMiddleware();
+  };
 
   const getDataMiddleware = async () => {
     setLoading(true);
@@ -61,5 +69,6 @@ export const usePaginatedList = <T>({
     loading,
     onEndReached,
     totalResults,
+    reset,
   };
 };

@@ -2,7 +2,7 @@ import React from "react";
 import { Control, Controller } from "react-hook-form";
 import { Pressable, StyleProp, ViewStyle } from "react-native";
 import { Typography } from "../../utils";
-import { Check, Container, Fill, StyledRow } from "./styles";
+import { Check, Container, Fill, Label, StyledRow } from "./styles";
 
 type Props = {
   name: string;
@@ -27,7 +27,7 @@ export const Checkbox = ({ label, style, disabled, ...props }: Props) => {
                 </Fill>
               )}
             </Container>
-            <Typography semibold>{label}</Typography>
+            <Label semibold>{label}</Label>
           </StyledRow>
         </Pressable>
       )}
