@@ -64,10 +64,7 @@ describe("LoginScreen", () => {
     await waitFor(async () => {
       fireEvent.changeText(sut.getByTestId("email-field"), login);
       fireEvent.changeText(sut.getByTestId("password-field"), password);
-
-      const submitButton = sut.getByTestId("submit-button");
-
-      fireEvent.press(submitButton);
+      fireEvent.press(sut.getByTestId("submit-button"));
     });
 
     expect(authentication.callsCount).toBe(1);
