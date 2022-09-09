@@ -5,6 +5,7 @@ import { ProductDetails } from "../../../presentation/screens/product-details/pr
 import { makeRemoteAddProduct } from "../../usecases/attendance/remote-add-product";
 import { makeRemoteGetProductDetails } from "../../usecases/product/remote-get-product-details";
 import { makeRemoteGetProductGrid } from "../../usecases/product/remote-get-product-grid";
+import { makeRemoteGetShippingInfo } from "../../usecases/shipping/remote-get-shipping-info";
 
 type Props = StackScreenProps<RootPrivateStackParamList, "ProductDetails">;
 
@@ -14,6 +15,7 @@ export const makeProductDetails = (props: Props) => {
       addProduct={makeRemoteAddProduct()}
       getProductDetails={makeRemoteGetProductDetails()}
       getProductGrid={makeRemoteGetProductGrid()}
+      getShippingInfo={makeRemoteGetShippingInfo()}
       {...props}
     />
   );

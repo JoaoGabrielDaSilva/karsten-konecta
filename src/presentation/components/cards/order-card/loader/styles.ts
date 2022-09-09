@@ -1,7 +1,8 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
-import { Row, Typography } from "../../utils";
+import { Skeleton } from "../../../skeleton/skeleton";
+import { Row } from "../../../utils";
 
 export const Container = styled.View`
   background-color: ${({ theme }) => theme.color.background.primary};
@@ -28,16 +29,10 @@ export const Content = styled.View`
   padding: 0px ${({ theme }) => theme.spacing.xl}px;
 `;
 
-export const Name = styled(Typography)``;
+export const Name = styled(Skeleton)``;
 
-export const Label = styled(Typography).attrs(() => ({ bold: true }))`
-  color: ${({ theme }) => theme.color.text.secondary};
-`;
-
-export const Value = styled(Typography)`
+export const Value = styled(Skeleton)`
   margin-top: ${({ theme }) => theme.spacing.sm}px;
-
-  color: ${({ theme }) => theme.color.text.secondary};
 `;
 
 export const CopyIcon = styled(MaterialIcons)`

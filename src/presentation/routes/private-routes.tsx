@@ -2,8 +2,10 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { makeAttendance } from "../../main/factories/pages/attendance-factory";
+import { makeAttendanceList } from "../../main/factories/pages/attendance-list-factory";
 import { makeNewAttendance } from "../../main/factories/pages/new-attendance.factory";
 import { makeNewNoCustomerAttendance } from "../../main/factories/pages/new-no-customer-attendance-factory";
+import { makeOrderList } from "../../main/factories/pages/order-list-factory";
 import { makeProductDetails } from "../../main/factories/pages/product-details-factory";
 import { makeProductList } from "../../main/factories/pages/product-list-factory";
 import { Drawer as DrawerComponent } from "../components";
@@ -11,11 +13,7 @@ import { StackNavbar } from "../components/navigation/stack-navbar/stack-navbar"
 import { Address } from "../models/Address";
 import { AddressRegister } from "../screens/address-register/address-register";
 import { AddressSelect } from "../screens/address-select/address-select";
-import { AttendanceList } from "../screens/attendance-list/attendance-list";
 import { CustomerRegister } from "../screens/customer-register/customer-register";
-import { OrderList } from "../screens/order-list/order-list";
-import { ProductDetails } from "../screens/product-details/product-details";
-import { ProductList } from "../screens/product-list/product-list";
 import { Sales } from "../screens/sales/sales";
 import { StoreSelect } from "../screens/store-select/store-select";
 
@@ -137,6 +135,7 @@ const StackNavigator = () => {
         options={{
           title: "Vendas",
           header: (props) => <StackNavbar drawer {...props} />,
+          animationEnabled: false,
         }}
       />
       <Stack.Screen
@@ -149,7 +148,7 @@ const StackNavigator = () => {
       />
       <Stack.Screen
         name="AttendanceList"
-        component={AttendanceList}
+        component={makeAttendanceList}
         options={{
           title: "Atendimentos em Aberto",
           header: (props) => <StackNavbar {...props} />,
@@ -157,7 +156,7 @@ const StackNavigator = () => {
       />
       <Stack.Screen
         name="OrderList"
-        component={OrderList}
+        component={makeOrderList}
         options={{
           title: "Pedidos",
           header: (props) => <StackNavbar {...props} />,

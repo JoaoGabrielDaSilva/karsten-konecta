@@ -2,12 +2,14 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import { ListRenderItemInfo } from "react-native";
 import { useTheme } from "styled-components/native";
+import { GetAttendanceList } from "../../../domain/usecases/attendance/get-attendance-list";
 import {
   AttendanceCard,
   AttendanceCardProps,
 } from "../../components/cards/attendance-card/attendance-card";
-
+import { AttendanceCardLoader } from "../../components/cards/attendance-card/loader/attendance-card-loader";
 import { PaginatedList } from "../../components/list/paginated-list/paginated-list";
+
 import {
   PaginatedListGetFunctionReturn,
   usePaginatedList,
@@ -20,294 +22,37 @@ type NavigationProps = StackScreenProps<
   "AttendanceList"
 >;
 
-type Props = NavigationProps;
+type Props = NavigationProps & {
+  getAttendanceList: GetAttendanceList;
+};
 
-const attendanceDatabase: AttendanceCardProps[] = [
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 555,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-  {
-    name: "João",
-    cpfCnpj: "02526108063",
-    createdAt: new Date(),
-    lastAddedProduct: {
-      name: "Jogo de Banho Karsten Fio Penteado 5 Peças Lumina Cinza/ Preto",
-      code: "1213",
-      uri: "https://karsten.vtexassets.com/arquivos/ids/171435/3592279_01.jpg?v=637260039902170000",
-      ean: "17559272547197",
-      amount: 5,
-    },
-    totalProductsInCart: "5",
-  },
-];
-
-export const AttendanceList = ({ navigation: { navigate } }: Props) => {
+export const AttendanceList = ({
+  navigation: { navigate },
+  getAttendanceList,
+}: Props) => {
   const theme = useTheme();
-  const { data, loading, onEndReached } = usePaginatedList({
-    getFunction: getAttendanceList,
-  });
 
-  async function getAttendanceList(
+  const { data, loading, page, onEndReached, totalResults, reset, refreshing } =
+    usePaginatedList({
+      getFunction: loadAttendanceList,
+    });
+
+  async function loadAttendanceList(
     page: number
   ): Promise<PaginatedListGetFunctionReturn<AttendanceCardProps>> {
     try {
-      const newData = await new Promise<AttendanceCardProps[]>((resolve) =>
-        setTimeout(() => {
-          const data = attendanceDatabase.slice(page * 5, page * 5 + 5);
-
-          resolve(data);
-        }, 1000)
-      );
+      const { attendanceList, totalResults } = await getAttendanceList.execute({
+        page,
+        storeId: "28",
+      });
 
       return {
-        data: newData,
-        totalResults: attendanceDatabase.length,
+        data: attendanceList,
+        totalResults,
       };
     } catch (error) {
+      console.log(error);
+
       return {
         data: [],
         totalResults: 0,
@@ -323,16 +68,24 @@ export const AttendanceList = ({ navigation: { navigate } }: Props) => {
         data={data}
         onEndReached={onEndReached}
         loading={loading}
+        refreshing={refreshing}
+        totalResults={totalResults}
+        onRefresh={() => reset({ refresh: true })}
         renderItem={({ item }: ListRenderItemInfo<AttendanceCardProps>) => (
           <AttendanceCard
             {...item}
-            style={{ margin: theme.spacing.md }}
             onButtonPress={handleContinueAttendance}
+            style={{ marginBottom: theme.spacing.lg }}
           />
         )}
+        loaderComponent={
+          <AttendanceCardLoader style={{ marginBottom: theme.spacing.lg }} />
+        }
         contentContainerStyle={{
-          paddingBottom: theme.spacing.xxl,
+          padding: theme.spacing.lg,
+          paddingTop: 0,
         }}
+        page={page}
         keyExtractor={(_, index) => String(index)}
       />
     </Container>

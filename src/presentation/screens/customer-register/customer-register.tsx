@@ -5,12 +5,12 @@ import { useForm } from "react-hook-form";
 import { ScrollView } from "react-native";
 import { BorderlessButton, RectButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
+import { Gender } from "../../../domain/models/customer";
 import { Address } from "../../components/address/address";
 import { Button } from "../../components/buttons/button/button";
 import { Checkbox } from "../../components/form/checkbox/checkbox";
 import { SelectInput } from "../../components/form/select-input/select-input";
 import { SectionTitle } from "../../components/utils/section-title/section-title";
-import { Gender } from "../../constants/enums/Gender";
 
 import { RootPrivateStackParamList } from "../../routes";
 import { mockAddress } from "../../store/attendance";
@@ -61,6 +61,8 @@ export const CustomerRegister = ({ navigation: { navigate } }: Props) => {
     defaultValues: customer,
   });
   const theme = useTheme();
+
+  console.log(customer);
 
   const onSubmit = () => {};
 
@@ -147,7 +149,10 @@ export const CustomerRegister = ({ navigation: { navigate } }: Props) => {
         </Form>
       </ScrollView>
       <Footer>
-        <Button text="Cadastrar" onPress={handleSubmit(onSubmit)} />
+        <Button
+          text={customer.id ? "Editar" : "Cadastrar"}
+          onPress={handleSubmit(onSubmit)}
+        />
       </Footer>
     </Container>
   );

@@ -9,13 +9,17 @@ type UsePaginatedListParams<T> = {
   getFunction: (page: number) => Promise<PaginatedListGetFunctionReturn<T>>;
 };
 
+type RefreshParams = { refresh?: boolean };
+
 type UsePaginatedListReturn<T> = {
   data: T[];
   page: number;
   loading: boolean;
+  refreshing: boolean;
   totalResults: number;
   onEndReached: () => void;
-  reset: () => void;
+
+  reset: (params?: RefreshParams) => void;
 };
 
 export const usePaginatedList = <T>({
@@ -23,30 +27,37 @@ export const usePaginatedList = <T>({
 }: UsePaginatedListParams<T>): UsePaginatedListReturn<T> => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
   const [page, setPage] = useState(0);
   const [totalResults, setTotalResults] = useState(0);
 
   const onEndReached = () =>
-    data.length < totalResults && !loading && getDataMiddleware();
+    data.length < totalResults && !loading && getDataMiddleware({});
 
-  const reset = () => {
+  const reset = ({ refresh }: RefreshParams) => {
     setData([]);
     setPage(0);
     setTotalResults(0);
-    getDataMiddleware();
+    getDataMiddleware({ refresh });
   };
 
-  const getDataMiddleware = async () => {
+  const getDataMiddleware = async ({ refresh }: RefreshParams) => {
     setLoading(true);
-    console.log(page, data.length, totalResults);
+
+    const requestPage = refresh ? 0 : page;
+
+    if (refresh) setRefreshing(true);
+    console.log(requestPage, data.length, totalResults);
 
     const { data: newData, totalResults: baseTotalResults } = await getFunction(
-      page
+      requestPage
     );
 
-    const nextPage = page + 1;
+    const nextPage = requestPage + 1;
 
-    if (page === 0) {
+    if (refresh) setRefreshing(false);
+
+    if (requestPage === 0) {
       setTotalResults(baseTotalResults);
       setData(newData);
       setPage(nextPage);
@@ -60,7 +71,7 @@ export const usePaginatedList = <T>({
   };
 
   useEffect(() => {
-    getDataMiddleware();
+    getDataMiddleware({});
   }, []);
 
   return {
@@ -70,5 +81,6 @@ export const usePaginatedList = <T>({
     onEndReached,
     totalResults,
     reset,
+    refreshing,
   };
 };

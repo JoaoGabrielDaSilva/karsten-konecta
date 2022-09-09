@@ -2,6 +2,8 @@ import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import { ListRenderItemInfo } from "react-native";
 import { useTheme } from "styled-components/native";
+import { GetOrderList } from "../../../domain/usecases/attendance/get-order-list";
+import { OrderCardLoader } from "../../components/cards/order-card/loader/order-card-loader";
 
 import {
   OrderCard,
@@ -19,116 +21,32 @@ import { Container } from "./styles";
 
 type NavigationProps = StackScreenProps<RootPrivateStackParamList, "OrderList">;
 
-type Props = NavigationProps;
+type Props = NavigationProps & {
+  getOrderList: GetOrderList;
+};
 
-const attendanceDatabase: OrderCardProps[] = [
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-  {
-    customerName: "João",
-    status: "Entregue",
-    orderNumber: "PI-00002432",
-    createdAt: new Date(),
-    totalProductsIn: 5,
-  },
-];
-
-export const OrderList = ({ navigation: { navigate } }: Props) => {
+export const OrderList = ({
+  navigation: { navigate },
+  getOrderList,
+}: Props) => {
   const theme = useTheme();
-  const { data, loading, onEndReached } = usePaginatedList({
-    getFunction: getOrderList,
-  });
+  const { data, loading, refreshing, page, totalResults, onEndReached, reset } =
+    usePaginatedList({
+      getFunction: loadOrderList,
+    });
 
-  async function getOrderList(
+  async function loadOrderList(
     page: number
   ): Promise<PaginatedListGetFunctionReturn<OrderCardProps>> {
     try {
-      const newData = await new Promise<OrderCardProps[]>((resolve) =>
-        setTimeout(() => {
-          const data = attendanceDatabase.slice(page * 5, page * 5 + 5);
-
-          resolve(data);
-        }, 1000)
-      );
+      const { orderList, totalResults } = await getOrderList.execute({
+        page,
+        storeId: "28",
+      });
 
       return {
-        data: newData,
-        totalResults: attendanceDatabase.length,
+        data: orderList,
+        totalResults,
       };
     } catch (error) {
       return {
@@ -146,15 +64,23 @@ export const OrderList = ({ navigation: { navigate } }: Props) => {
         data={data}
         onEndReached={onEndReached}
         loading={loading}
+        refreshing={refreshing}
+        onRefresh={() => reset({ refresh: true })}
+        page={page}
+        totalResults={totalResults}
         renderItem={({ item }: ListRenderItemInfo<OrderCardProps>) => (
           <OrderCard
             {...item}
-            style={{ margin: theme.spacing.md }}
+            style={{ marginBottom: theme.spacing.lg }}
             onPress={goToOrderDeails}
           />
         )}
+        loaderComponent={
+          <OrderCardLoader style={{ marginBottom: theme.spacing.lg }} />
+        }
         contentContainerStyle={{
-          paddingBottom: theme.spacing.xxl,
+          padding: theme.spacing.lg,
+          paddingTop: 0,
         }}
         keyExtractor={(_, index) => String(index)}
       />

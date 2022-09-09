@@ -2,9 +2,9 @@ import React from "react";
 import { Pressable, StyleProp, ViewStyle } from "react-native";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
+import { GetOrderList } from "../../../../domain/usecases/attendance/get-order-list";
 import { formatFullDate } from "../../../utils/date/format-full-date";
 import { ListRow } from "../../list/list-row/list-row";
-import { Row } from "../../utils";
 
 import {
   Container,
@@ -17,13 +17,7 @@ import {
   Headline,
 } from "./styles";
 
-export type OrderCardProps = {
-  orderNumber: string;
-  status: string;
-  customerName: string;
-  createdAt: Date;
-  totalProductsIn: number;
-};
+export type OrderCardProps = GetOrderList.OrderListItem;
 
 type Props = OrderCardProps & {
   style?: StyleProp<ViewStyle>;
@@ -31,11 +25,11 @@ type Props = OrderCardProps & {
 };
 
 export const OrderCard = ({
-  orderNumber,
-
+  orderCode,
   status,
   customerName,
   createdAt,
+  approvedAt,
   totalProductsIn,
   onPress,
   style,
@@ -46,7 +40,7 @@ export const OrderCard = ({
     <Container style={style} justify="space-between" align="center">
       <Headline justify="space-between" align="center">
         <Name variant="heading" bold>
-          {orderNumber}
+          {orderCode}
         </Name>
         <BorderlessButton
           hitSlop={{
@@ -69,8 +63,8 @@ export const OrderCard = ({
               {customerName}
             </Value>
             <Value>
-              <Label>Data de crianção: </Label>
-              {formatFullDate({ date: createdAt })}
+              <Label>Data de criação: </Label>
+              {createdAt}
             </Value>
             <Value>
               <Label>Quantidade de itens: </Label>

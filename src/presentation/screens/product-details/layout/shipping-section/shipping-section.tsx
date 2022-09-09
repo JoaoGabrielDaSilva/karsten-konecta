@@ -33,6 +33,7 @@ export const ShippingSection = ({ loading, getShippingInfo }: Props) => {
 
       setShippingInfo(shippingInfo);
     } catch (error) {
+      console.log(error);
     } finally {
       setLoadingShippingInfo(false);
     }
@@ -54,8 +55,10 @@ export const ShippingSection = ({ loading, getShippingInfo }: Props) => {
       {loadingShippingInfo || shippingInfo ? (
         <Title>Prazo de Entrega</Title>
       ) : null}
-      {loadShippingInfo && <ShippingInfoLoader />}
-      {shippingInfo && !loadShippingInfo && <ShippingInfo {...shippingInfo} />}
+      {loadingShippingInfo && <ShippingInfoLoader />}
+      {shippingInfo && !loadingShippingInfo && (
+        <ShippingInfo {...shippingInfo} />
+      )}
     </Container>
   );
 };

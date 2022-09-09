@@ -25,6 +25,8 @@ export class RemoteGetCustomer implements GetCustomer {
 
     const result = httpResponse.body?.Result;
 
+    console.log(result);
+
     const personType = result?.PessoaJuridica
       ? PersonType.LEGAL
       : PersonType.NATURAL;
@@ -41,7 +43,7 @@ export class RemoteGetCustomer implements GetCustomer {
           ...(personType === PersonType.NATURAL
             ? {
                 birthDate: result?.DataNacimentoFormat,
-                gender: Gender[result.Genero],
+                gender: result.Genero,
               }
             : {
                 fantasyName: result.NomeFantasia,
@@ -72,7 +74,7 @@ export namespace RemoteGetCustomer {
       NtLigacaoTelefonica: string;
       NtWhatsapp: string;
       PessoaJuridica: boolean;
-      Genero?: string;
+      Genero?: Gender;
       DataNacimentoFormat?: string;
       NomeFantasia?: string;
       InscricaoEstadual?: string;

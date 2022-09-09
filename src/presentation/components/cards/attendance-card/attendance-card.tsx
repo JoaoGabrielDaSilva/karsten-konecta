@@ -1,19 +1,13 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
-import { AttendanceProductModel } from "../../../models/Attendance";
+import { GetAttendanceList } from "../../../../domain/usecases/attendance/get-attendance-list";
 import { formatFullDate } from "../../../utils/date/format-full-date";
 import { cpfMask } from "../../../utils/mask/cpf-mask";
 import { Button } from "../../buttons/button/button";
 import { ListProduct } from "../../list/list-product/list-product";
 import { Container, Name, Label, Content, Value } from "./styles";
 
-export type AttendanceCardProps = {
-  name: string;
-  cpfCnpj: string;
-  createdAt: Date;
-  totalProductsInCart: string;
-  lastAddedProduct: AttendanceProductModel;
-};
+export type AttendanceCardProps = GetAttendanceList.AttendanceList;
 
 type Props = AttendanceCardProps & {
   style?: StyleProp<ViewStyle>;

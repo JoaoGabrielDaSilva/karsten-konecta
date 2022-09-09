@@ -118,8 +118,6 @@ export const ProductDetails = ({
         color: productDetails.color,
       });
 
-      console.log(productGrid);
-
       setProduct(productDetails);
       setProductGrid(productGrid);
     } catch (error) {
@@ -134,11 +132,12 @@ export const ProductDetails = ({
   }, []);
 
   return (
-    <Container>
-      <KeyboardAvoidingView
-        behavior={Platform.select({ android: "height", ios: "padding" })}
-        keyboardVerticalOffset={120}
-      >
+    <KeyboardAvoidingView
+      style={{ flex: 1 }}
+      behavior={Platform.select({ android: "height", ios: "padding" })}
+      keyboardVerticalOffset={120}
+    >
+      <Container>
         <ScrollView
           contentContainerStyle={{ paddingBottom: theme.spacing.xxl }}
         >
@@ -201,7 +200,7 @@ export const ProductDetails = ({
         <Footer>
           <Button text="Adicionar ao carrinho" onPress={handleAddProduct} />
         </Footer>
-      </KeyboardAvoidingView>
-    </Container>
+      </Container>
+    </KeyboardAvoidingView>
   );
 };

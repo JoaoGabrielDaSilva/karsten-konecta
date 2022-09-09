@@ -179,7 +179,6 @@ export const AddressRegister = ({ navigation, route }: Props) => {
           }}
         >
           <Form>
-            <CustomTextInput name="name" placeholder="Nome" control={control} />
             <CustomTextInput
               name="name"
               placeholder="Nome (Ex: Casa, Trabalho)"

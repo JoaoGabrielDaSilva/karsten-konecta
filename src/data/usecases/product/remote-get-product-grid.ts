@@ -24,7 +24,6 @@ export class RemoteGetProductGrid implements GetProductGrid {
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
-        console.log(result);
 
         return {
           colorList: result.ListaCores.map((product) => ({
