@@ -29,7 +29,6 @@ export class RemoteGetAttendance implements GetAttendance {
         console.log(result);
 
         return {
-          id: result.Id,
           name: result.NomeAtendimento,
           cpfCnpj: result.CpfCnpjConsumidor,
           productList: result.ListaAtendimentoItens.map((product) => ({
@@ -64,7 +63,6 @@ export class RemoteGetAttendance implements GetAttendance {
 export namespace RemoteGetAttendance {
   export type Model = {
     Result: {
-      Id: string;
       CpfCnpjConsumidor: string;
       NomeAtendimento: string;
       ListaAtendimentoItens: {

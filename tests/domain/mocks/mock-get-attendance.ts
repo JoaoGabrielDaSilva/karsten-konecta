@@ -1,38 +1,35 @@
 import { faker } from "@faker-js/faker";
+import { RemoteGetAttendance } from "../../../src/data/usecases/attendance/remote-get-attendance";
 import { AddressModel } from "../../../src/domain/models/address";
-import { AttendanceModel } from "../../../src/domain/models/attendance";
-import { CustomerModel } from "../../../src/domain/models/customer";
 import { ShippingModel } from "../../../src/domain/models/shipping";
 import { GetAttendance } from "../../../src/domain/usecases/attendance/get-attendance";
 
+const attendanceName = faker.name.firstName();
+const cpfCnpj = faker.random.numeric(11);
+const productList = [];
+const id = faker.random.numeric(4);
+const complement = faker.random.words(4);
+const reference = faker.random.words(4);
+const street = faker.address.street();
+const number = faker.address.buildingNumber();
+const cep = faker.address.zipCode("#####-##");
+const city = faker.address.city();
+const district = faker.address.cityName();
+const name = faker.name.firstName();
+const state = faker.address.state();
+const isMain = Boolean(Math.random());
+
 const mockAddress = (): AddressModel => ({
-  street: faker.address.street(),
-  number: faker.address.buildingNumber(),
-  cep: faker.address.zipCode("#####-##"),
-  city: faker.address.city(),
-  district: faker.address.cityName(),
-  name: faker.name.firstName(),
-  state: faker.address.state(),
-  isMain: Boolean(Math.random()),
-});
-
-const mockShippingInfo = (): ShippingModel => ({
-  days: Math.floor(Math.random() * 20) + 1,
-});
-
-const mockCustomer = (): CustomerModel => ({
-  name: faker.name.fullName(),
-  cpfCnpj: faker.random.numeric(11),
-  address: mockAddress(),
-});
-
-export const mockRemoteAttendanceModel = (): GetAttendance.Model => ({
-  id: faker.random.numeric(4),
-  name: faker.name.firstName(),
-  address: mockAddress(),
-  shippingInfo: mockShippingInfo(),
-  customer: mockCustomer(),
-  productList: [],
+  id,
+  complement,
+  reference,
+  street,
+  number,
+  cep,
+  city,
+  district,
+  name,
+  state,
 });
 
 export const mockGetAttendanceParams = (): GetAttendance.Params => ({
@@ -40,5 +37,29 @@ export const mockGetAttendanceParams = (): GetAttendance.Params => ({
   storeId: faker.random.numeric(8),
 });
 
-export const mockGetAttendanceModel = (): GetAttendance.Model =>
-  mockRemoteAttendanceModel();
+export const mockRemoteGetAttendanceModel = (): RemoteGetAttendance.Model => ({
+  Result: {
+    CpfCnpjConsumidor: cpfCnpj,
+    EnderecoEntrega: {
+      IdConsumidorLojaEndereco: Number(id),
+      LogradouroComplemento: complement,
+      Referencia: reference,
+      Logradouro: street,
+      LogradouroNumero: number,
+      CEP: cep,
+      Cidade: city,
+      Bairro: district,
+      NomeEndereco: name,
+      Estado: state,
+    },
+    ListaAtendimentoItens: productList,
+    NomeAtendimento: attendanceName,
+  },
+});
+
+export const mockGetAttendanceModel = (): GetAttendance.Model => ({
+  name: attendanceName,
+  deliveryAddress: mockAddress(),
+  productList,
+  cpfCnpj,
+});

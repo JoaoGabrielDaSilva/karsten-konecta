@@ -7,7 +7,7 @@ export namespace CreateAttendance {
     name: string;
     cpfCnpj?: string;
     customerId?: string;
-    storeId?: string;
+    storeId: string;
   };
 
   export type Model = {

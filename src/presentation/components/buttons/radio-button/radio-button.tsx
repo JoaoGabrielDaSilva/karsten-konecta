@@ -17,7 +17,7 @@ export type RadioButtonProps = {
 export const RadioButton = ({
   active,
   onPress,
-  variant,
+  variant = "default",
   style,
   label,
 }: RadioButtonProps) => {

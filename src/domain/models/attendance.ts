@@ -4,7 +4,7 @@ import { ProductModel } from "./product";
 import { ShippingModel } from "./shipping";
 
 export type AttendanceModel = {
-  id: string;
+  id?: string;
   name: string;
   cpfCnpj: string;
   productList: ProductModel[];

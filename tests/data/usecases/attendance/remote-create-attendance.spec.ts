@@ -6,6 +6,7 @@ import { HttpClientSpy } from "../../mocks/mock-http";
 import {
   mockCreateAttendanceParams,
   mockCreateAttendanceModel,
+  mockRemoteCreateAttendanceModel,
 } from "../../../domain/mocks/mock-create-attendance";
 
 type SutTypes = {
@@ -29,15 +30,28 @@ describe("CreateAttendance", () => {
     const { sut, httpClientSpy } = makeSut(url);
     const createAttendanceParams = mockCreateAttendanceParams();
 
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: mockRemoteCreateAttendanceModel(),
+    };
+
     await sut.create(createAttendanceParams);
 
     expect(httpClientSpy.url).toBe(url);
     expect(httpClientSpy.method).toBe("post");
+    expect(httpClientSpy.body).toEqual({
+      IdPessoaLoja: createAttendanceParams.storeId,
+      NomeAtendimento: createAttendanceParams.name,
+      CpfCnpj: createAttendanceParams.cpfCnpj,
+      IdConsumidor: createAttendanceParams.customerId,
+    });
   });
   it("should throw UnexpectedError if HttpClient returns 422", async () => {
     const { sut, httpClientSpy } = makeSut();
 
-    httpClientSpy.response.statusCode = HttpStatusCode.notFound;
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.notFound,
+    };
 
     const createAttendanceParams = mockCreateAttendanceParams();
 
@@ -51,7 +65,7 @@ describe("CreateAttendance", () => {
 
     httpClientSpy.response = {
       statusCode: HttpStatusCode.ok,
-      body: httpResult,
+      body: mockRemoteCreateAttendanceModel(),
     };
 
     const httpResponse = await sut.create(mockCreateAttendanceParams());

@@ -7,6 +7,7 @@ import { HttpClientSpy } from "../../mocks/mock-http";
 import {
   mockAddProductModel,
   mockAddProductParams,
+  mockRemoteAddProductModel,
 } from "../../../domain/mocks/mock-add-product";
 
 type SutTypes = {
@@ -32,16 +33,28 @@ describe("RemoteAddProduct", () => {
 
     const { sut, httpClientSpy } = makeSut(url);
 
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: mockRemoteAddProductModel(),
+    };
+
     await sut.add(addProductParams);
 
     expect(httpClientSpy.url).toBe(url);
     expect(httpClientSpy.method).toBe("post");
-    expect(httpClientSpy.body).toBe(addProductParams);
+    expect(httpClientSpy.body).toEqual({
+      IdAtendimento: addProductParams.attendanceId,
+      IdPessoaLoja: addProductParams.storeId,
+      IdProduto: addProductParams.productId,
+      Quantidade: addProductParams.amount,
+    });
   });
   it("should throw UnexpectedError if HttpClient returns 422", async () => {
     const { sut, httpClientSpy } = makeSut();
 
-    httpClientSpy.response.statusCode = HttpStatusCode.notFound;
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.notFound,
+    };
 
     const promise = sut.add(mockAddProductParams());
 
@@ -53,7 +66,7 @@ describe("RemoteAddProduct", () => {
 
     httpClientSpy.response = {
       statusCode: HttpStatusCode.ok,
-      body: httpResult,
+      body: mockRemoteAddProductModel(),
     };
 
     const httpResponse = await sut.add(mockAddProductParams());

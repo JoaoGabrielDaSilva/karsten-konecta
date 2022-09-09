@@ -55,7 +55,7 @@ export const PrivateRoutes = () => {
 
 const StackNavigator = () => {
   return (
-    <Stack.Navigator>
+    <Stack.Navigator initialRouteName="Sales">
       <Stack.Screen
         name="NewAttendance"
         component={makeNewAttendance}

@@ -10,37 +10,37 @@ import {
 
 type SutTypes = {
   sut: RemoteCopyAttendance;
-  httpClient: HttpClientSpy<RemoteCopyAttendance.Model>;
+  httpClientSpy: HttpClientSpy<RemoteCopyAttendance.Model>;
 };
 
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
-  const httpClient = new HttpClientSpy<RemoteCopyAttendance.Model>();
-  const sut = new RemoteCopyAttendance(url, httpClient);
+  const httpClientSpy = new HttpClientSpy<RemoteCopyAttendance.Model>();
+  const sut = new RemoteCopyAttendance(url, httpClientSpy);
 
   return {
     sut,
-    httpClient,
+    httpClientSpy,
   };
 };
 
 describe("RemoteCopyAttendance", () => {
   it("should call httpClient with correct values", async () => {
     const url = faker.internet.url();
-    const { sut, httpClient } = makeSut(url);
+    const { sut, httpClientSpy } = makeSut(url);
 
     const deleteAttendanceParams = mockCopyAttendanceParams();
 
     await sut.copy(deleteAttendanceParams);
 
-    expect(httpClient.url).toBe(url);
-    expect(httpClient.method).toBe("post");
-    expect(httpClient.body).toBe(deleteAttendanceParams);
+    expect(httpClientSpy.url).toBe(url);
+    expect(httpClientSpy.method).toBe("post");
+    expect(httpClientSpy.body).toBe(deleteAttendanceParams);
   });
 
   it("should throw UnexpectedError if httpClient returns 422", async () => {
-    const { sut, httpClient } = makeSut();
+    const { sut, httpClientSpy } = makeSut();
 
-    httpClient.response = {
+    httpClientSpy.response = {
       statusCode: HttpStatusCode.notFound,
     };
     const promise = sut.copy(mockCopyAttendanceParams());
@@ -48,11 +48,11 @@ describe("RemoteCopyAttendance", () => {
     expect(promise).rejects.toThrow(new UnexpectedError());
   });
   it("should return CopyAttendanceModel if httpClient returns 200", async () => {
-    const { sut, httpClient } = makeSut();
+    const { sut, httpClientSpy } = makeSut();
 
     const httpResult = mockCopyAttendanceModel();
 
-    httpClient.response = {
+    httpClientSpy.response = {
       statusCode: HttpStatusCode.ok,
       body: httpResult,
     };

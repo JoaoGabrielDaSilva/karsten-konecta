@@ -5,7 +5,10 @@ import { UnexpectedError } from "../../../../src/domain/errors/unexpected-error"
 
 import { HttpClientSpy } from "../../mocks/mock-http";
 import { mockAddProductModel } from "../../../domain/mocks/mock-add-product";
-import { mockDeleteProductParams } from "../../../domain/mocks/mock-delete-product";
+import {
+  mockDeleteProductModel,
+  mockDeleteProductParams,
+} from "../../../domain/mocks/mock-delete-product";
 
 type SutTypes = {
   sut: RemoteDeleteProduct;
@@ -39,15 +42,16 @@ describe("RemoteDeleteProduct", () => {
   it("should throw UnexpectedError if HttpClient returns 422", async () => {
     const { sut, httpClientSpy } = makeSut();
 
-    httpClientSpy.response.statusCode = HttpStatusCode.notFound;
-
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.notFound,
+    };
     const promise = sut.delete(mockDeleteProductParams());
 
     expect(promise).rejects.toThrow(new UnexpectedError());
   });
   it("should return an object of DeleteProductModel if HttpClient returns 200", async () => {
     const { sut, httpClientSpy } = makeSut();
-    const httpResult = mockAddProductModel();
+    const httpResult = mockDeleteProductModel();
 
     httpClientSpy.response = {
       statusCode: HttpStatusCode.ok,

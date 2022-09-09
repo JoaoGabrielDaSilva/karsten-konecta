@@ -7,37 +7,41 @@ import { mockDeleteAttendanceParams } from "../../../domain/mocks/mock-delete-at
 
 type SutTypes = {
   sut: RemoteDeleteAttendance;
-  httpClient: HttpClientSpy;
+  httpClientSpy: HttpClientSpy;
 };
 
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
-  const httpClient = new HttpClientSpy();
-  const sut = new RemoteDeleteAttendance(url, httpClient);
+  const httpClientSpy = new HttpClientSpy();
+  const sut = new RemoteDeleteAttendance(url, httpClientSpy);
 
   return {
     sut,
-    httpClient,
+    httpClientSpy,
   };
 };
 
 describe("RemoteDeleteAttendance", () => {
   it("should call httpClient with correct values", async () => {
     const url = faker.internet.url();
-    const { sut, httpClient } = makeSut(url);
+    const { sut, httpClientSpy } = makeSut(url);
 
     const deleteAttendanceParams = mockDeleteAttendanceParams();
 
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+    };
+
     await sut.delete(deleteAttendanceParams);
 
-    expect(httpClient.url).toBe(url);
-    expect(httpClient.method).toBe("delete");
-    expect(httpClient.body).toBe(deleteAttendanceParams);
+    expect(httpClientSpy.url).toBe(url);
+    expect(httpClientSpy.method).toBe("delete");
+    expect(httpClientSpy.body).toBe(deleteAttendanceParams);
   });
 
   it("should throw UnexpectedError if httpClient returns 422", async () => {
-    const { sut, httpClient } = makeSut();
+    const { sut, httpClientSpy } = makeSut();
 
-    httpClient.response = {
+    httpClientSpy.response = {
       statusCode: HttpStatusCode.notFound,
     };
     const promise = sut.delete(mockDeleteAttendanceParams());
@@ -45,9 +49,9 @@ describe("RemoteDeleteAttendance", () => {
     expect(promise).rejects.toThrow(new UnexpectedError());
   });
   it("should not throw any errors if httpClient returns 200", async () => {
-    const { sut, httpClient } = makeSut();
+    const { sut, httpClientSpy } = makeSut();
 
-    httpClient.response = {
+    httpClientSpy.response = {
       statusCode: HttpStatusCode.ok,
     };
     const promise = sut.delete(mockDeleteAttendanceParams());

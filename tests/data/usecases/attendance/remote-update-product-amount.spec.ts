@@ -41,7 +41,9 @@ describe("RemoteChangeProductAmount", () => {
   it("should throw UnexpectedError if HttpClient returns 422", async () => {
     const { sut, httpClientSpy } = makeSut();
 
-    httpClientSpy.response.statusCode = HttpStatusCode.notFound;
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.notFound,
+    };
 
     const promise = sut.change(mockChangeProductAmountParams());
 
