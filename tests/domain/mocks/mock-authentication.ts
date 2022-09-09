@@ -1,6 +1,8 @@
 import { faker } from "@faker-js/faker";
-import { AuthModel } from "../../../src/domain/models/auth-model";
+import { RemoteAuthentication } from "../../../src/data/usecases/authentication/remote-authentication";
 import { Authentication } from "../../../src/domain/usecases/authentication/authentication";
+
+const userId = faker.random.alphaNumeric(20);
 
 export const mockAuthenticationParams = (): Authentication.Params => ({
   login: faker.internet.email(),
@@ -8,8 +10,15 @@ export const mockAuthenticationParams = (): Authentication.Params => ({
 });
 
 export const mockAuthenticationModel = (): Authentication.Model => ({
-  userId: faker.random.alphaNumeric(20),
+  userId,
 });
+
+export const mockRemoteAuthenticationModel =
+  (): RemoteAuthentication.Model => ({
+    Result: {
+      IdUser: userId,
+    },
+  });
 
 export class AuthenticationSpy implements Authentication {
   authData = mockAuthenticationModel();

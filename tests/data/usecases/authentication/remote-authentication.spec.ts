@@ -8,6 +8,7 @@ import { RemoteAuthentication } from "../../../../src/data/usecases/authenticati
 import {
   mockAuthenticationModel,
   mockAuthenticationParams,
+  mockRemoteAuthenticationModel,
 } from "../../../domain/mocks/mock-authentication";
 
 type SutTypes = {
@@ -33,6 +34,10 @@ describe("RemoteAuthentication", () => {
 
     const { sut, httpClientSpy } = makeSut(url);
 
+    httpClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: mockRemoteAuthenticationModel(),
+    };
     await sut.auth(authenticationParams);
 
     expect(httpClientSpy.url).toBe(url);
