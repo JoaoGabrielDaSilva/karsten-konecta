@@ -21,7 +21,7 @@ export class AuthorizeHttpClientDecorator implements HttpClient {
 
     if (await this.isTokenExpired()) {
       await this.refreshAccessToken();
-      this.request(data);
+      return this.request(data);
     }
 
     const headers = {
@@ -53,6 +53,7 @@ export class AuthorizeHttpClientDecorator implements HttpClient {
       (expireDate &&
         isAfter(new Date().getTime(), new Date(expireDate).getTime()))
     ) {
+      await this.asyncStorage.set("accessToken", null);
       console.log("TOKEN EXPIRADO\nRENOVANDO...");
 
       return true;
