@@ -1,4 +1,4 @@
-import BottomSheet, { BottomSheetFlatList } from "@gorhom/bottom-sheet";
+import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Control, Controller, useController } from "react-hook-form";
 import {
@@ -19,6 +19,7 @@ import {
   withTiming,
 } from "react-native-reanimated";
 import { useTheme } from "styled-components/native";
+import { BottomSheet, BottomSheetRef } from "../../bottom-sheet/bottom-sheet";
 
 import { ListRow } from "../../list/list-row/list-row";
 import {
@@ -99,7 +100,7 @@ export const SelectInput = ({
     [value]
   );
 
-  const bottomSheetRef = useRef<BottomSheet>();
+  const bottomSheetRef = useRef<BottomSheetRef>();
 
   const clearValue = () => {
     onChange("");
@@ -216,17 +217,8 @@ export const SelectInput = ({
       <Modal transparent visible={visible}>
         <BottomSheet
           ref={bottomSheetRef}
-          snapPoints={["25%", "50%", "95%"]}
-          detached
-          enablePanDownToClose
+          snapPoints={options?.length > 10 ? ["95%"] : ["25%", "95%"]}
           onClose={onBlur}
-          backdropComponent={() => (
-            <TouchableOpacity
-              activeOpacity={1}
-              style={{ flex: 1, backgroundColor: "#222222A1" }}
-              onPress={onBlur}
-            />
-          )}
         >
           <BottomSheetFlatList
             data={options}

@@ -18,7 +18,7 @@ export class RemoteCreateAttendance implements CreateAttendance {
       url: this.url,
       method: "post",
       body: {
-        IdConsumidor: customerId || null,
+        IdConsumidor: customerId,
         IdPessoaLoja: storeId,
         NomeAtendimento: name,
         CpfCnpj: cpfCnpj,

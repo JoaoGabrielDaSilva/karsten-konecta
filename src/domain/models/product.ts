@@ -5,4 +5,6 @@ export type ProductModel = {
   ean: string;
   amount?: number;
   hasAvailableAmount?: boolean;
+  weigth?: number;
+  price?: number;
 };

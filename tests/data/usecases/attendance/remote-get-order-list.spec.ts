@@ -1,23 +1,23 @@
 import { faker } from "@faker-js/faker";
 import { HttpStatusCode } from "../../../../src/data/protocols/http/http-client";
-import { RemoteGetAttendance } from "../../../../src/data/usecases/attendance/remote-get-attendance";
 import { UnexpectedError } from "../../../../src/domain/errors/unexpected-error";
 import { HttpClientSpy } from "../../mocks/mock-http";
 import {
   mockGetAttendanceModel,
   mockGetAttendanceParams,
   mockRemoteGetAttendanceModel,
-  mockRemoteGetAttendanceAddressModel,
 } from "../../../domain/mocks/mock-get-attendance";
+import { RemoteGetOrderList } from "../../../../src/data/usecases/attendance/remote-get-order-list";
+import { mockRemoteGetOrderListModel } from "../../mocks/mock-remote-get-order-list";
 
 type SutTypes = {
-  sut: RemoteGetAttendance;
-  httpClientSpy: HttpClientSpy<RemoteGetAttendance.Model>;
+  sut: RemoteGetOrderList;
+  httpClientSpy: HttpClientSpy<RemoteGetOrderList.Model>;
 };
 
 const makeSut = (url: string = faker.internet.url()): SutTypes => {
-  const httpClientSpy = new HttpClientSpy<RemoteGetAttendance.Model>();
-  const sut = new RemoteGetAttendance(url, httpClientSpy);
+  const httpClientSpy = new HttpClientSpy<RemoteGetOrderList.Model>();
+  const sut = new RemoteGetOrderList(url, httpClientSpy);
 
   return {
     sut,
@@ -25,7 +25,7 @@ const makeSut = (url: string = faker.internet.url()): SutTypes => {
   };
 };
 
-describe("RemoteGetAttendance", () => {
+describe("RemoteGetOrderList", () => {
   it("should call HttpClient with correct URL and Method", async () => {
     const url = faker.internet.url();
 
@@ -35,8 +35,9 @@ describe("RemoteGetAttendance", () => {
 
     httpClientSpy.response = {
       statusCode: HttpStatusCode.ok,
-      body: mockRemoteGetAttendanceModel(),
+      body: mockRemoteGetOrderListModel(),
     };
+    W;
 
     await sut.get(getAttendanceParams);
 
@@ -57,7 +58,7 @@ describe("RemoteGetAttendance", () => {
 
     expect(promise).rejects.toThrow(new UnexpectedError());
   });
-  it("should return an object of GetAttendanceModel without address if HttpClient response has no customer address", async () => {
+  it("should return an object of RemoteGetOrderListModel if HttpClient returns 200", async () => {
     const { sut, httpClientSpy } = makeSut();
     const httpResult = mockGetAttendanceModel();
 
@@ -76,23 +77,5 @@ describe("RemoteGetAttendance", () => {
       ...httpResult,
       deliveryAddress: null,
     });
-  });
-  it("should return an object of GetAttendanceModel if HttpClient returns 200", async () => {
-    const { sut, httpClientSpy } = makeSut();
-    const httpResult = mockGetAttendanceModel();
-
-    httpClientSpy.response = {
-      statusCode: HttpStatusCode.ok,
-      body: {
-        Result: {
-          ...mockRemoteGetAttendanceModel().Result,
-          EnderecoEntrega: mockRemoteGetAttendanceAddressModel(),
-        },
-      },
-    };
-
-    const httpResponse = await sut.get(mockGetAttendanceParams());
-
-    expect(httpResponse).toEqual(httpResult);
   });
 });
