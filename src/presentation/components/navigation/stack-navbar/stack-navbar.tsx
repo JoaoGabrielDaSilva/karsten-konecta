@@ -1,14 +1,13 @@
 import React from "react";
 
 import { Container, HeaderIcon, HeaderLeft, HeaderRight } from "./styles";
-import { DrawerHeaderProps } from "@react-navigation/drawer";
 import { BorderlessButton } from "react-native-gesture-handler";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StackHeaderProps } from "@react-navigation/stack";
 import { Typography } from "../../utils";
-import { DrawerActions, useNavigation } from "@react-navigation/native";
+import { DrawerActions } from "@react-navigation/native";
 
-type IconType = keyof typeof MaterialIcons.glyphMap;
+type IconType = keyof typeof MaterialCommunityIconsIcons.glyphMap;
 
 type Props = StackHeaderProps & {
   headerLeftIcon?: IconType;

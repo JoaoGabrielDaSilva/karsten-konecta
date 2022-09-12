@@ -1,4 +1,4 @@
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 import { Row } from "../../utils";
 
@@ -24,7 +24,7 @@ export const HeaderRight = styled(Row).attrs(() => ({
   flex: 1;
 `;
 
-export const HeaderIcon = styled(MaterialIcons)`
+export const HeaderIcon = styled(MaterialCommunityIcons)`
   font-size: ${({ theme }) => theme.fontSize.xl}px;
   color: ${({ theme }) => theme.color.text.primary};
 `;

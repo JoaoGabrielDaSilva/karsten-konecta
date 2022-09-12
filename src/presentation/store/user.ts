@@ -39,5 +39,10 @@ export const useUserStore = create<UserState>((set) => ({
     setCurrentAccountIdAdapter(id);
     set((state) => ({ ...state, id }));
   },
-  logoutUser: () => set((state) => ({ ...state, id: null })),
+  logoutUser: () => {
+    setCurrentAccountIdAdapter(null);
+    makeAsyncStorageAdapter().set("accessToken", null);
+
+    set((state) => ({ ...state, id: null }));
+  },
 }));

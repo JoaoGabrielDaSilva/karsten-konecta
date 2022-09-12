@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React from "react";
+import React, { useEffect } from "react";
 import { ListRenderItemInfo } from "react-native";
 import { useTheme } from "styled-components/native";
 import { GetAttendanceList } from "../../../domain/usecases/attendance/get-attendance-list";
@@ -15,6 +15,7 @@ import {
   usePaginatedList,
 } from "../../hooks/use-paginated-list";
 import { RootPrivateStackParamList } from "../../routes";
+import { useAttendanceListFiltersStore } from "../../store/attendance-list-filters";
 import { Container } from "./styles";
 
 type NavigationProps = StackScreenProps<
@@ -31,11 +32,20 @@ export const AttendanceList = ({
   getAttendanceList,
 }: Props) => {
   const theme = useTheme();
+  const { filters, clearFilters, removeFilter } =
+    useAttendanceListFiltersStore();
 
   const { data, loading, page, onEndReached, totalResults, reset, refreshing } =
     usePaginatedList({
       getFunction: loadAttendanceList,
+      filters,
     });
+
+  useEffect(() => {
+    return () => {
+      clearFilters();
+    };
+  }, []);
 
   async function loadAttendanceList(
     page: number
@@ -44,6 +54,10 @@ export const AttendanceList = ({
       const { attendanceList, totalResults } = await getAttendanceList.execute({
         page,
         storeId: "28",
+        name: filters?.name?.apiValue,
+        cpfCnpj: filters?.cpfCnpj?.apiValue,
+        initialDate: filters?.initialDate?.apiValue,
+        endDate: filters?.endDate?.apiValue,
       });
 
       return {
@@ -66,6 +80,8 @@ export const AttendanceList = ({
     <Container>
       <PaginatedList
         data={data}
+        filters={filters}
+        handleRemoveFilter={({ key }) => removeFilter({ key })}
         onEndReached={onEndReached}
         loading={loading}
         refreshing={refreshing}

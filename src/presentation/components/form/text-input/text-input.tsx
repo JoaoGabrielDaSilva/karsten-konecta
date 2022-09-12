@@ -26,6 +26,7 @@ import { useTheme } from "styled-components/native";
 import { cepMask } from "../../../utils/mask/cep-mask";
 import { cnpjMask } from "../../../utils/mask/cnpj-mask";
 import { cpfMask } from "../../../utils/mask/cpf-mask";
+import { CpfOrCnpjMask } from "../../../utils/mask/cpf-or-cnpj-mask";
 import { phoneMask } from "../../../utils/mask/phone-mask";
 import {
   Container,
@@ -72,6 +73,11 @@ const inputConfigObject: { [key: string]: TypeConfig } = {
     onChange: cnpjMask,
     keyboardType: "number-pad",
   },
+  cpfCnpj: {
+    maxLength: 18,
+    onChange: CpfOrCnpjMask,
+    keyboardType: "number-pad",
+  },
   cep: {
     maxLength: 9,
     onChange: cepMask,
@@ -88,7 +94,7 @@ type Props = TextInputProps & {
   name: string;
   control: any;
   mask?: keyof typeof inputConfigObject;
-  defaultValue?: Control<any, any>;
+  defaultValue?: string;
   style?: StyleProp<ViewStyle>;
   onMaxLength?: () => void;
   loading?: boolean;
@@ -117,14 +123,12 @@ export const TextInput = ({
     field: { value, onChange },
 
     fieldState: { error },
-  } = useController({ name, control });
+  } = useController({ name, control, defaultValue });
   const theme = useTheme();
 
   const clearValue = () => onChange("");
   const ref = useRef<TextInputBaseComponent>();
-  const state = useSharedValue(
-    defaultValue ? InputState.FOCUSED : InputState.UNFOCUSED
-  );
+  const state = useSharedValue(InputState.UNFOCUSED);
 
   const [isFocused, setIsFocused] = useState(!!state.value);
 
@@ -189,7 +193,7 @@ export const TextInput = ({
     if (value && mask) {
       onChange(inputConfigObject[mask].onChange(value));
     }
-  }, []);
+  }, [mask]);
 
   return (
     <Container style={style}>

@@ -1,6 +1,9 @@
+import AsyncStorage from "@react-native-async-storage/async-storage/jest/async-storage-mock";
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import React from "react";
+import { setCurrentAccountIdAdapter } from "../../../main/adapters/current-account-id-adapter";
 import { RootPrivateStackParamList } from "../../routes";
+import { useUserStore } from "../../store/user";
 import { Container, MenuItem } from "./styles";
 
 type NavigationProps = BottomTabScreenProps<RootPrivateStackParamList, "Sales">;

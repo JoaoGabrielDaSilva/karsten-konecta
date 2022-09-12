@@ -29,7 +29,7 @@ export class AxiosHttpClient implements HttpClient {
 }
 
 axios.interceptors.request.use((config) => {
-  console.log(config);
+  console.log(config.params);
 
   return config;
 });

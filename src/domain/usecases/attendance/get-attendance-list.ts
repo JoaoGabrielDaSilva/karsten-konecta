@@ -17,7 +17,7 @@ export namespace GetAttendanceList {
   export type AttendanceList = {
     name: string;
     cpfCnpj: string;
-    createdAt: Date;
+    createdAt: string;
     totalProductsInCart: number;
     lastAddedProduct: ProductModel;
   };

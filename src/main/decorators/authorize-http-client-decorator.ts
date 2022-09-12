@@ -39,7 +39,6 @@ export class AuthorizeHttpClientDecorator implements HttpClient {
         "K-IdUser": userId,
       });
     }
-    console.log("NEW HEADERS", headers);
 
     const httpResponse = await this.httpClient.request({ ...data, headers });
     return httpResponse;

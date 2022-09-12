@@ -4,11 +4,11 @@ import {
   Dimensions,
   FlatList,
   FlatListProps,
-  RefreshControl,
 } from "react-native";
 import { useTheme } from "styled-components/native";
-import { Typography } from "../..";
-import { TotalResults, TotalResultsLoader } from "./styles";
+import { Filter } from "../../../models/filter-model";
+import { FilterTag } from "../../filter-tag/filter-tag";
+import { StyledFilterTag, TotalResults, TotalResultsLoader } from "./styles";
 
 type Props = FlatListProps<any> & {
   loading: boolean;
@@ -16,6 +16,10 @@ type Props = FlatListProps<any> & {
   page?: number;
   refreshControl?: boolean;
   totalResults?: number;
+  filters?: {
+    [key: string]: Filter;
+  };
+  handleRemoveFilter?: (params: { key: string }) => void;
 };
 
 const formatTotalResults = (totalResults: number) => {
@@ -36,6 +40,8 @@ export const PaginatedList = ({
   refreshing,
   totalResults,
   page,
+  filters,
+  handleRemoveFilter,
   ...props
 }: Props) => {
   const theme = useTheme();
@@ -52,6 +58,22 @@ export const PaginatedList = ({
       refreshing={refreshing}
       ListHeaderComponent={
         <>
+          {filters && (
+            <FlatList
+              data={Object.values(filters)}
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              keyExtractor={(item: Filter) => String(item.key)}
+              renderItem={({ item }) => (
+                <StyledFilterTag
+                  {...item}
+                  handleRemove={() =>
+                    handleRemoveFilter && handleRemoveFilter({ key: item.key })
+                  }
+                />
+              )}
+            />
+          )}
           {showTotalResults ? (
             !isFirstLoad ? (
               <TotalResults>{formatTotalResults(totalResults)}</TotalResults>

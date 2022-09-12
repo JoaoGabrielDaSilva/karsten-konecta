@@ -17,12 +17,14 @@ type Props = AttendanceCardProps & {
 export const AttendanceCard = ({
   name,
   cpfCnpj,
-  createdAt = new Date(),
+  createdAt,
   totalProductsInCart,
   lastAddedProduct,
   onButtonPress,
   style,
 }: Props) => {
+  console.log(createdAt);
+
   return (
     <Container style={style} justify="space-between" align="center">
       <Content>
@@ -35,7 +37,7 @@ export const AttendanceCard = ({
         </Value>
         <Value>
           <Label>Data de Criação: </Label>
-          {formatFullDate({ date: createdAt })}
+          {createdAt}
         </Value>
         <Value>
           <Label>Itens no Carrinho: </Label>

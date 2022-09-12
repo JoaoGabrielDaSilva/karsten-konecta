@@ -217,7 +217,7 @@ export const SelectInput = ({
       <Modal transparent visible={visible}>
         <BottomSheet
           ref={bottomSheetRef}
-          snapPoints={options?.length > 10 ? ["95%"] : ["25%", "95%"]}
+          snapPoints={options?.length > 5 ? ["95%"] : ["50%", "95%"]}
           onClose={onBlur}
         >
           <BottomSheetFlatList

@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React from "react";
+import React, { useEffect } from "react";
 import { ListRenderItemInfo } from "react-native";
 import { useTheme } from "styled-components/native";
 import { GetOrderList } from "../../../domain/usecases/attendance/get-order-list";
@@ -16,6 +16,7 @@ import {
 } from "../../hooks/use-paginated-list";
 
 import { RootPrivateStackParamList } from "../../routes";
+import { useOrderListFiltersStore } from "../../store/order-list-filters";
 
 import { Container } from "./styles";
 
@@ -30,9 +31,11 @@ export const OrderList = ({
   getOrderList,
 }: Props) => {
   const theme = useTheme();
+  const { filters, removeFilter, clearFilters } = useOrderListFiltersStore();
   const { data, loading, refreshing, page, totalResults, onEndReached, reset } =
     usePaginatedList({
       getFunction: loadOrderList,
+      filters,
     });
 
   async function loadOrderList(
@@ -42,6 +45,11 @@ export const OrderList = ({
       const { orderList, totalResults } = await getOrderList.execute({
         page,
         storeId: "28",
+        code: filters?.orderCode?.apiValue,
+        cpfCnpj: filters?.cpfCnpj?.apiValue,
+        customerName: filters?.name?.apiValue,
+        createDate: filters?.createdAt?.apiValue,
+        status: filters?.status?.apiValue,
       });
 
       return {
@@ -56,12 +64,20 @@ export const OrderList = ({
     }
   }
 
-  const goToOrderDeails = () => navigate("OrderDetails");
+  // const goToOrderDeails = () => navigate("OrderDetails");
+
+  useEffect(() => {
+    return () => {
+      clearFilters();
+    };
+  }, []);
 
   return (
     <Container>
       <PaginatedList
         data={data}
+        filters={filters}
+        handleRemoveFilter={removeFilter}
         onEndReached={onEndReached}
         loading={loading}
         refreshing={refreshing}
@@ -72,7 +88,7 @@ export const OrderList = ({
           <OrderCard
             {...item}
             style={{ marginBottom: theme.spacing.lg }}
-            onPress={goToOrderDeails}
+            // onPress={goToOrderDeails}
           />
         )}
         loaderComponent={

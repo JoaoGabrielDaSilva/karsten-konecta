@@ -39,12 +39,7 @@ export const Skeleton = ({ variant = "normal", children, ...props }: Props) => {
   });
 
   useEffect(() => {
-    transition.value = withRepeat(
-      withTiming(0, { duration: 700 }),
-      -1,
-      true,
-      () => console.log("RODOU")
-    );
+    transition.value = withRepeat(withTiming(0, { duration: 700 }), -1, true);
   }, []);
 
   return (
