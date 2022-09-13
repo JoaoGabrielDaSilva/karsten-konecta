@@ -25,6 +25,7 @@ export const RightSide = styled(Row)``;
 export const LeftSide = styled(Row)``;
 
 export const Label = styled(Typography)<{ color: string }>`
+  flex: 0.9;
   font-size: ${({ theme }) => theme.fontSize.lg}px;
   color: ${({ theme, color }) => color || theme.color.text.secondary};
 `;

@@ -1,6 +1,6 @@
 const URLs = {
   auth: "https://m2pfccboh1.execute-api.us-east-1.amazonaws.com/PRD/v1",
-  login: "https://tcefcrhsw0.execute-api.us-east-1.amazonaws.com/PRD/v1",
+  user: "https://tcefcrhsw0.execute-api.us-east-1.amazonaws.com/PRD/v1",
   customer: "https://t1yl0ybs37.execute-api.us-east-1.amazonaws.com/PRD/v1",
   attendance: "https://6xhpqthjil.execute-api.us-east-1.amazonaws.com/PRD/v1",
   product: "https://1z855c323f.execute-api.us-east-1.amazonaws.com/PRD/v1",

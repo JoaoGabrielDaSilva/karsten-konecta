@@ -31,7 +31,7 @@ export const DrawerHeader = () => {
       </TopSide>
       <ListRow
         onPress={() => navigate("StoreSelect")}
-        label={store.name}
+        label={store?.name}
         rightIconFamily="feather"
         leftIcon="business"
         rightIcon="chevron-right"

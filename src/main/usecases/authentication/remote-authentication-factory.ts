@@ -5,6 +5,6 @@ import { makeAuthorizeHttpClientDecorator } from "../../factories/decorators/aut
 
 export const makeRemoteAuthentication = (): Authentication =>
   new RemoteAuthentication(
-    makeApiUrl("login", "/sign-in"),
+    makeApiUrl("user", "/sign-in"),
     makeAuthorizeHttpClientDecorator()
   );

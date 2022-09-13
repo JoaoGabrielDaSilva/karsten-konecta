@@ -1,3 +1,5 @@
+import { MenuListModel, MenuModel } from "../../models/menu-model";
+
 export enum Profile {
   ADM = "ADM",
   LOJA = "LOJA",
@@ -5,11 +7,6 @@ export enum Profile {
   LOJA_MM = "LOJA_MM",
   TECELAGEM = "TECELAGEM",
 }
-
-export type MenuModel = {
-  name: string;
-  internalName: string;
-};
 
 export interface GetUserData {
   execute(): Promise<GetUserData.Model>;
@@ -20,9 +17,6 @@ export namespace GetUserData {
     name: string;
     email: string;
     profileList: Profile[];
-    menuList: {
-      section: string;
-      data: MenuModel[];
-    };
+    menuList: MenuListModel[];
   };
 }

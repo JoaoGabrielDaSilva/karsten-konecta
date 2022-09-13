@@ -1,7 +1,6 @@
 import { UnexpectedError } from "../../../domain/errors/unexpected-error";
 import {
   GetUserData,
-  MenuModel,
   Profile,
 } from "../../../domain/usecases/user/get-user-data";
 import { HttpClient, HttpStatusCode } from "../../protocols/http/http-client";
@@ -22,8 +21,34 @@ export class RemoteGetUserData implements GetUserData {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
 
-        result.UsuarioPerfis.reduce(
+        const categories = [];
+        const menus = [];
+
+        const { profileList } = result.UsuarioPerfis.reduce(
           (acc, profile) => {
+            profile.PerfilMenu.forEach((item) => {
+              if (item.Sistema !== "APP" || item.NomeCategoriaPai === "Home")
+                return;
+
+              if (
+                item.NomeCategoriaPai === item.NomeInterno &&
+                !categories.includes(item.NomeCategoriaPai)
+              )
+                return categories.push(item.NomeCategoriaPai);
+
+              if (
+                !menus.some(
+                  (element) => element.internalName === item.NomeInterno
+                )
+              ) {
+                return menus.push({
+                  name: item.NomeMenu,
+                  internalName: item.NomeInterno,
+                  parentName: item.NomeCategoriaPai,
+                });
+              }
+            }, []);
+
             return {
               ...acc,
               profileList: [...acc.profileList, profile.NomePerfil],
@@ -31,9 +56,18 @@ export class RemoteGetUserData implements GetUserData {
           },
           {
             profileList: [] as Profile[],
-            menuList: [] as MenuModel[],
           }
         );
+
+        const menuList = categories.reduce((acc, item) => {
+          return [
+            ...acc,
+            {
+              title: item,
+              data: menus.filter((menu) => menu.parentName === item),
+            },
+          ];
+        }, []);
 
         return {
           name: result.Nome,
@@ -58,6 +92,8 @@ export namespace RemoteGetUserData {
         PerfilMenu: {
           NomeMenu: string;
           NomeInterno: string;
+          NomeCategoriaPai: string;
+          Sistema: string;
         }[];
       }[];
     };

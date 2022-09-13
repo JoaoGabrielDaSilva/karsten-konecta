@@ -19,7 +19,7 @@ export class AuthorizeHttpClientDecorator implements HttpClient {
     const accessToken = await this.asyncStorage.get("accessToken");
     const userId = await this.asyncStorage.get("userId");
 
-    if (await this.isTokenExpired()) {
+    if (!accessToken || (await this.isTokenExpired())) {
       await this.refreshAccessToken();
       return this.request(data);
     }
@@ -71,6 +71,5 @@ export class AuthorizeHttpClientDecorator implements HttpClient {
 
     console.log("Token irá expirar em: ", new Date(tokenExpireDate));
     console.log("TOKEN:  ", accessToken);
-    console.log(!!accessToken);
   }
 }

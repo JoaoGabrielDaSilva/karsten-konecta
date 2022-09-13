@@ -1,16 +1,16 @@
 import { Feather } from "@expo/vector-icons";
 import { DrawerContentComponentProps } from "@react-navigation/drawer/lib/typescript/src/types";
 import React, { useMemo } from "react";
-import { SectionListRenderItem, SectionListRenderItemInfo } from "react-native";
-import { SectionList, SectionListData } from "react-native";
-import { RectButton } from "react-native-gesture-handler";
+import { SectionList, SectionListRenderItemInfo } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 import { useTheme } from "styled-components";
+import { MenuModel } from "../../../domain/models/menu-model";
 import { RootPrivateStackParamList } from "../../routes";
 import { useUserStore } from "../../store/user";
 import { ListRow } from "../list/list-row/list-row";
 import { DrawerHeader } from "./drawer-header/drawer-header";
 
-import { DrawerItemContainer, DrawerItemLabel } from "./styles";
+import { LogoutListRow, MenuItem, StyledSectionTitle, Version } from "./styles";
 
 type Props = DrawerContentComponentProps;
 
@@ -21,59 +21,55 @@ type RouteMenuItem = {
   icon: keyof typeof Feather.glyphMap;
 };
 
+const ICON: keyof typeof Feather.glyphMap = "activity";
+
+const routeConfigs = {};
+
 export const Drawer = ({
   navigation: { navigate },
   state,
   ...props
 }: Props) => {
   const theme = useTheme();
-  const { logoutUser } = useUserStore();
+  const { logoutUser, menuList } = useUserStore();
 
   const currentRoute = state.routes[state.index]?.name;
 
-  const sections = useMemo(
-    () => [
-      {
-        title: "RelacionamentoDigital",
-        data: [
-          {
-            label: "Registrar Cliente",
-            name: "CustomerRegister",
-            onPress: () => navigate("CustomerRegister"),
-            icon: "user-plus",
-          },
-        ],
-      },
-    ],
-    []
-  );
-
   return (
     <SectionList
-      sections={sections}
+      sections={menuList}
       keyExtractor={(_, index) => String(index)}
-      renderItem={({ item }: SectionListRenderItemInfo<RouteMenuItem>) => {
+      renderItem={({
+        item,
+        index,
+        section: { data },
+      }: SectionListRenderItemInfo<MenuModel>) => {
         const active = currentRoute === item.name;
 
         return (
-          <ListRow
-            leftIcon={item.icon}
+          <MenuItem
+            leftIcon={item.icon || ICON}
             background={
               active ? theme.color.blue[100] : theme.color.background.primary
             }
-            style={{
-              marginTop: theme.spacing.lg,
-              paddingHorizontal: theme.spacing.lg,
-            }}
             color={active ? theme.color.blue[300] : theme.color.text.secondary}
             rightIcon="chevron-right"
-            borderless
             leftIconFamily="feather"
+            borderless
+            // borderless={index === data.length - 1}
             rightIconFamily="feather"
+            label={item.name}
+            textStyle={{
+              fontSize: RFValue(theme.fontSize.sm),
+            }}
             {...item}
           />
         );
       }}
+      stickySectionHeadersEnabled={false}
+      renderSectionHeader={({ section }) => (
+        <StyledSectionTitle>{section.title}</StyledSectionTitle>
+      )}
       contentContainerStyle={{
         paddingVertical: theme.spacing.xl,
       }}
@@ -82,13 +78,17 @@ export const Drawer = ({
       }}
       ListHeaderComponent={<DrawerHeader />}
       ListFooterComponent={
-        <ListRow
-          label="Sair"
-          rightIcon="chevron-right"
-          rightIconFamily="feather"
-          borderless
-          onPress={logoutUser}
-        />
+        <>
+          <LogoutListRow
+            label="Sair"
+            rightIcon="chevron-right"
+            rightIconFamily="feather"
+            borderless
+            onPress={logoutUser}
+            color={theme.color.red[500]}
+          />
+          <Version>versão 0.0.1</Version>
+        </>
       }
     />
   );
@@ -98,29 +98,4 @@ type DrawerItemProps = {
   label: string;
   onPress: () => void;
   isActive?: boolean;
-};
-
-export const CustomDrawerItem = ({
-  isActive,
-  label,
-  ...props
-}: DrawerItemProps) => {
-  const theme = useTheme();
-
-  return (
-    <DrawerItemContainer
-      style={{
-        backgroundColor: !isActive
-          ? theme.color.blue[100]
-          : theme.color.background.primary,
-      }}
-    >
-      <DrawerItemLabel
-        semibold
-        color={!isActive ? theme.color.blue[300] : theme.color.text.secondary}
-      >
-        {label}
-      </DrawerItemLabel>
-    </DrawerItemContainer>
-  );
 };

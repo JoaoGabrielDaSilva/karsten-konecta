@@ -31,6 +31,7 @@ import {
 } from "../../../main/adapters/last-logged-in-account-adapter";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { makeLoginSchema } from "./login-schema";
+import { GetUserData } from "../../../domain/usecases/user/get-user-data";
 
 type FormValues = {
   login: string;
@@ -40,10 +41,11 @@ type FormValues = {
 
 type Props = {
   authentication: Authentication;
+  getUserData: GetUserData;
 };
 
-export const Login = ({ authentication }: Props) => {
-  const { setUserId } = useUserStore();
+export const Login = ({ authentication, getUserData }: Props) => {
+  const { setUserData, setUserId } = useUserStore();
 
   const [loading, setLoading] = useState(false);
 
@@ -56,13 +58,19 @@ export const Login = ({ authentication }: Props) => {
       setLoading(true);
       const response = await authentication.auth({ login, password });
 
-      setLoading(false);
       setUserId({ id: response.userId });
+      setLoading(false);
       if (rememberMe) {
         setLastLoggedInAccountAdapter({ login, password, rememberMe });
       } else {
         setLastLoggedInAccountAdapter(null);
       }
+
+      const userData = await getUserData.execute();
+
+      setUserData({ ...userData });
+
+      console.log(userData);
     } catch (error) {
       console.error(error.message);
       setLoading(false);

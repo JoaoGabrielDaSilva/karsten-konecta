@@ -2,6 +2,7 @@ import { Feather, MaterialIcons } from "@expo/vector-icons";
 import React from "react";
 import {
   StyleProp,
+  TextStyle,
   TouchableOpacity,
   TouchableWithoutFeedback,
   ViewStyle,
@@ -33,6 +34,7 @@ export type ListRowProps = {
   color?: string;
   background?: string;
   style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
   borderless?: boolean;
   leftIconFamily?: IconFamily;
   rightIconFamily?: IconFamily;
@@ -47,23 +49,31 @@ export const ListRow = ({
   color,
   leftIconFamily = "material",
   rightIconFamily = "material",
+  textStyle,
   onPress,
-
   ...props
 }: ListRowProps) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.5}>
       <Container justify="space-between" align="center" {...props}>
-        <LeftSide>
+        <LeftSide align="center">
           {leftIcon && leftIconFamily === "material" ? (
             <MaterialLeftIcon color={color} name={leftIcon} />
           ) : (
             <FeatherLeftIcon color={color} name={leftIcon} />
           )}
-          {label ? <Label color={color}>{label}</Label> : null}
+          {label ? (
+            <Label style={textStyle} color={color}>
+              {label}
+            </Label>
+          ) : null}
         </LeftSide>
-        <RightSide>
-          {value ? <Value color={color}>{value}</Value> : null}
+        <RightSide align="center">
+          {value ? (
+            <Value style={textStyle} color={color}>
+              {value}
+            </Value>
+          ) : null}
           {rightIcon && rightIconFamily === "material" ? (
             <MaterialRightIcon color={color} name={rightIcon} />
           ) : (
