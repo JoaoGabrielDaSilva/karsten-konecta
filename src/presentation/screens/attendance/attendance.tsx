@@ -13,8 +13,10 @@ import { RemoteGetAttendance } from "../../../data/usecases/attendance/remote-ge
 import { CreateAttendance } from "../../../domain/usecases/attendance/create-attendance";
 import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
 import { RetrieveAttendance } from "../../../domain/usecases/attendance/retrieve-attendance";
+import { GetCustomer } from "../../../domain/usecases/customer/get-customer";
 import { GetShippingInfo } from "../../../domain/usecases/shipping/get-shipping-info";
 import { Address } from "../../components/address/address";
+import { Button } from "../../components/buttons/button/button";
 import { AttendanceListProductLoader } from "../../components/list/attendance-list-product/loader/attendance-list-product-loader";
 import { ShippingInfo } from "../../components/shipping-info/shipping-info";
 import { AttendanceProductModel } from "../../models/Attendance";
@@ -26,7 +28,12 @@ import { AttendanceAddress } from "./layout/attendance-address/attendance-addres
 import { AttendanceFooter } from "./layout/attendance-footer/attendance-footer";
 import { AttendanceHeader } from "./layout/attendance-header/attendance-header";
 
-import { Container, Content, ListProduct } from "./styles";
+import {
+  Container,
+  Content,
+  DeleteAttendanceContainer,
+  ListProduct,
+} from "./styles";
 
 type NavigationProps = StackScreenProps<
   RootPrivateStackParamList,
@@ -38,6 +45,7 @@ type Props = NavigationProps & {
   retrieveAttendance: RetrieveAttendance;
   createAttendance: CreateAttendance;
   getShippingInfo: GetShippingInfo;
+  getCustomer: GetCustomer;
 };
 
 export const Attendance = ({
@@ -47,12 +55,15 @@ export const Attendance = ({
   retrieveAttendance,
   createAttendance,
   getShippingInfo,
+  getCustomer,
 }: Props) => {
-  const attendanceName = route.params?.name;
+  const params = route.params;
+
+  const attendanceName = params?.name;
 
   const [loading, setLoading] = useState(true);
-  const { productList, setAttendance } = useAttendanceStore();
-  const { data: customer } = useCustomerStore();
+  const { productList, setAttendance, clearAttendance } = useAttendanceStore();
+  const { data: customer, clearCustomer, setCustomer } = useCustomerStore();
 
   const theme = useTheme();
 
@@ -65,24 +76,54 @@ export const Attendance = ({
     setAttendance({
       ...attendance,
       id: String(id),
-      shippingInfo: { days: 5 },
-      deliveryAddress: null,
     });
     setLoading(false);
   };
 
   const loadData = async () => {
     try {
-      setLoading(true);
-      const retrievedAttendance = await retrieveAttendance.retrieve({
-        cpfCnpj: customer.cpfCnpj,
-        customerId: customer.id,
+      if (!loading) setLoading(true);
+      const customer = await getCustomer.get({
         storeId: "28",
+        cpfCnpj: params?.cpfCnpj,
       });
 
-      loadAttendance(retrievedAttendance.id);
+      setCustomer({
+        ...customer,
+        id: String(customer.id),
+      });
+
+      await getAttendanceData();
+
+      console.log("CUSTOMER", params);
     } catch (error) {
       console.log(error);
+      await createNewAttendance();
+    }
+  };
+
+  const getAttendanceData = async () => {
+    try {
+      if (params?.id) return loadAttendance(params.id);
+
+      setLoading(true);
+      if (customer?.cpfCnpj) {
+        const retrievedAttendance = await retrieveAttendance.retrieve({
+          cpfCnpj: customer.cpfCnpj,
+          customerId: customer.id,
+          storeId: "28",
+        });
+
+        loadAttendance(retrievedAttendance.id);
+      }
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  const createNewAttendance = async () => {
+    try {
       const createdAttendance = await createAttendance.create({
         name: customer.name || attendanceName,
         cpfCnpj: customer.cpfCnpj,
@@ -91,11 +132,21 @@ export const Attendance = ({
       });
 
       loadAttendance(createdAttendance.id);
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
     }
   };
 
   useEffect(() => {
     loadData();
+
+    return () => {
+      clearAttendance();
+      if (customer?.id) {
+        clearCustomer();
+      }
+    };
   }, []);
 
   return (
@@ -143,6 +194,13 @@ export const Attendance = ({
                     <AttendanceListProductLoader />
                   </>
                 )}
+                <DeleteAttendanceContainer>
+                  <Button
+                    disabled={loading}
+                    text="Excluir Atendimento"
+                    onPress={() => {}}
+                  />
+                </DeleteAttendanceContainer>
                 <AttendanceAddress
                   getShippingInfo={getShippingInfo}
                   loading={loading}

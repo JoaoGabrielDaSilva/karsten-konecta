@@ -15,6 +15,7 @@ export namespace GetAttendanceList {
   };
 
   export type AttendanceList = {
+    id: string;
     name: string;
     cpfCnpj: string;
     createdAt: string;

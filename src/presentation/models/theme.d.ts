@@ -10,6 +10,7 @@ export type Theme = {
       primary: string;
       inverted: string;
       secondary: string;
+      emphasis: string;
     };
     focused: string;
     unfocused: string;

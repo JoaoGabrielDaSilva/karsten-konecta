@@ -4,21 +4,22 @@ import { CustomerModel, Gender } from "../../domain/models/customer";
 type CustomerState = {
   data: CustomerModel;
   setCustomer?: (data: CustomerModel) => void;
+  clearCustomer?: () => void;
 };
 
 const initialState: CustomerState = {
   data: {
-    id: "10",
-    name: "João",
-    email: "joao.gabsilva1007@gmail.com",
-    cpfCnpj: "02526108063",
-    phone: "51995702823",
+    id: "",
+    name: "",
+    email: "",
+    cpfCnpj: "",
+    phone: "",
     personType: null,
     optEmail: false,
-    optSms: true,
-    optPhoneCall: true,
+    optSms: false,
+    optPhoneCall: false,
     optWhatsapp: null,
-    gender: Gender.MALE,
+    gender: null,
     birthDate: null,
     fantasyName: "",
     stateRegistration: null,
@@ -33,4 +34,5 @@ export const useCustomerStore = create<CustomerState>((set) => ({
       ...state,
       data,
     })),
+  clearCustomer: () => set({ ...initialState }),
 }));

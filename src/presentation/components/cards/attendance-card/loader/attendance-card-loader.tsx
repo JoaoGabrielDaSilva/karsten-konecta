@@ -1,8 +1,7 @@
 import React from "react";
 import { Dimensions, StyleProp, ViewStyle } from "react-native";
-import { Button } from "../../../buttons/button/button";
 import { ListProductLoader } from "../../../list/list-product/loader/list-product-loader";
-import { Container, Name, Content, Value } from "./styles";
+import { Container, Name, Content, Value, StyledButton } from "./styles";
 
 type Props = {
   style?: StyleProp<ViewStyle>;
@@ -21,7 +20,11 @@ export const AttendanceCardLoader = ({ style }: Props) => {
         <Value width={width * 0.25} height={10} />
 
         <ListProductLoader />
-        <Button text="Continuar Atendimento" onPress={() => {}} disabled />
+        <StyledButton
+          text="Continuar Atendimento"
+          onPress={() => {}}
+          disabled
+        />
       </Content>
     </Container>
   );

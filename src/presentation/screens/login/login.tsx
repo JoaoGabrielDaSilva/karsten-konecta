@@ -63,11 +63,6 @@ export const Login = ({ authentication }: Props) => {
       } else {
         setLastLoggedInAccountAdapter(null);
       }
-      Toast({
-        type: "success",
-        title: "Sucesso!",
-        message: "Login Realizado com sucesso!",
-      });
     } catch (error) {
       console.error(error.message);
       setLoading(false);

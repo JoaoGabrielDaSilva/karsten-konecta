@@ -12,6 +12,7 @@ export const darkTheme: Theme = {
       primary: "#FFF",
       inverted: "#000000",
       secondary: "#bbb",
+      emphasis: "#ccc",
     },
     focused: "",
     unfocused: "",

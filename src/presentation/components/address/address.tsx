@@ -61,7 +61,7 @@ export const Address = ({
         <Value>
           {street}, {number}
         </Value>
-        <Value>{complement}</Value>
+        {complement ? <Value>{complement}</Value> : null}
         <Value>
           {district} - {city}/{state}
         </Value>
@@ -69,10 +69,12 @@ export const Address = ({
           <Label>CEP: </Label>
           {cep}
         </Value>
-        <Value>
-          <Label>Referência: </Label>
-          {reference}
-        </Value>
+        {reference ? (
+          <Value>
+            <Label>Referência: </Label>
+            {reference}
+          </Value>
+        ) : null}
       </Content>
       {showRightArrow && !editable && !selectable && (
         <ArrowIcon name="chevron-right" />

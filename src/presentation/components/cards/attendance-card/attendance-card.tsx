@@ -1,11 +1,9 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { GetAttendanceList } from "../../../../domain/usecases/attendance/get-attendance-list";
-import { formatFullDate } from "../../../utils/date/format-full-date";
 import { cpfMask } from "../../../utils/mask/cpf-mask";
-import { Button } from "../../buttons/button/button";
 import { ListProduct } from "../../list/list-product/list-product";
-import { Container, Name, Label, Content, Value } from "./styles";
+import { Container, Name, Label, Content, Value, StyledButton } from "./styles";
 
 export type AttendanceCardProps = GetAttendanceList.AttendanceList;
 
@@ -47,8 +45,8 @@ export const AttendanceCard = ({
           <Label>Último Produto Adicionado:</Label>
         </Value>
 
-        <ListProduct {...lastAddedProduct} />
-        <Button text="Continuar Atendimento" onPress={onButtonPress} />
+        {lastAddedProduct && <ListProduct {...lastAddedProduct} />}
+        <StyledButton text="Continuar Atendimento" onPress={onButtonPress} />
       </Content>
     </Container>
   );

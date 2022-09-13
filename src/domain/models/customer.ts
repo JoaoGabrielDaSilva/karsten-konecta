@@ -1,3 +1,5 @@
+import { AddressModel } from "./address";
+
 export enum PersonType {
   NATURAL,
   LEGAL,
@@ -17,6 +19,7 @@ type GenericCustomer = {
   phone: string;
   personType?: PersonType;
   optEmail: boolean;
+  addressList: AddressModel[];
   optSms: boolean;
   optPhoneCall: boolean;
   optWhatsapp: boolean;

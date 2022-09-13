@@ -54,6 +54,21 @@ export class RemoteGetCustomer implements GetCustomer {
           optSms: !!result.NtSms,
           optPhoneCall: !!result.NtLigacaoTelefonica,
           optWhatsapp: !!result.NtWhatsapp,
+          addressList: result?.Enderecos
+            ? result.Enderecos.map((item) => ({
+                id: String(item.IdConsumidorLojaEndereco),
+                name: item.NomeEndereco,
+                cep: item.Cep,
+                street: item.Logradouro,
+                number: item.LogradouroNumero,
+                district: item.Bairro,
+                complement: item?.LogradouroComplemento,
+                city: item.Cidade,
+                state: item.Uf,
+                reference: item?.Referencia,
+                isMain: item.Principal,
+              }))
+            : [],
         };
       default:
         throw new UnexpectedError();
@@ -79,6 +94,19 @@ export namespace RemoteGetCustomer {
       NomeFantasia?: string;
       InscricaoEstadual?: string;
       NomeResponsavel?: string;
+      Enderecos: {
+        Bairro: string;
+        Cep: string;
+        Cidade: string;
+        IdConsumidorLojaEndereco: number;
+        Logradouro: string;
+        LogradouroComplemento: string;
+        LogradouroNumero: string;
+        NomeEndereco: string;
+        Principal: boolean;
+        Referencia: string;
+        Uf: string;
+      }[];
     };
   };
 }

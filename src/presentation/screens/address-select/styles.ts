@@ -12,9 +12,8 @@ export const StyledAddress = styled(Address)`
 `;
 
 export const Footer = styled.View`
-  flex: 1;
-
   background-color: ${({ theme }) => theme.color.background.primary};
 
   padding: ${({ theme }) => theme.spacing.lg}px;
+  padding-bottom: ${({ theme }) => theme.spacing.xxl}px;
 `;

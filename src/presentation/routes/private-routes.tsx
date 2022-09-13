@@ -3,6 +3,7 @@ import { View } from "react-native";
 
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { useTheme } from "styled-components/native";
+import { makeAddressSelect } from "../../main/factories/pages/addres-select-factory";
 import { makeAttendance } from "../../main/factories/pages/attendance-factory";
 import { makeAttendanceList } from "../../main/factories/pages/attendance-list-factory";
 import { makeNewAttendance } from "../../main/factories/pages/new-attendance.factory";
@@ -27,7 +28,9 @@ export type RootPrivateStackParamList = {
   NewAttendance: undefined;
   NewNoCustomerAttendance: undefined;
   Attendance: {
+    id: string;
     name?: string;
+    cpfCnpj?: string;
   };
   AddressSelect: undefined;
   ProductList: undefined;
@@ -88,7 +91,7 @@ const StackNavigator = () => {
             <StackNavbar
               headerLeftIcon="close"
               onLeftIconPress={() => props.navigation.navigate("Sales")}
-              rightIcon="search"
+              rightIcon="text-search"
               onRightIconPress={() => props.navigation.navigate("ProductList")}
               {...props}
             />
@@ -123,7 +126,7 @@ const StackNavigator = () => {
       />
       <Stack.Screen
         name="AddressSelect"
-        component={AddressSelect}
+        component={makeAddressSelect}
         options={{
           title: "Selecionar Endereço",
           header: (props) => <StackNavbar {...props} />,

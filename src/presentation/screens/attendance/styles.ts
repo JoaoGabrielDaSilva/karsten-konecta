@@ -20,3 +20,9 @@ export const CustomTextInput = styled(TextInput)`
 export const ListProduct = styled(AttendanceListProduct)`
   padding: 0px ${({ theme }) => theme.spacing.lg}px;
 `;
+
+export const DeleteAttendanceContainer = styled.View`
+  background-color: ${({ theme }) => theme.color.background.primary};
+
+  padding: ${({ theme }) => theme.spacing.lg}px;
+`;

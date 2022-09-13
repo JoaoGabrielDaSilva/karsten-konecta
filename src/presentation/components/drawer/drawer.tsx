@@ -6,6 +6,7 @@ import { SectionList, SectionListData } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components";
 import { RootPrivateStackParamList } from "../../routes";
+import { useUserStore } from "../../store/user";
 import { ListRow } from "../list/list-row/list-row";
 import { DrawerHeader } from "./drawer-header/drawer-header";
 
@@ -26,6 +27,7 @@ export const Drawer = ({
   ...props
 }: Props) => {
   const theme = useTheme();
+  const { logoutUser } = useUserStore();
 
   const currentRoute = state.routes[state.index]?.name;
 
@@ -79,6 +81,15 @@ export const Drawer = ({
         paddingHorizontal: theme.spacing.lg,
       }}
       ListHeaderComponent={<DrawerHeader />}
+      ListFooterComponent={
+        <ListRow
+          label="Sair"
+          rightIcon="chevron-right"
+          rightIconFamily="feather"
+          borderless
+          onPress={logoutUser}
+        />
+      }
     />
   );
 };

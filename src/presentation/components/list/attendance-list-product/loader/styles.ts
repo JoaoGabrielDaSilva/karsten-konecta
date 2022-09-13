@@ -1,9 +1,8 @@
-import { Dimensions } from "react-native";
 import styled from "styled-components/native";
 import { Skeleton } from "../../../skeleton/skeleton";
 import { Row } from "../../../utils";
 
-export const Container = styled(Row)<{ borderless: boolean }>`
+export const Container = styled.View<{ borderless: boolean }>`
   padding: ${({ theme }) => theme.spacing.lg}px;
 
   background-color: ${({ theme }) => theme.color.background.primary};
@@ -37,4 +36,14 @@ export const Code = styled(Skeleton)`
 
 export const Ean = styled(Skeleton)`
   margin-top: ${({ theme }) => theme.spacing.sm}px;
+`;
+
+export const Bottom = styled(Row)`
+  margin-top: ${({ theme }) => theme.spacing.lg}px;
+`;
+
+export const DeleteText = styled(Skeleton)``;
+
+export const DeleteIcon = styled(Skeleton)`
+  margin-right: ${({ theme }) => theme.spacing.sm}px;
 `;

@@ -3,7 +3,7 @@ import { StyleProp, ViewStyle } from "react-native";
 import { AttendanceProductModel } from "../../../models/Attendance";
 import { useAttendanceStore } from "../../../store/attendance";
 import { AmountButton } from "../../buttons/amount-button/amount-button";
-import { Row } from "../../utils";
+import { Row, Typography } from "../../utils";
 import {
   Container,
   Left,
@@ -16,6 +16,9 @@ import {
   Ean,
   Col,
   Content,
+  Bottom,
+  DeleteIcon,
+  DeleteText,
 } from "./styles";
 
 type Props = AttendanceProductModel & {
@@ -37,34 +40,41 @@ export const AttendanceListProduct = ({
   return (
     <Container style={style}>
       <Content borderless={borderless}>
-        <Left>
-          <ImageWrapper>
-            <Image source={{ uri }} resizeMode="contain" />
-          </ImageWrapper>
-        </Left>
-        <Right>
-          <Name>{name}</Name>
+        <Row>
+          <Left>
+            <ImageWrapper>
+              <Image source={{ uri }} resizeMode="contain" />
+            </ImageWrapper>
+          </Left>
+          <Right>
+            <Name>{name}</Name>
 
-          <Row justify="space-between">
-            <Col>
-              <Code>
-                <Label>Código: </Label>
-                {code}
-              </Code>
-              <Ean>
-                <Label>EAN: </Label>
-                {ean}
-              </Ean>
-            </Col>
-            <AmountButton
-              style={{ alignSelf: "flex-end" }}
-              amount={amount}
-              maxAmount={10}
-              onDecrease={() => decreaseProductAmount({ code })}
-              onIncrease={() => increaseProductAmount({ code })}
-            />
+            <Row justify="space-between">
+              <Col>
+                <Code>
+                  <Label>Código: </Label>
+                  {code}
+                </Code>
+                <Ean>
+                  <Label>EAN: </Label>
+                  {ean}
+                </Ean>
+              </Col>
+            </Row>
+          </Right>
+        </Row>
+        <Bottom align="center" justify="space-between">
+          <AmountButton
+            amount={amount}
+            maxAmount={10}
+            onDecrease={() => decreaseProductAmount({ code })}
+            onIncrease={() => increaseProductAmount({ code })}
+          />
+          <Row align="center">
+            <DeleteIcon name="trash-can-outline" />
+            <DeleteText>Excluir item</DeleteText>
           </Row>
-        </Right>
+        </Bottom>
       </Content>
     </Container>
   );

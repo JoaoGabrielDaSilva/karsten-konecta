@@ -1,6 +1,6 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { StackScreenProps } from "@react-navigation/stack";
-import React from "react";
+import React, { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { ScrollView } from "react-native";
 import { BorderlessButton, RectButton } from "react-native-gesture-handler";
@@ -13,7 +13,7 @@ import { SelectInput } from "../../components/form/select-input/select-input";
 import { SectionTitle } from "../../components/utils/section-title/section-title";
 
 import { RootPrivateStackParamList } from "../../routes";
-import { mockAddress } from "../../store/attendance";
+import { useAttendanceStore } from "../../store/attendance";
 import { useCustomerStore } from "../../store/customer";
 import { customerRegisterSchema } from "./schema";
 import {
@@ -53,7 +53,8 @@ const genderOptions = [
 export const CustomerRegister = ({ navigation: { navigate } }: Props) => {
   const loading = false;
 
-  const { data: customer } = useCustomerStore();
+  const { data: customer, clearCustomer } = useCustomerStore();
+  const { clearAttendance, ...attendance } = useAttendanceStore();
 
   const { control, handleSubmit } = useForm({
     resolver: yupResolver(customerRegisterSchema),
@@ -65,6 +66,15 @@ export const CustomerRegister = ({ navigation: { navigate } }: Props) => {
   console.log(customer);
 
   const onSubmit = () => {};
+
+  useEffect(() => {
+    return () => {
+      if (!attendance?.id) {
+        clearAttendance();
+        clearCustomer();
+      }
+    };
+  }, []);
 
   return (
     <Container>
@@ -109,27 +119,18 @@ export const CustomerRegister = ({ navigation: { navigate } }: Props) => {
           </BorderlessButton>
         </StyledRow>
         <Content>
-          <RectButton
-            onPress={() =>
-              navigate("AddressRegister", {
-                address: mockAddress(),
-              })
-            }
-          >
-            <Address {...mockAddress()} />
-          </RectButton>
-          <RectButton
-            onPress={() =>
-              navigate("AddressRegister", {
-                address: {
-                  ...mockAddress(),
-                  isMain: false,
-                },
-              })
-            }
-          >
-            <Address {...mockAddress()} isMain={false} />
-          </RectButton>
+          {customer?.addressList?.map((address) => (
+            <RectButton
+              key={address.id}
+              onPress={() =>
+                navigate("AddressRegister", {
+                  address,
+                })
+              }
+            >
+              <Address {...address} />
+            </RectButton>
+          ))}
         </Content>
         <StyledSectionTitle>Opcionais</StyledSectionTitle>
 

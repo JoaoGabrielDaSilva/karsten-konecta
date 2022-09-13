@@ -74,7 +74,8 @@ export const AttendanceList = ({
     }
   }
 
-  const handleContinueAttendance = () => navigate("Attendance");
+  const handleContinueAttendance = (params: { cpfCnpj: string; id: string }) =>
+    navigate("Attendance", params);
 
   return (
     <Container>
@@ -90,7 +91,9 @@ export const AttendanceList = ({
         renderItem={({ item }: ListRenderItemInfo<AttendanceCardProps>) => (
           <AttendanceCard
             {...item}
-            onButtonPress={handleContinueAttendance}
+            onButtonPress={() =>
+              handleContinueAttendance({ id: item.id, cpfCnpj: item.cpfCnpj })
+            }
             style={{ marginBottom: theme.spacing.lg }}
           />
         )}

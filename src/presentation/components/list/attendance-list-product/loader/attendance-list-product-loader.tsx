@@ -13,6 +13,9 @@ import {
   Col,
   FirstLineName,
   SecondLineName,
+  Bottom,
+  DeleteIcon,
+  DeleteText,
 } from "./styles";
 
 type Props = {
@@ -26,30 +29,36 @@ export const AttendanceListProductLoader = ({ borderless }: Props) => {
 
   return (
     <Container borderless={borderless}>
-      <Left>
-        <Image
-          width={width * 0.2}
-          height={width * 0.2}
-          borderRadius={theme.radii.md}
-        />
-      </Left>
-      <Right>
-        <Row justify="space-between">
-          <Col>
-            <FirstLineName width={width * 0.68} height={10} />
-            <SecondLineName width={width * 0.35} height={10} />
-            <Row align="center" justify="space-between">
-              <Col>
-                <Code width={width * 0.3} height={10} />
-                <Ean width={width * 0.35} height={10} />
-              </Col>
-              <Row style={{ alignSelf: "flex-end" }}>
-                <AmountButtonLoader />
+      <Row>
+        <Left>
+          <Image
+            width={width * 0.2}
+            height={width * 0.2}
+            borderRadius={theme.radii.md}
+          />
+        </Left>
+        <Right>
+          <Row justify="space-between">
+            <Col>
+              <FirstLineName width={width * 0.68} height={10} />
+              <SecondLineName width={width * 0.35} height={10} />
+              <Row align="center" justify="space-between">
+                <Col>
+                  <Code width={width * 0.3} height={10} />
+                  <Ean width={width * 0.35} height={10} />
+                </Col>
               </Row>
-            </Row>
-          </Col>
+            </Col>
+          </Row>
+        </Right>
+      </Row>
+      <Bottom align="center" justify="space-between">
+        <AmountButtonLoader />
+        <Row>
+          <DeleteIcon width={15} height={15} />
+          <DeleteText width={75} height={15} />
         </Row>
-      </Right>
+      </Bottom>
     </Container>
   );
 };

@@ -4,6 +4,7 @@ import {
   Dimensions,
   FlatList,
   FlatListProps,
+  RefreshControl,
 } from "react-native";
 import { useTheme } from "styled-components/native";
 import { Filter } from "../../../models/filter-model";
@@ -56,6 +57,14 @@ export const PaginatedList = ({
       {...props}
       onEndReachedThreshold={0.1}
       refreshing={refreshing}
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={props.onRefresh}
+          tintColor="black"
+          colors={["black"]}
+        />
+      }
       ListHeaderComponent={
         <>
           {filters && (
@@ -77,27 +86,29 @@ export const PaginatedList = ({
           {showTotalResults ? (
             !isFirstLoad ? (
               <TotalResults>{formatTotalResults(totalResults)}</TotalResults>
-            ) : loaderComponent ? (
-              <TotalResultsLoader
-                variant="dark"
-                width={width * 0.4}
-                height={15}
-              />
             ) : (
-              <>
-                <TotalResults>Buscando...</TotalResults>
-
-                {loading && !loaderComponent && (
-                  <ActivityIndicator color={theme.color.text.primary} />
-                )}
-              </>
+              loaderComponent && (
+                <TotalResultsLoader
+                  variant="dark"
+                  width={width * 0.4}
+                  height={15}
+                />
+              )
             )
-          ) : null}
+          ) : (
+            <>
+              <TotalResults>Buscando...</TotalResults>
+
+              {!refreshing && isFirstLoad && loading && !loaderComponent && (
+                <ActivityIndicator color={theme.color.text.primary} />
+              )}
+            </>
+          )}
         </>
       }
       ListFooterComponent={
         <>
-          {loading && !loaderComponent && !isFirstLoad && (
+          {!refreshing && loading && !loaderComponent && !isFirstLoad && (
             <ActivityIndicator color={theme.color.text.primary} />
           )}
           {loading && loaderComponent && (

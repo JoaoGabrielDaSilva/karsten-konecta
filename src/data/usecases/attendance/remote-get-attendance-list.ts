@@ -38,17 +38,20 @@ export class RemoteGetAttendanceList implements GetAttendanceList {
             const lastAddedProduct = item.UltimoProduto;
 
             return {
+              id: String(item.IdAtendimentoApp),
               cpfCnpj: item?.Consumidor?.Cpf || item?.CpfCnpjConsumidor,
               createdAt: item.DataCriacao,
               name: item?.Consumidor?.NomeConsumidor || item.Descricao,
               totalProductsInCart: item.TotalItensCarrinho,
-              lastAddedProduct: {
-                name: lastAddedProduct.Nome,
-                code: lastAddedProduct.Codigo,
-                ean: lastAddedProduct.Ean,
-                uri: lastAddedProduct.FotoPrincipal,
-                amount: item.TotalItensProduto,
-              },
+              lastAddedProduct: lastAddedProduct
+                ? {
+                    name: lastAddedProduct.Nome,
+                    code: lastAddedProduct.Codigo,
+                    ean: lastAddedProduct.Ean,
+                    uri: lastAddedProduct.FotoPrincipal,
+                    amount: item.TotalItensProduto,
+                  }
+                : null,
             };
           }),
           totalResults: result.TotalRegistros,
@@ -71,7 +74,7 @@ export namespace RemoteGetAttendanceList {
           Cpf: string;
         };
         Descricao: string;
-        DataCriacao: Date;
+        DataCriacao: string;
         CpfCnpjConsumidor: string;
         UltimoProduto: {
           Nome: string;

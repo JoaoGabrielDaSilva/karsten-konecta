@@ -36,7 +36,7 @@ export const ListProductLoader = ({ ...props }: Props) => {
       <Right>
         <Row justify="space-between">
           <Col>
-            <FirstLineName width={width * 0.68} height={10} />
+            <FirstLineName width={width * 0.6} height={10} />
             <SecondLineName width={width * 0.35} height={10} />
             <Row align="center" justify="space-between">
               <Col>

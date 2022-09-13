@@ -7,6 +7,10 @@ import { useForm } from "react-hook-form";
 import { Keyboard } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { GetShippingInfo } from "../../../../../domain/usecases/shipping/get-shipping-info";
+import {
+  Direction,
+  LabelToggleButton,
+} from "../../../../components/buttons/label-toggle-button/label-toggle-button";
 
 import { RootPrivateStackParamList } from "../../../../routes";
 import { useAttendanceStore } from "../../../../store/attendance";
@@ -37,6 +41,7 @@ export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
     deliveryAddress,
     productList,
     shippingInfo: attendanceShippingInfo,
+    toggleDeliveryMode,
   } = useAttendanceStore();
   const [localShippingInfo, setLocalShippingInfo] = useState(null);
 
@@ -81,6 +86,15 @@ export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
         {deliveryAddress ? (
           <>
             <StyledSectionTitle>Endereço de Entrega</StyledSectionTitle>
+            <LabelToggleButton
+              leftLabel="Receber"
+              rightLabel="Retirar"
+              onSelect={(direction) => {
+                toggleDeliveryMode();
+                if (direction === Direction.RIGHT)
+                  return navigate("AddressSelect");
+              }}
+            />
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => navigate("AddressSelect")}

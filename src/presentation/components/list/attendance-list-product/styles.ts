@@ -1,4 +1,6 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Dimensions } from "react-native";
+import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
 import { Row, Typography } from "../../utils";
 
@@ -8,7 +10,7 @@ export const Container = styled.View`
   background-color: ${({ theme }) => theme.color.background.primary};
 `;
 
-export const Content = styled(Row)<{ borderless: boolean }>`
+export const Content = styled.View<{ borderless: boolean }>`
   padding: ${({ theme }) => theme.spacing.lg}px 0px;
 
   border: 1px solid transparent;
@@ -57,4 +59,20 @@ export const Code = styled(Typography)`
 
 export const Ean = styled(Typography)`
   color: ${({ theme }) => theme.color.text.secondary};
+`;
+
+export const Bottom = styled(Row)`
+  margin-top: ${({ theme }) => theme.spacing.lg}px;
+`;
+
+export const DeleteText = styled(Typography)`
+  color: ${({ theme }) => theme.color.text.secondary};
+`;
+
+export const DeleteIcon = styled(MaterialCommunityIcons)`
+  font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
+
+  color: ${({ theme }) => theme.color.text.secondary};
+
+  margin-right: ${({ theme }) => theme.spacing.sm}px;
 `;

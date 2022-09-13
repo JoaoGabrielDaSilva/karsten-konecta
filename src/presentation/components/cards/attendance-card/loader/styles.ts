@@ -1,4 +1,5 @@
 import styled from "styled-components/native";
+import { Button } from "../../../buttons/button/button";
 import { Skeleton } from "../../../skeleton/skeleton";
 import { Row } from "../../../utils";
 
@@ -17,4 +18,8 @@ export const Name = styled(Skeleton)``;
 
 export const Value = styled(Skeleton)`
   margin-top: ${({ theme }) => theme.spacing.md}px;
+`;
+
+export const StyledButton = styled(Button)`
+  margin-top: ${({ theme }) => theme.spacing.lg}px;
 `;
