@@ -5,7 +5,6 @@ export const Container = styled(Row).attrs(() => ({
   align: "center",
   justify: "center",
 }))<{ disabled: boolean }>`
-  width: 100%;
   padding: ${({ theme }) => theme.spacing.md}px;
 
   background-color: ${({ theme }) => theme.color.background.emphasis};
@@ -17,6 +16,5 @@ export const Container = styled(Row).attrs(() => ({
 export const Text = styled(Typography).attrs(() => ({
   bold: true,
 }))`
-  width: 100%;
   color: ${({ theme }) => theme.color.text.inverted};
 `;

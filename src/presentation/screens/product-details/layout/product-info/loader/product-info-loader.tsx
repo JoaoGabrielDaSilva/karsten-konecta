@@ -1,6 +1,6 @@
 import React from "react";
 import { Dimensions } from "react-native";
-import { Row } from "../../../../../components";
+import { Row } from "../../../../../components/utils";
 import { AmountButtonLoader } from "../../../../../components/buttons/amount-button/loader/amount-button-loader";
 
 import {

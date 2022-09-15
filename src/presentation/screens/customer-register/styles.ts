@@ -1,8 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
-import { Row } from "../../components";
-import { Address } from "../../components/address/address";
+import { Row } from "../../components/utils";
 import { Checkbox } from "../../components/form/checkbox/checkbox";
 import { TextInput } from "../../components/form/text-input/text-input";
 import { SectionTitle } from "../../components/utils/section-title/section-title";

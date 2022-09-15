@@ -25,10 +25,13 @@ export class RemoteGetAttendance implements GetAttendance {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
 
+        console.log(result);
+
         return {
           name: result.NomeAtendimento,
           cpfCnpj: result.CpfCnpjConsumidor,
           productList: result.ListaAtendimentoItens.map((product) => ({
+            id: String(product.IdAtendimentoItem),
             code: product.Produto.Codigo,
             ean: product.Produto.Ean,
             name: product.Produto.Nome,

@@ -1,8 +1,7 @@
 import { DrawerContentScrollView } from "@react-navigation/drawer";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
-import { Row, Typography } from "../utils";
-import { SectionTitle } from "../utils/section-title/section-title";
+import { Row, Typography, SectionTitle } from "../utils";
 import { ListRow } from "../list/list-row/list-row";
 
 export const Container = styled(DrawerContentScrollView)`
@@ -28,7 +27,8 @@ export const StyledSectionTitle = styled(SectionTitle)`
 export const MenuItem = styled(ListRow)``;
 
 export const LogoutListRow = styled(ListRow)`
-  padding: ${({ theme }) => theme.spacing.md}px 0px;
+  padding: ${({ theme }) => theme.spacing.md}px
+    ${({ theme }) => theme.spacing.md}px;
   margin-top: ${({ theme }) => theme.spacing.xxl * 2}px;
   background-color: ${({ theme }) => theme.color.red[100]};
 `;

@@ -85,6 +85,7 @@ export const AttendanceList = ({
         handleRemoveFilter={({ key }) => removeFilter({ key })}
         onEndReached={onEndReached}
         loading={loading}
+        enableRefresh
         refreshing={refreshing}
         totalResults={totalResults}
         onRefresh={() => reset({ refresh: true })}

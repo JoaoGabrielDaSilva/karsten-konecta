@@ -6,7 +6,7 @@ import { StackNavigationProp, StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import { Dimensions } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
-import { Row } from "../../../../components";
+import { Row } from "../../../../components/utils";
 import { Skeleton } from "../../../../components/skeleton/skeleton";
 import { RootPrivateStackParamList } from "../../../../routes";
 import { RootPublicStackParamList } from "../../../../routes/public-routes";

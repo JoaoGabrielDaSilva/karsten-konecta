@@ -8,6 +8,7 @@ export const Container = styled.View`
 
   margin-top: ${({ theme }) => theme.spacing.lg}px;
   padding: ${({ theme }) => theme.spacing.lg}px;
+  padding-bottom: 0;
 `;
 
 export const StyledTextInput = styled(TextInput)`

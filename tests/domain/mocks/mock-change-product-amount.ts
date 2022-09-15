@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { ChangeProductAmount } from "../../../src/domain/usecases/attendance/change-product-amount";
+import { ChangeProductAmount } from "../../../src/domain/usecases/attendance/update-product-amount";
 
 export const mockChangeProductAmountParams =
   (): ChangeProductAmount.Params => ({});

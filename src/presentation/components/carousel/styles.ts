@@ -18,14 +18,14 @@ export const Image = styled(RnImage)`
 export const LeftSide = styled.View`
   height: ${width * 0.7}px;
   position: absolute;
-  left: ${({ theme }) => theme.spacing.lg};
+  left: ${({ theme }) => theme.spacing.lg}px;
   align-items: center;
   justify-content: center;
 `;
 export const RightSide = styled.View`
   height: ${width * 0.7}px;
   position: absolute;
-  right: ${({ theme }) => theme.spacing.lg};
+  right: ${({ theme }) => theme.spacing.lg}px;
   align-items: center;
   justify-content: center;
 `;

@@ -15,7 +15,7 @@ type Props = FlatListProps<any> & {
   loading: boolean;
   loaderComponent?: ReactNode;
   page?: number;
-  refreshControl?: boolean;
+  enableRefresh?: boolean;
   totalResults?: number;
   filters?: {
     [key: string]: Filter;
@@ -40,6 +40,7 @@ export const PaginatedList = ({
   refreshControl,
   refreshing,
   totalResults,
+  enableRefresh,
   page,
   filters,
   handleRemoveFilter,
@@ -58,12 +59,14 @@ export const PaginatedList = ({
       onEndReachedThreshold={0.1}
       refreshing={refreshing}
       refreshControl={
-        <RefreshControl
-          refreshing={refreshing}
-          onRefresh={props.onRefresh}
-          tintColor="black"
-          colors={["black"]}
-        />
+        enableRefresh && (
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={props.onRefresh}
+            tintColor="black"
+            colors={["black"]}
+          />
+        )
       }
       ListHeaderComponent={
         <>
@@ -95,11 +98,12 @@ export const PaginatedList = ({
                 />
               )
             )
-          ) : (
+          ) : null}
+
+          {isFirstLoad && !loaderComponent && (
             <>
               <TotalResults>Buscando...</TotalResults>
-
-              {!refreshing && isFirstLoad && loading && !loaderComponent && (
+              {!refreshing && (
                 <ActivityIndicator color={theme.color.text.primary} />
               )}
             </>

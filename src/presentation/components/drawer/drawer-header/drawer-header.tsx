@@ -36,6 +36,7 @@ export const DrawerHeader = () => {
         leftIcon="business"
         rightIcon="chevron-right"
         borderless
+        numberOfLines={1}
       />
     </Container>
   );

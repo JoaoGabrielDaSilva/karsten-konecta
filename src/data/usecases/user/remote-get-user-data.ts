@@ -21,13 +21,18 @@ export class RemoteGetUserData implements GetUserData {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
 
+        const excludedCategories = ["Home", "Vendas"];
+
         const categories = [];
         const menus = [];
 
         const { profileList } = result.UsuarioPerfis.reduce(
           (acc, profile) => {
             profile.PerfilMenu.forEach((item) => {
-              if (item.Sistema !== "APP" || item.NomeCategoriaPai === "Home")
+              if (
+                item.Sistema !== "APP" ||
+                excludedCategories.includes(item.NomeCategoriaPai)
+              )
                 return;
 
               if (

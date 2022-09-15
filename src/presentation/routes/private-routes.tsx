@@ -1,5 +1,4 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import { View } from "react-native";
 
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { useTheme } from "styled-components/native";
@@ -11,12 +10,13 @@ import { makeNewNoCustomerAttendance } from "../../main/factories/pages/new-no-c
 import { makeOrderList } from "../../main/factories/pages/order-list-factory";
 import { makeProductDetails } from "../../main/factories/pages/product-details-factory";
 import { makeProductList } from "../../main/factories/pages/product-list-factory";
+import { makeStoreSelect } from "../../main/factories/pages/store-select-factory";
 import { Drawer as DrawerComponent } from "../components";
 import { StackNavbar } from "../components/navigation/stack-navbar/stack-navbar";
 import { Address } from "../models/Address";
 import { AddressRegister } from "../screens/address-register/address-register";
-import { AddressSelect } from "../screens/address-select/address-select";
 import { AttendanceListFilters } from "../screens/attendance-list-filters/attendance-list-filters";
+import { Catalog } from "../screens/catalog/catalog";
 import { CustomerRegister } from "../screens/customer-register/customer-register";
 import { OrderListFilters } from "../screens/order-list-filters/order-list-filters";
 import { Sales } from "../screens/sales/sales";
@@ -25,6 +25,7 @@ import { StoreSelect } from "../screens/store-select/store-select";
 export type RootPrivateStackParamList = {
   Login: undefined;
   Sales: undefined;
+  Catalog: undefined;
   NewAttendance: undefined;
   NewNoCustomerAttendance: undefined;
   Attendance: {
@@ -33,7 +34,9 @@ export type RootPrivateStackParamList = {
     cpfCnpj?: string;
   };
   AddressSelect: undefined;
-  ProductList: undefined;
+  ProductList: {
+    defaultFocus?: boolean;
+  };
   ProductDetails: {
     code: string;
     ean: string;
@@ -134,7 +137,7 @@ const StackNavigator = () => {
       />
       <Stack.Screen
         name="StoreSelect"
-        component={StoreSelect}
+        component={makeStoreSelect}
         options={{
           title: "Seleção de Loja",
           header: (props) => <StackNavbar {...props} />,
@@ -145,7 +148,16 @@ const StackNavigator = () => {
         component={Sales}
         options={{
           title: "Vendas",
-          header: (props) => <StackNavbar drawer {...props} />,
+          header: (props) => (
+            <StackNavbar drawer {...props} backArrow={false} />
+          ),
+          animationEnabled: false,
+        }}
+      />
+      <Stack.Screen
+        name="Catalog"
+        component={Catalog}
+        options={{
           animationEnabled: false,
         }}
       />
@@ -153,10 +165,13 @@ const StackNavigator = () => {
         name="ProductList"
         component={makeProductList}
         options={{
-          headerShown: false,
           animationEnabled: false,
         }}
+        initialParams={{
+          defaultFocus: false,
+        }}
       />
+
       <Stack.Screen
         name="AttendanceList"
         component={makeAttendanceList}

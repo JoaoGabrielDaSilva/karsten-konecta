@@ -1,12 +1,14 @@
 import React from "react";
-import { StyleProp, ViewStyle } from "react-native";
+import { ActivityIndicator, StyleProp, ViewStyle } from "react-native";
 import { BorderlessButton, RectButton } from "react-native-gesture-handler";
+import { useTheme } from "styled-components/native";
 import { ButtonContainer, Container, Text } from "./styles";
 
 type ButtonProps = {
   text: string;
   disabled?: boolean;
   centerOne?: boolean;
+  loading?: boolean;
 };
 
 type Props = {
@@ -15,6 +17,7 @@ type Props = {
   onDecrease: () => void;
   onIncrease: () => void;
   style?: StyleProp<ViewStyle>;
+  loading?: boolean;
 };
 
 export const AmountButton = ({
@@ -23,6 +26,7 @@ export const AmountButton = ({
   onIncrease,
   maxAmount,
   style,
+  loading,
 }: Props) => {
   return (
     <Container style={style} align="center">
@@ -32,10 +36,10 @@ export const AmountButton = ({
       >
         <Button text="-" disabled={amount === 1} />
       </BorderlessButton>
-      <Button text={String(amount)} centerOne />
+      <Button text={String(amount)} centerOne loading={loading} />
       <BorderlessButton
         onPress={() => onIncrease && onIncrease()}
-        enabled={maxAmount && amount < maxAmount}
+        enabled={!maxAmount || (maxAmount && amount < maxAmount)}
       >
         <Button text="+" disabled={maxAmount && amount === maxAmount} />
       </BorderlessButton>
@@ -43,12 +47,18 @@ export const AmountButton = ({
   );
 };
 
-const Button = ({ text, disabled, centerOne }: ButtonProps) => {
+const Button = ({ text, disabled, centerOne, loading }: ButtonProps) => {
+  const theme = useTheme();
+
   return (
     <ButtonContainer centerOne={centerOne}>
-      <Text disabled={disabled} centerOne={centerOne}>
-        {text}
-      </Text>
+      {centerOne && loading ? (
+        <ActivityIndicator color={theme.color.text.primary} size="small" />
+      ) : (
+        <Text disabled={disabled} centerOne={centerOne}>
+          {text}
+        </Text>
+      )}
     </ButtonContainer>
   );
 };

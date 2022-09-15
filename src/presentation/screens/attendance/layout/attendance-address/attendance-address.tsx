@@ -23,6 +23,7 @@ import {
   StyledShippingInfo,
   StyledAddressLoader,
   StyledShippingInfoLoader,
+  DeliveryModeContainer,
 } from "./styles";
 
 type Props = {
@@ -86,15 +87,18 @@ export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
         {deliveryAddress ? (
           <>
             <StyledSectionTitle>Endereço de Entrega</StyledSectionTitle>
-            <LabelToggleButton
-              leftLabel="Receber"
-              rightLabel="Retirar"
-              onSelect={(direction) => {
-                toggleDeliveryMode();
-                if (direction === Direction.RIGHT)
-                  return navigate("AddressSelect");
-              }}
-            />
+            <DeliveryModeContainer>
+              <LabelToggleButton
+                leftLabel="Receber"
+                rightLabel="Retirar"
+                onSelect={(direction) => {
+                  toggleDeliveryMode();
+                  if (direction === Direction.RIGHT)
+                    return navigate("AddressSelect");
+                }}
+              />
+            </DeliveryModeContainer>
+
             <TouchableOpacity
               activeOpacity={0.7}
               onPress={() => navigate("AddressSelect")}

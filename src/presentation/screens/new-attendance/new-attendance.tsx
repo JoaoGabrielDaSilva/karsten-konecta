@@ -7,9 +7,9 @@ import { RootPrivateStackParamList } from "../../routes";
 import { makeCpfRule } from "../../utils/yup-schemas/cpf-rule";
 
 import { Container, Content, CustomTextInput, StyledRow } from "./styles";
-import { Typography } from "../../components";
+import { Typography } from "../../components/utils";
 import { Button } from "../../components/buttons/button/button";
-import { Keyboard } from "react-native";
+import { Keyboard, View } from "react-native";
 import { GetCustomer } from "../../../domain/usecases/customer/get-customer";
 import { StackScreenProps } from "@react-navigation/stack";
 import { useCustomerStore } from "../../store/customer";

@@ -5,7 +5,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { RootPrivateStackParamList } from "../../routes";
 
 import { Container, Content, CustomTextInput } from "./styles";
-import { Typography } from "../../components";
+import { Typography } from "../../components/utils";
 import { Button } from "../../components/buttons/button/button";
 import { StackScreenProps } from "@react-navigation/stack";
 import { makeNewNoCustomerAttendanceSchema } from "./schema";

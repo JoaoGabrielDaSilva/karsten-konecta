@@ -3,56 +3,90 @@ import React from "react";
 import {
   Center,
   Container,
-  HeaderIcon,
+  DrawerIcon,
   HeaderLeft,
   HeaderRight,
+  RightIcon,
+  LeftIcon,
+  StyledTextInput,
 } from "./styles";
-import { BorderlessButton, RectButton } from "react-native-gesture-handler";
-import { MaterialIcons } from "@expo/vector-icons";
-import { StackNavigationProp } from "@react-navigation/stack";
-import { TextInput } from "../../form/text-input/text-input";
-import { Control, useForm, UseFormHandleSubmit } from "react-hook-form";
-import { RootPrivateStackParamList } from "../../../routes";
-import { Typography } from "../../utils";
-import { Dimensions } from "react-native";
+import { BorderlessButton } from "react-native-gesture-handler";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { StackHeaderProps } from "@react-navigation/stack";
+import { DrawerActions } from "@react-navigation/native";
+import { Control } from "react-hook-form";
 
-type NavigationProps = {
-  navigation: StackNavigationProp<RootPrivateStackParamList, any>;
+type IconType = keyof typeof MaterialCommunityIcons.glyphMap;
+
+type Props = StackHeaderProps & {
+  headerLeftIcon?: IconType;
+  rightIcon?: IconType;
+  onLeftIconPress?: () => void;
+  onRightIconPress?: () => void;
+  backArrow?: boolean;
+  drawer?: boolean;
+  control: Control<{ search: string }, "search">;
+  handleSubmit?: () => void;
+  defaultFocus?: boolean;
+  onFocus?: () => void;
 };
 
-type IconType = keyof typeof MaterialIcons.glyphMap;
+export const StackSearchNavbar = ({
+  navigation,
+  onRightIconPress,
+  rightIcon,
+  onLeftIconPress,
+  headerLeftIcon,
+  backArrow = true,
+  drawer,
+  control,
+  handleSubmit,
+  defaultFocus,
+  onFocus,
+}: Props) => {
+  const { canGoBack, goBack, dispatch, push } = navigation;
 
-type Props = NavigationProps & {
-  control: Control<any, any>;
-  handleSubmit: () => void;
-};
+  const openDrawer = () => {
+    const action = DrawerActions.openDrawer();
 
-const { width } = Dimensions.get("window");
-
-export const SearchNavbar = ({ navigation, control, handleSubmit }: Props) => {
-  const { canGoBack, goBack } = navigation;
+    dispatch(action);
+  };
 
   return (
     <Container align="center">
       <HeaderLeft>
-        {(true || canGoBack()) && (
-          <HeaderIcon name="chevron-left" onPress={goBack} />
+        {((canGoBack() && backArrow) || headerLeftIcon) && (
+          <LeftIcon
+            name={headerLeftIcon || "chevron-left"}
+            onPress={onLeftIconPress || goBack}
+          />
         )}
+        <Center>
+          <StyledTextInput
+            size="small"
+            control={control}
+            name="search"
+            onFocus={onFocus}
+            disableFloatingPlaceholder
+            placeholder="Buscar produtos..."
+            onEndEditing={handleSubmit}
+            autoFocus={defaultFocus}
+          />
+        </Center>
       </HeaderLeft>
-      <Center>
-        <TextInput
-          size="small"
-          control={control}
-          name="search"
-          placeholder="Buscar produto..."
-          disableFloatingPlaceholder
-          onSubmitEditing={handleSubmit}
-        />
-      </Center>
       <HeaderRight>
-        <RectButton>
-          <Typography>Cancelar</Typography>
-        </RectButton>
+        {rightIcon && (
+          <BorderlessButton
+            onPress={() => onRightIconPress && onRightIconPress()}
+          >
+            <RightIcon name={rightIcon} />
+          </BorderlessButton>
+        )}
+        {drawer && (
+          <BorderlessButton onPress={openDrawer}>
+            <DrawerIcon name="menu" />
+          </BorderlessButton>
+        )}
       </HeaderRight>
     </Container>
   );

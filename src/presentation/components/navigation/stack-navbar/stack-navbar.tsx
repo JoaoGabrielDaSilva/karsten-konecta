@@ -7,7 +7,7 @@ import { StackHeaderProps } from "@react-navigation/stack";
 import { Typography } from "../../utils";
 import { DrawerActions } from "@react-navigation/native";
 
-type IconType = keyof typeof MaterialCommunityIconsIcons.glyphMap;
+type IconType = keyof typeof MaterialCommunityIcons.glyphMap;
 
 type Props = StackHeaderProps & {
   headerLeftIcon?: IconType;

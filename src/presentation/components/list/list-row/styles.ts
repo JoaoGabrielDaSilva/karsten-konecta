@@ -20,12 +20,15 @@ export const Container = styled(Row)<{
     borderless ? "transparent" : theme.color.text.secondary};
 `;
 
-export const RightSide = styled(Row)``;
+export const RightSide = styled(Row)`
+  justify-content: flex-end;
+`;
 
-export const LeftSide = styled(Row)``;
+export const LeftSide = styled(Row)`
+  max-width: 60%;
+`;
 
 export const Label = styled(Typography)<{ color: string }>`
-  flex: 0.9;
   font-size: ${({ theme }) => theme.fontSize.lg}px;
   color: ${({ theme, color }) => color || theme.color.text.secondary};
 `;
@@ -36,7 +39,7 @@ export const Value = styled(Typography)<{ color: string }>`
 `;
 
 export const MaterialLeftIcon = styled(MaterialIcons)<{ color: string }>`
-  margin: 0px ${({ theme }) => theme.spacing.md}px;
+  margin-right: ${({ theme }) => theme.spacing.md}px;
 
   font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
   color: ${({ theme, color }) => color || theme.color.text.secondary};
@@ -44,10 +47,10 @@ export const MaterialLeftIcon = styled(MaterialIcons)<{ color: string }>`
 export const MaterialRightIcon = styled(MaterialIcons)<{ color: string }>`
   font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
   color: ${({ theme, color }) => color || theme.color.text.secondary};
-  margin-right: ${({ theme }) => theme.spacing.md}px;
+  margin-left: ${({ theme }) => theme.spacing.md}px;
 `;
 export const FeatherLeftIcon = styled(Feather)<{ color: string }>`
-  margin: 0px ${({ theme }) => theme.spacing.md}px;
+  margin-right: ${({ theme }) => theme.spacing.md}px;
 
   font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
   color: ${({ theme, color }) => color || theme.color.text.secondary};
@@ -56,5 +59,5 @@ export const FeatherRightIcon = styled(Feather)<{ color: string }>`
   font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
   color: ${({ theme, color }) => color || theme.color.text.secondary};
 
-  margin-right: ${({ theme }) => theme.spacing.md}px;
+  margin-left: ${({ theme }) => theme.spacing.md}px;
 `;

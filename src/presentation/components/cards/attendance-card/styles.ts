@@ -11,7 +11,9 @@ export const Container = styled(Row)`
   border-radius: ${({ theme }) => theme.radii.md}px;
 `;
 
-export const Content = styled.View``;
+export const Content = styled.View`
+  flex: 1;
+`;
 
 export const Name = styled(Typography)``;
 

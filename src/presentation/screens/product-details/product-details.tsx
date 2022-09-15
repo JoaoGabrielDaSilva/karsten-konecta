@@ -14,6 +14,7 @@ import { StoreStockModel } from "../../models/StoreStock";
 
 import { RootPrivateStackParamList } from "../../routes";
 import { useAttendanceStore } from "../../store/attendance";
+import { useUserStore } from "../../store/user";
 import { ProductCarouselLoader } from "./layout/product-carousel/loader/product-carousel-loader";
 import { ProductGrid } from "./layout/product-grid/product-grid";
 import { ProductInfoLoader } from "./layout/product-info/loader/product-info-loader";
@@ -65,7 +66,10 @@ export const ProductDetails = ({
   const { code, ean } = route.params;
 
   const theme = useTheme();
-  const { id: attendanceId } = useAttendanceStore();
+  const { id: attendanceId, addProduct: addAttendanceProduct } =
+    useAttendanceStore();
+
+  const { store } = useUserStore();
 
   const [selectedProductColorCode, setSelectedProductColorCode] =
     useState<string>(code);
@@ -90,14 +94,16 @@ export const ProductDetails = ({
 
   const handleChangeProduct = (code: string) => loadProductDetails(code);
 
-  const handleAddProduct = () => {
+  const handleAddProduct = async () => {
     try {
-      addProduct.add({
+      const a = await addProduct.add({
         amount: String(productAmount),
         attendanceId: attendanceId,
         productId: product.code,
-        storeId: "28",
+        storeId: store.id,
       });
+
+      console.log(a);
 
       navigate("Attendance");
     } catch (error) {

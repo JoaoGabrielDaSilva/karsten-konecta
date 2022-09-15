@@ -2,6 +2,7 @@ import create from "zustand";
 import { Address } from "../models/Address";
 
 import { AttendanceModel } from "../../domain/models/attendance";
+import { ProductModel } from "../../domain/models/product";
 
 enum DeliveryMode {
   DELIVERY,
@@ -10,10 +11,13 @@ enum DeliveryMode {
 
 type AttendanceState = AttendanceModel & {
   setAttendance?: (data: AttendanceModel) => void;
-  increaseProductAmount?: (where: { code: string }) => void;
-  decreaseProductAmount?: (where: { code: string }) => void;
   setAddress?: ({ address }: { address: Address }) => void;
   toggleDeliveryMode?: () => void;
+  addProduct?: (product: ProductModel) => void;
+  refreshProductList?: (params: {
+    id: string;
+    data: Partial<ProductModel>;
+  }) => void;
   clearAttendance?: () => void;
   loading: boolean;
   deliveryMode: DeliveryMode;
@@ -33,7 +37,7 @@ const initialState: AttendanceState = {
   loading: false,
 };
 
-export const useAttendanceStore = create<AttendanceState>()((set) => ({
+export const useAttendanceStore = create<AttendanceState>()((set, get) => ({
   ...initialState,
   setAttendance: (data: AttendanceModel) =>
     set((state) => ({
@@ -43,34 +47,6 @@ export const useAttendanceStore = create<AttendanceState>()((set) => ({
         days: 2,
       },
     })),
-  increaseProductAmount: ({ code }) =>
-    set((state) => {
-      const freshProductList = state.productList.map((product) => {
-        if (product.code === code) {
-          return {
-            ...product,
-            amount: product.amount + 1,
-          };
-        }
-        return product;
-      });
-
-      return { ...state, productList: freshProductList };
-    }),
-  decreaseProductAmount: ({ code }) =>
-    set((state) => {
-      const freshProductList = state.productList.map((product) => {
-        if (product.code === code) {
-          return {
-            ...product,
-            amount: product.amount - 1,
-          };
-        }
-        return product;
-      });
-
-      return { ...state, productList: freshProductList };
-    }),
   setAddress: ({ address }) =>
     set((state) => ({
       ...state,
@@ -83,5 +59,17 @@ export const useAttendanceStore = create<AttendanceState>()((set) => ({
           ? DeliveryMode.PICK_UP
           : DeliveryMode.DELIVERY,
     })),
+  refreshProductList({ id, data }) {
+    set((state) => {
+      const productList = state.productList.map((item) => {
+        if (item.id === id) {
+          return { ...item, ...data };
+        }
+        return item;
+      });
+
+      return { ...state, productList };
+    });
+  },
   clearAttendance: () => set({ ...initialState }),
 }));

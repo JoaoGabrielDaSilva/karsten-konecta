@@ -81,7 +81,7 @@ export class RemoteGetProductDetails implements GetProductDetails {
           ],
           color: result.Especificacoes.find(
             (item) => item.Descricao === "COR"
-          ).Valor.trim(),
+          )?.Valor?.trim(),
           name: result.DescricaoProdutoApp,
           code: result.IdProduto,
           costPrice: result.PrecoCusto,

@@ -39,6 +39,7 @@ export type ListRowProps = {
   leftIconFamily?: IconFamily;
   rightIconFamily?: IconFamily;
   onPress?: () => void;
+  numberOfLines?: number;
 };
 
 export const ListRow = ({
@@ -51,34 +52,47 @@ export const ListRow = ({
   rightIconFamily = "material",
   textStyle,
   onPress,
+  numberOfLines,
   ...props
 }: ListRowProps) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.5}>
       <Container justify="space-between" align="center" {...props}>
         <LeftSide align="center">
-          {leftIcon && leftIconFamily === "material" ? (
-            <MaterialLeftIcon color={color} name={leftIcon} />
-          ) : (
-            <FeatherLeftIcon color={color} name={leftIcon} />
-          )}
+          {leftIcon ? (
+            leftIconFamily === "material" ? (
+              <MaterialLeftIcon color={color} name={leftIcon} />
+            ) : (
+              <FeatherLeftIcon color={color} name={leftIcon} />
+            )
+          ) : null}
           {label ? (
-            <Label style={textStyle} color={color}>
+            <Label
+              style={textStyle}
+              color={color}
+              numberOfLines={numberOfLines}
+            >
               {label}
             </Label>
           ) : null}
         </LeftSide>
         <RightSide align="center">
           {value ? (
-            <Value style={textStyle} color={color}>
+            <Value
+              style={textStyle}
+              color={color}
+              numberOfLines={numberOfLines}
+            >
               {value}
             </Value>
           ) : null}
-          {rightIcon && rightIconFamily === "material" ? (
-            <MaterialRightIcon color={color} name={rightIcon} />
-          ) : (
-            <FeatherRightIcon color={color} name={rightIcon} />
-          )}
+          {rightIcon ? (
+            rightIconFamily === "material" ? (
+              <MaterialRightIcon color={color} name={rightIcon} />
+            ) : (
+              <FeatherRightIcon color={color} name={rightIcon} />
+            )
+          ) : null}
         </RightSide>
       </Container>
     </TouchableOpacity>

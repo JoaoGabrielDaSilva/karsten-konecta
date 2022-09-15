@@ -10,19 +10,19 @@ import Toast from "react-native-toast-message";
 
 export const Router = () => {
   const theme = useTheme();
-  const { id } = useUserStore();
+  const { logged } = useUserStore();
 
   return (
     <View
       style={{
         flex: 1,
         backgroundColor: theme.color.background.primary,
-        paddingTop: id ? Constants.statusBarHeight : 0,
+        paddingTop: logged ? Constants.statusBarHeight : 0,
       }}
     >
       <StatusBar style="inverted" />
       <NavigationContainer>
-        {!!id ? <PrivateRoutes /> : <PublicRoutes />}
+        {logged ? <PrivateRoutes /> : <PublicRoutes />}
       </NavigationContainer>
       <Toast />
     </View>

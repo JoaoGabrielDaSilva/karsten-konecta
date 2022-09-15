@@ -37,7 +37,9 @@ export const useAttendanceListFiltersStore = create<AttendanceListFiltersState>(
 
         delete newState.filters[key];
 
-        return { filters: { ...newState?.filters } };
+        const hasFilters = Object.values(newState.filters).length > 0;
+
+        return { filters: hasFilters ? { ...newState?.filters } : null };
       }),
     clearFilters: () => set((state) => ({ ...state, filters: null })),
   })

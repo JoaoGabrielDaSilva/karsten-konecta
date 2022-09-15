@@ -80,6 +80,7 @@ export const OrderList = ({
         handleRemoveFilter={removeFilter}
         onEndReached={onEndReached}
         loading={loading}
+        enableRefresh
         refreshing={refreshing}
         onRefresh={() => reset({ refresh: true })}
         page={page}

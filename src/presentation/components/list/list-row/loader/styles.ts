@@ -23,13 +23,14 @@ export const RightSide = styled(Row)``;
 
 export const LeftSide = styled(Row)``;
 
-export const Label = styled(Skeleton)`
-  margin-left: ${({ theme }) => theme.spacing.sm}px;
-`;
+export const Label = styled(Skeleton)``;
 
 export const Value = styled(Skeleton)``;
 
-export const LeftIconLoader = styled(Skeleton)``;
+export const LeftIconLoader = styled(Skeleton)`
+  margin-right: ${({ theme }) => theme.spacing.md}px;
+`;
+
 export const RightIconLoader = styled(Skeleton)`
   margin-left: ${({ theme }) => theme.spacing.md}px;
 `;

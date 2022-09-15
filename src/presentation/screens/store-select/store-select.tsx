@@ -1,9 +1,12 @@
+import { DrawerActions } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { ListRenderItemInfo, Pressable, Text } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
+import { GetStoreList } from "../../../domain/usecases/store/get-store-list";
 import { Button } from "../../components/buttons/button/button";
+import { StoreCardLoader } from "../../components/cards/store-card/loader/store-card-loader";
 import { StoreCard } from "../../components/cards/store-card/store-card";
 import { PaginatedList } from "../../components/list/paginated-list/paginated-list";
 import {
@@ -16,85 +19,47 @@ import { mockStore, useUserStore } from "../../store/user";
 
 import { Container, Footer } from "./styles";
 
-const a = (): StoreModel => {
-  return {
-    ...mockStore(),
-    id: String(Math.random() * 1231),
-  };
-};
-
-const storeDatabase: StoreModel[] = [
-  mockStore(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-  a(),
-];
-
 type NavigationProps = StackScreenProps<
   RootPrivateStackParamList,
   "StoreSelect"
 >;
 
-type Props = NavigationProps;
+type Props = NavigationProps & {
+  getStoreList: GetStoreList;
+};
 
-export const StoreSelect = ({ navigation: { goBack } }: Props) => {
+export const StoreSelect = ({
+  navigation: { goBack, dispatch },
+  getStoreList,
+}: Props) => {
   const theme = useTheme();
 
-  const { store } = useUserStore();
+  const { store, setUserData } = useUserStore();
 
-  const { data, loading, onEndReached } = usePaginatedList({
-    getFunction: getStoreList,
-  });
+  const { data, loading, onEndReached, refreshing, reset, totalResults, page } =
+    usePaginatedList({
+      getFunction: loadStoreList,
+    });
 
   const [selectedStoreId, setSelectedStoreId] = useState(store.id);
   const [loadingStore, setLoadingStore] = useState(false);
 
-  async function getStoreList(
+  const selectedStore = useMemo(
+    () => data.find((item) => item.id === selectedStoreId),
+    [selectedStoreId]
+  );
+
+  async function loadStoreList(
     page: number
   ): Promise<PaginatedListGetFunctionReturn<StoreModel>> {
     console.log(page);
 
     try {
-      const newData = await new Promise<StoreModel[]>((resolve) => {
-        return setTimeout(() => {
-          const data = storeDatabase.slice(page * 5, page * 5 + 5);
-
-          resolve(data);
-        }, 1000);
-      });
+      const { storeList, totalResults } = await getStoreList.execute({ page });
 
       return {
-        data: newData,
-        totalResults: storeDatabase.length,
+        data: storeList,
+        totalResults: totalResults,
       };
     } catch (error) {
       return {
@@ -109,11 +74,8 @@ export const StoreSelect = ({ navigation: { goBack } }: Props) => {
   };
 
   const handleChangeStore = () => {
-    setLoadingStore(true);
-    setTimeout(() => {
-      setLoadingStore(false);
-      goBack();
-    }, 500);
+    setUserData({ store: selectedStore });
+    goBack();
   };
 
   return (
@@ -121,6 +83,11 @@ export const StoreSelect = ({ navigation: { goBack } }: Props) => {
       <PaginatedList
         data={data}
         loading={loading}
+        refreshing={refreshing}
+        enableRefresh
+        onRefresh={() => reset({ refresh: true })}
+        totalResults={totalResults}
+        page={page}
         renderItem={({ item }: ListRenderItemInfo<StoreModel>) => {
           const isSelected = item.id === selectedStoreId;
 
@@ -134,6 +101,12 @@ export const StoreSelect = ({ navigation: { goBack } }: Props) => {
             </Pressable>
           );
         }}
+        loaderComponent={
+          <>
+            <StoreCardLoader style={{ marginVertical: theme.spacing.md }} />
+            <StoreCardLoader style={{ marginVertical: theme.spacing.md }} />
+          </>
+        }
         contentContainerStyle={{
           paddingHorizontal: theme.spacing.lg,
         }}

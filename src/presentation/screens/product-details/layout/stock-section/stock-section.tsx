@@ -17,6 +17,7 @@ export const StockSection = ({ stocks }: Props) => {
       {stocks &&
         stocks.map((item, index) => (
           <ListRow
+            key={index}
             label={item.store}
             value={String(item.availableAmount)}
             borderless={index === stocks.length - 1}

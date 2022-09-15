@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { HttpStatusCode } from "../../../../src/data/protocols/http/http-client";
-import { RemoteChangeProductAmount } from "../../../../src/data/usecases/attendance/remote-change-product-amount";
+import { RemoteChangeProductAmount } from "../../../../src/data/usecases/attendance/remote-update-product-amount";
 
 import { UnexpectedError } from "../../../../src/domain/errors/unexpected-error";
 import { HttpClientSpy } from "../../mocks/mock-http";

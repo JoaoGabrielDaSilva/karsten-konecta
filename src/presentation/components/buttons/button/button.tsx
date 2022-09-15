@@ -1,7 +1,13 @@
 import React from "react";
-import { ActivityIndicator, StyleProp, ViewStyle } from "react-native";
+import {
+  ActivityIndicator,
+  StyleProp,
+  TextStyle,
+  ViewStyle,
+} from "react-native";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
+import { string } from "yup/lib/locale";
 import { Container, Text } from "./styles";
 
 type Props = {
@@ -9,7 +15,9 @@ type Props = {
   onPress: () => void;
   disabled?: boolean;
   loading?: boolean;
-  style?: StyleProp<ViewStyle>;
+  textStyle?: StyleProp<TextStyle>;
+  buttonStyle?: StyleProp<ViewStyle>;
+  containerStyle?: StyleProp<ViewStyle>;
   testID?: string;
 };
 
@@ -18,7 +26,9 @@ export const Button = ({
   onPress,
   loading,
   disabled,
-  style,
+  containerStyle,
+  buttonStyle,
+  textStyle,
   ...props
 }: Props) => {
   const theme = useTheme();
@@ -27,11 +37,14 @@ export const Button = ({
     <BorderlessButton
       onPress={onPress}
       enabled={!disabled && !loading}
+      style={containerStyle}
       {...props}
     >
-      <Container style={style} disabled={disabled || loading}>
+      <Container style={buttonStyle} disabled={disabled || loading}>
         {!loading ? (
-          <Text textAlign="center"> {text}</Text>
+          <Text style={textStyle} textAlign="center">
+            {text}
+          </Text>
         ) : (
           <ActivityIndicator color={theme.color.text.inverted} />
         )}

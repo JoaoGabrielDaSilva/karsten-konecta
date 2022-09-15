@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { Typography } from "../../../../components";
+import { Typography } from "../../../../components/utils";
 
 export const Container = styled.View`
   background-color: ${({ theme }) => theme.color.background.primary};

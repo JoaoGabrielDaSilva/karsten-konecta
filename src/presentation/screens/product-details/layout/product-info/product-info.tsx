@@ -1,6 +1,6 @@
 import React from "react";
 import { ProductModel } from "../../../../../domain/models/product";
-import { Row } from "../../../../components";
+import { Row } from "../../../../components/utils";
 import { AmountButton } from "../../../../components/buttons/amount-button/amount-button";
 
 import { Container, Name, Code, Ean, Col, Content } from "./styles";

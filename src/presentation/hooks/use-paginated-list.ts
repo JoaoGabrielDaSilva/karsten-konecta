@@ -11,9 +11,12 @@ type UsePaginatedListParams<T> = {
   filters?: {
     [key: string]: Filter;
   };
+  disabled?: boolean;
 };
 
-type RefreshParams = { refresh?: boolean };
+type GetDataMiddlewareParams = { reset?: boolean };
+
+type ResetParams = { refresh?: boolean };
 
 type UsePaginatedListReturn<T> = {
   data: T[];
@@ -22,13 +25,13 @@ type UsePaginatedListReturn<T> = {
   refreshing: boolean;
   totalResults: number;
   onEndReached: () => void;
-
-  reset: (params?: RefreshParams) => void;
+  reset: (params: ResetParams) => void;
 };
 
 export const usePaginatedList = <T>({
   getFunction,
   filters,
+  disabled,
 }: UsePaginatedListParams<T>): UsePaginatedListReturn<T> => {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -40,7 +43,7 @@ export const usePaginatedList = <T>({
   const onEndReached = () =>
     data.length < totalResults && !loading && getDataMiddleware({});
 
-  const reset = ({ refresh }: RefreshParams) => {
+  const reset = ({ refresh }: ResetParams) => {
     setData([]);
     setPage(0);
     setTotalResults(0);
@@ -49,10 +52,10 @@ export const usePaginatedList = <T>({
     }
   };
 
-  const getDataMiddleware = async ({ refresh }: RefreshParams) => {
+  const getDataMiddleware = async ({ reset }: GetDataMiddlewareParams) => {
     setLoading(true);
 
-    const requestPage = refresh ? 0 : page;
+    const requestPage = reset ? 0 : page;
 
     const { data: newData, totalResults: baseTotalResults } = await getFunction(
       requestPage
@@ -60,7 +63,7 @@ export const usePaginatedList = <T>({
 
     const nextPage = requestPage + 1;
 
-    if (refresh) setRefreshing(false);
+    if (reset) setRefreshing(false);
 
     if (requestPage === 0) {
       setTotalResults(baseTotalResults);
@@ -76,18 +79,13 @@ export const usePaginatedList = <T>({
   };
 
   useEffect(() => {
-    if (page === 0) {
+    if (page === 0 && !disabled) {
       getDataMiddleware({});
     }
-  }, [page]);
-
-  console.log(filters);
+  }, [page, disabled]);
 
   useEffect(() => {
-    console.log("CHAMOOOOOOOOOOOOOOOOOOOOU");
-
     if (!isFirstRender) {
-      console.log("ATUALIZOUUUUU");
       reset({});
     } else {
       setIsFirstRender(false);
@@ -95,8 +93,8 @@ export const usePaginatedList = <T>({
   }, [filters]);
 
   useEffect(() => {
-    if (refreshing) {
-      getDataMiddleware({ refresh: true });
+    if (refreshing && !disabled) {
+      getDataMiddleware({ reset: true });
     }
   }, [refreshing]);
 

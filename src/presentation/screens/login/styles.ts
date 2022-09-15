@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 import { TextInput } from "../../components/form/text-input/text-input";
 import { ImageBackground, Image as RNImage } from "react-native";
 
-import { Row, Typography } from "../../components";
+import { Row, Typography } from "../../components/utils";
 import { RFValue } from "react-native-responsive-fontsize";
 import { Button } from "../../components/buttons/button/button";
 

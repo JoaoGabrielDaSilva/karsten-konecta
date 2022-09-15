@@ -21,10 +21,8 @@ import {
   LetteringImage,
   Divisor,
 } from "./styles";
-import { Row } from "../../components";
-import { Toast } from "../../components/toast/toast";
+import { Row } from "../../components/utils";
 import { Checkbox } from "../../components/form/checkbox/checkbox";
-import { makeAsyncStorageAdapter } from "../../../main/factories/cache/local-storage-adapter-factory";
 import {
   getLastLoggedInAccountAdapter,
   setLastLoggedInAccountAdapter,
@@ -32,6 +30,7 @@ import {
 import { yupResolver } from "@hookform/resolvers/yup";
 import { makeLoginSchema } from "./login-schema";
 import { GetUserData } from "../../../domain/usecases/user/get-user-data";
+import { GetStoreList } from "../../../domain/usecases/store/get-store-list";
 
 type FormValues = {
   login: string;
@@ -42,9 +41,10 @@ type FormValues = {
 type Props = {
   authentication: Authentication;
   getUserData: GetUserData;
+  getStoreList: GetStoreList;
 };
 
-export const Login = ({ authentication, getUserData }: Props) => {
+export const Login = ({ authentication, getUserData, getStoreList }: Props) => {
   const { setUserData, setUserId } = useUserStore();
 
   const [loading, setLoading] = useState(false);
@@ -59,7 +59,6 @@ export const Login = ({ authentication, getUserData }: Props) => {
       const response = await authentication.auth({ login, password });
 
       setUserId({ id: response.userId });
-      setLoading(false);
       if (rememberMe) {
         setLastLoggedInAccountAdapter({ login, password, rememberMe });
       } else {
@@ -67,10 +66,13 @@ export const Login = ({ authentication, getUserData }: Props) => {
       }
 
       const userData = await getUserData.execute();
+      const { storeList } = await getStoreList.execute({ page: 0 });
 
-      setUserData({ ...userData });
+      const firstFoundStore = storeList[0];
 
-      console.log(userData);
+      setUserData({ ...userData, logged: true, store: firstFoundStore });
+
+      setLoading(false);
     } catch (error) {
       console.error(error.message);
       setLoading(false);

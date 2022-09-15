@@ -10,20 +10,22 @@ import {
 import { BorderlessButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
 import { RemoteGetAttendance } from "../../../data/usecases/attendance/remote-get-attendance";
+import { AttendanceProductModel } from "../../../domain/models/product";
 import { CreateAttendance } from "../../../domain/usecases/attendance/create-attendance";
 import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
 import { RetrieveAttendance } from "../../../domain/usecases/attendance/retrieve-attendance";
+import { UpdateProductAmount } from "../../../domain/usecases/attendance/update-product-amount";
 import { GetCustomer } from "../../../domain/usecases/customer/get-customer";
 import { GetShippingInfo } from "../../../domain/usecases/shipping/get-shipping-info";
 import { Address } from "../../components/address/address";
 import { Button } from "../../components/buttons/button/button";
 import { AttendanceListProductLoader } from "../../components/list/attendance-list-product/loader/attendance-list-product-loader";
 import { ShippingInfo } from "../../components/shipping-info/shipping-info";
-import { AttendanceProductModel } from "../../models/Attendance";
 
 import { RootPrivateStackParamList } from "../../routes";
 import { useAttendanceStore } from "../../store/attendance";
 import { useCustomerStore } from "../../store/customer";
+import { useUserStore } from "../../store/user";
 import { AttendanceAddress } from "./layout/attendance-address/attendance-address";
 import { AttendanceFooter } from "./layout/attendance-footer/attendance-footer";
 import { AttendanceHeader } from "./layout/attendance-header/attendance-header";
@@ -46,6 +48,7 @@ type Props = NavigationProps & {
   createAttendance: CreateAttendance;
   getShippingInfo: GetShippingInfo;
   getCustomer: GetCustomer;
+  updateProductAmount: UpdateProductAmount;
 };
 
 export const Attendance = ({
@@ -56,21 +59,24 @@ export const Attendance = ({
   createAttendance,
   getShippingInfo,
   getCustomer,
+  updateProductAmount,
 }: Props) => {
   const params = route.params;
 
   const attendanceName = params?.name;
 
   const [loading, setLoading] = useState(true);
-  const { productList, setAttendance, clearAttendance } = useAttendanceStore();
+  const { productList, setAttendance, clearAttendance, refreshProductList } =
+    useAttendanceStore();
   const { data: customer, clearCustomer, setCustomer } = useCustomerStore();
+  const { store } = useUserStore();
 
   const theme = useTheme();
 
   const loadAttendance = async (id: string) => {
     const attendance = await getAttendance.get({
       id: String(id),
-      storeId: "28",
+      storeId: store.id,
     });
 
     setAttendance({
@@ -84,7 +90,7 @@ export const Attendance = ({
     try {
       if (!loading) setLoading(true);
       const customer = await getCustomer.get({
-        storeId: "28",
+        storeId: store.id,
         cpfCnpj: params?.cpfCnpj,
       });
 
@@ -111,7 +117,7 @@ export const Attendance = ({
         const retrievedAttendance = await retrieveAttendance.retrieve({
           cpfCnpj: customer.cpfCnpj,
           customerId: customer.id,
-          storeId: "28",
+          storeId: store.id,
         });
 
         loadAttendance(retrievedAttendance.id);
@@ -128,7 +134,7 @@ export const Attendance = ({
         name: customer.name || attendanceName,
         cpfCnpj: customer.cpfCnpj,
         customerId: customer.id,
-        storeId: "28",
+        storeId: store.id,
       });
 
       loadAttendance(createdAttendance.id);
@@ -136,6 +142,24 @@ export const Attendance = ({
       console.log(error);
       setLoading(false);
     }
+  };
+
+  const handleUpdateAmount = async ({
+    id,
+    sum,
+  }: {
+    id: string;
+    sum: boolean;
+  }) => {
+    try {
+      const { id: productId, totalAmount } = await updateProductAmount.execute({
+        id,
+        sum,
+        storeId: store.id,
+      });
+
+      refreshProductList({ id: productId, data: { amount: totalAmount } });
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -171,19 +195,17 @@ export const Attendance = ({
               index,
             }: ListRenderItemInfo<AttendanceProductModel>) =>
               !loading && (
-                <BorderlessButton
+                <ListProduct
+                  {...item}
                   onPress={() =>
                     navigate("ProductDetails", {
                       code: item.code,
                       ean: item.ean,
                     })
                   }
-                >
-                  <ListProduct
-                    {...item}
-                    borderless={productList.length - 1 === index}
-                  />
-                </BorderlessButton>
+                  onUpdateAmount={handleUpdateAmount}
+                  borderless={productList.length - 1 === index}
+                />
               )
             }
             ListFooterComponent={
@@ -194,13 +216,16 @@ export const Attendance = ({
                     <AttendanceListProductLoader />
                   </>
                 )}
-                <DeleteAttendanceContainer>
-                  <Button
-                    disabled={loading}
-                    text="Excluir Atendimento"
-                    onPress={() => {}}
-                  />
-                </DeleteAttendanceContainer>
+                {productList.length > 0 ||
+                  (loading && (
+                    <DeleteAttendanceContainer>
+                      <Button
+                        disabled={loading}
+                        text="Excluir Atendimento"
+                        onPress={() => {}}
+                      />
+                    </DeleteAttendanceContainer>
+                  ))}
                 <AttendanceAddress
                   getShippingInfo={getShippingInfo}
                   loading={loading}

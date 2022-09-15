@@ -1,8 +1,7 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
 import { Pressable } from "react-native";
-import { Row } from "../../utils";
-import { Container, Fill, Label } from "./styles";
+import { Container, Fill, Label, StyledRow } from "./styles";
 
 export type Variant = "default" | "small";
 
@@ -12,6 +11,7 @@ export type RadioButtonProps = {
   variant?: Variant;
   label?: string;
   style?: StyleProp<ViewStyle>;
+  disabled?: boolean;
 };
 
 export const RadioButton = ({
@@ -20,15 +20,16 @@ export const RadioButton = ({
   variant = "default",
   style,
   label,
+  disabled,
 }: RadioButtonProps) => {
   return (
-    <Pressable onPress={onPress} style={style}>
-      <Row align="center">
+    <Pressable onPress={onPress} style={style} disabled={disabled}>
+      <StyledRow align="center" disabled={disabled}>
         <Container variant={variant}>
           {active && <Fill variant={variant} />}
         </Container>
         {label ? <Label>{label}</Label> : null}
-      </Row>
+      </StyledRow>
     </Pressable>
   );
 };

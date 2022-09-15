@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { Typography } from "../..";
+import { Typography } from "../../utils";
 import { Skeleton } from "../../skeleton/skeleton";
 import { RFValue } from "react-native-responsive-fontsize";
 import { FilterTag } from "../../filter-tag/filter-tag";

@@ -8,3 +8,7 @@ export type ProductModel = {
   weigth?: number;
   price?: number;
 };
+
+export type AttendanceProductModel = ProductModel & {
+  id: string;
+};

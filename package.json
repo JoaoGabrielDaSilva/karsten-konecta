@@ -29,6 +29,7 @@
     "date-fns": "^2.29.2",
     "expo": "~46.0.8",
     "expo-constants": "~13.2.4",
+    "expo-sharing": "~10.3.0",
     "expo-splash-screen": "~0.16.2",
     "expo-status-bar": "~1.4.0",
     "install": "^0.13.0",

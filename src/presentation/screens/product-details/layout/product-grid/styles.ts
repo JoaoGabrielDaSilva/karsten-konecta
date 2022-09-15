@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { Typography } from "../../../../components";
+import { Typography } from "../../../../components/utils";
 import { Dimensions, Image as RnImage } from "react-native";
 
 export const Container = styled.View`

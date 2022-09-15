@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { Row } from "../../components";
+import { Row } from "../../components/utils";
 import { TextInput } from "../../components/form/text-input/text-input";
 
 export const Container = styled.View`

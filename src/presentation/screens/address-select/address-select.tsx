@@ -93,6 +93,7 @@ export const AddressSelect = ({
         data={addressList}
         loading={loading}
         refreshing={refreshing}
+        enableRefresh
         onRefresh={() => reset({ refresh: true })}
         totalResults={totalResults}
         keyExtractor={(_, index) => String(index)}

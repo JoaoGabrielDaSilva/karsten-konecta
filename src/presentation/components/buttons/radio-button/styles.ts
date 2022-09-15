@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { Typography } from "../..";
+import { Row, Typography } from "../../utils";
 import { Variant } from "./radio-button";
 
 const ITEM_SIZE = {
@@ -30,4 +30,8 @@ export const Fill = styled.View<{ variant: Variant }>`
 
   background-color: ${({ theme }) => theme.color.background.emphasis};
   border-radius: ${({ variant }) => ITEM_SIZE[variant]}px;
+`;
+
+export const StyledRow = styled(Row)<{ disabled?: boolean }>`
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 `;

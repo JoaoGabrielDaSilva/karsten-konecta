@@ -18,6 +18,10 @@ export const Content = styled.View<{ borderless: boolean }>`
     borderless ? "transparent" : theme.color.background.secondary};
 `;
 
+export const Pressable = styled.Pressable`
+  flex-direction: row;
+`;
+
 export const Left = styled.View``;
 
 export const Right = styled.View`

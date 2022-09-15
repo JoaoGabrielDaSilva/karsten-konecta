@@ -1,7 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
-import { Row, Typography } from "../../../../components";
+import { Row, Typography } from "../../../../components/utils";
 
 export const Container = styled(Row)`
   background-color: ${({ theme }) => theme.color.background.primary};

@@ -1,5 +1,5 @@
 import styled from "styled-components/native";
-import { Row } from "../../../../components";
+import { Row } from "../../../../components/utils";
 
 export const Container = styled(Row)`
   background-color: ${({ theme }) => theme.color.background.primary};
