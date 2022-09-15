@@ -31,7 +31,7 @@ export class RemoteGetShippingInfo implements GetShippingInfo {
 
         const mostCheaperOrFastShipping = result
           .map((option) => ({
-            days: Number(option.DiasParaEntrega.split(".")[0]) + 3,
+            days: Number(option.DiasParaEntrega) + 3,
             price:
               option.CustoFreteFixo +
               option.CustoFretePercentualDoPreco +

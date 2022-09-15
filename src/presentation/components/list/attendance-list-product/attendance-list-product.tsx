@@ -1,5 +1,11 @@
 import React, { useState } from "react";
-import { StyleProp, ViewStyle } from "react-native";
+import {
+  ActivityIndicator,
+  StyleProp,
+  TouchableOpacity,
+  ViewStyle,
+} from "react-native";
+import { useTheme } from "styled-components/native";
 import { AttendanceProductModel } from "../../../../domain/models/product";
 import { AmountButton } from "../../buttons/amount-button/amount-button";
 import { Row } from "../../utils";
@@ -25,8 +31,11 @@ type Props = AttendanceProductModel & {
   borderless?: boolean;
   style?: StyleProp<ViewStyle>;
   onUpdateAmount?: ({ id, sum }: { id: string; sum: boolean }) => void;
+  onDelete?: ({ id }: { id: string }) => void;
   onPress?: () => void;
 };
+
+type ActionType = "update" | "delete" | null;
 
 export const AttendanceListProduct = ({
   id,
@@ -39,14 +48,20 @@ export const AttendanceListProduct = ({
   style,
   onPress,
   onUpdateAmount,
+  onDelete,
 }: Props) => {
-  const [loading, setLoading] = useState(false);
+  const theme = useTheme();
 
-  const updateAmountMiddleware = async (fn: () => Promise<void>) => {
-    if (loading) return;
-    setLoading(true);
+  const [loading, setLoading] = useState<ActionType>(null);
+
+  const actionMiddleWare = async (
+    fn: () => Promise<void>,
+    type: ActionType
+  ) => {
+    if (!!loading) return;
+    setLoading(type);
     await fn();
-    setLoading(false);
+    setLoading(null);
   };
 
   return (
@@ -77,23 +92,37 @@ export const AttendanceListProduct = ({
         </Pressable>
         <Bottom align="center" justify="space-between">
           <AmountButton
-            loading={loading}
+            loading={loading === "update"}
             amount={amount}
             onDecrease={() =>
-              updateAmountMiddleware(async () =>
-                onUpdateAmount({ id, sum: false })
+              actionMiddleWare(
+                async () => onUpdateAmount({ id, sum: false }),
+                "update"
               )
             }
             onIncrease={() =>
-              updateAmountMiddleware(async () =>
-                onUpdateAmount({ id, sum: true })
+              actionMiddleWare(
+                async () => onUpdateAmount({ id, sum: true }),
+                "update"
               )
             }
           />
-          <Row align="center">
-            <DeleteIcon name="trash-can-outline" />
-            <DeleteText>Excluir item</DeleteText>
-          </Row>
+          <TouchableOpacity
+            onPress={() =>
+              actionMiddleWare(async () => onDelete({ id }), "delete")
+            }
+          >
+            <Row align="center">
+              {loading === "delete" && (
+                <ActivityIndicator
+                  color={theme.color.text.primary}
+                  size="small"
+                />
+              )}
+              <DeleteIcon name="trash-can-outline" />
+              <DeleteText>Excluir item</DeleteText>
+            </Row>
+          </TouchableOpacity>
         </Bottom>
       </Content>
     </Container>

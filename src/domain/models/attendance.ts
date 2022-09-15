@@ -10,5 +10,4 @@ export type AttendanceModel = {
   productList: AttendanceProductModel[];
   customer?: CustomerModel;
   deliveryAddress?: AddressModel;
-  shippingInfo?: ShippingModel;
 };

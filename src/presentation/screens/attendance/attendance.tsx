@@ -12,6 +12,7 @@ import { useTheme } from "styled-components/native";
 import { RemoteGetAttendance } from "../../../data/usecases/attendance/remote-get-attendance";
 import { AttendanceProductModel } from "../../../domain/models/product";
 import { CreateAttendance } from "../../../domain/usecases/attendance/create-attendance";
+import { DeleteProduct } from "../../../domain/usecases/attendance/delete-product";
 import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
 import { RetrieveAttendance } from "../../../domain/usecases/attendance/retrieve-attendance";
 import { UpdateProductAmount } from "../../../domain/usecases/attendance/update-product-amount";
@@ -49,10 +50,11 @@ type Props = NavigationProps & {
   getShippingInfo: GetShippingInfo;
   getCustomer: GetCustomer;
   updateProductAmount: UpdateProductAmount;
+  deleteProduct: DeleteProduct;
 };
 
 export const Attendance = ({
-  navigation: { navigate },
+  navigation: { navigate, setOptions },
   route,
   getAttendance,
   retrieveAttendance,
@@ -60,14 +62,20 @@ export const Attendance = ({
   getShippingInfo,
   getCustomer,
   updateProductAmount,
+  deleteProduct,
 }: Props) => {
   const params = route.params;
 
   const attendanceName = params?.name;
 
   const [loading, setLoading] = useState(true);
-  const { productList, setAttendance, clearAttendance, refreshProductList } =
-    useAttendanceStore();
+  const {
+    productList,
+    setAttendance,
+    clearAttendance,
+    refreshProductList,
+    removeProduct,
+  } = useAttendanceStore();
   const { data: customer, clearCustomer, setCustomer } = useCustomerStore();
   const { store } = useUserStore();
 
@@ -89,15 +97,17 @@ export const Attendance = ({
   const loadData = async () => {
     try {
       if (!loading) setLoading(true);
-      const customer = await getCustomer.get({
-        storeId: store.id,
-        cpfCnpj: params?.cpfCnpj,
-      });
+      if (params?.cpfCnpj) {
+        const customer = await getCustomer.get({
+          storeId: store.id,
+          cpfCnpj: params?.cpfCnpj,
+        });
 
-      setCustomer({
-        ...customer,
-        id: String(customer.id),
-      });
+        setCustomer({
+          ...customer,
+          id: String(customer.id),
+        });
+      }
 
       await getAttendanceData();
 
@@ -158,9 +168,47 @@ export const Attendance = ({
         storeId: store.id,
       });
 
-      refreshProductList({ id: productId, data: { amount: totalAmount } });
+      const updatedProduct = productList.find((item) => item.id === id);
+
+      console.log("UPDATED", totalAmount, updatedProduct);
+
+      refreshProductList({
+        id: productId,
+        data: {
+          amount: totalAmount,
+
+          totalWeight: totalAmount * updatedProduct.weight,
+          totalPrice: totalAmount * updatedProduct.price,
+        },
+      });
     } catch (error) {}
   };
+
+  const handleDeleteProduct = async ({ id }: { id: string }) => {
+    try {
+      const { deletedProductId } = await deleteProduct.execute({
+        id,
+        storeId: store.id,
+      });
+
+      removeProduct({ id: deletedProductId });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  console.log(productList);
+
+  console.log(
+    productList.reduce(
+      (acc, item) => ({
+        amount: acc.amount + item.amount,
+        totalPrice: acc.totalPrice + item.totalPrice,
+        totalWeight: acc.totalWeight + item.totalWeight,
+      }),
+      { totalPrice: 0, totalWeight: 0, amount: 0 }
+    )
+  );
 
   useEffect(() => {
     loadData();
@@ -172,6 +220,15 @@ export const Attendance = ({
       }
     };
   }, []);
+
+  useEffect(() => {
+    setOptions({
+      title: `Carrinho(${productList.reduce(
+        (acc, item) => acc + item.amount,
+        0
+      )})`,
+    });
+  }, [productList]);
 
   return (
     <KeyboardAvoidingView
@@ -203,6 +260,7 @@ export const Attendance = ({
                       ean: item.ean,
                     })
                   }
+                  onDelete={handleDeleteProduct}
                   onUpdateAmount={handleUpdateAmount}
                   borderless={productList.length - 1 === index}
                 />

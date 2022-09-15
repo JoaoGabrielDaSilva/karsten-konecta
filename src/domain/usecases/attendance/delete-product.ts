@@ -1,5 +1,5 @@
 export interface DeleteProduct {
-  delete(params: DeleteProduct.Params): Promise<DeleteProduct.Model>;
+  execute(params: DeleteProduct.Params): Promise<DeleteProduct.Model>;
 }
 
 export namespace DeleteProduct {
@@ -9,6 +9,6 @@ export namespace DeleteProduct {
   };
 
   export type Model = {
-    id: string;
+    deletedProductId: string;
   };
 }

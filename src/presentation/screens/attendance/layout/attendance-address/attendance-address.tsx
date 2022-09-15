@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Keyboard } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { ShippingModel } from "../../../../../domain/models/shipping";
 import { GetShippingInfo } from "../../../../../domain/usecases/shipping/get-shipping-info";
 import {
   Direction,
@@ -38,19 +39,14 @@ type FormValues = {
 export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
   const [loadingShipping, setLoadingShipping] = useState(false);
 
-  const {
-    deliveryAddress,
-    productList,
-    shippingInfo: attendanceShippingInfo,
-    toggleDeliveryMode,
-  } = useAttendanceStore();
-  const [localShippingInfo, setLocalShippingInfo] = useState(null);
+  const { deliveryAddress, productList, toggleDeliveryMode } =
+    useAttendanceStore();
+  const [localShippingInfo, setLocalShippingInfo] = useState<ShippingModel>({
+    days: null,
+  });
 
-  const shippingInfo = deliveryAddress
-    ? attendanceShippingInfo
-    : localShippingInfo;
+  const { control, handleSubmit, watch } = useForm<{ cep: string }>();
 
-  const { control, handleSubmit } = useForm();
   const { navigate } =
     useNavigation<
       StackNavigationProp<RootPrivateStackParamList, "Attendance", undefined>
@@ -64,8 +60,13 @@ export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
       const shippingInfo = await getShippingInfo.get({
         cep,
         brandId: "2",
-        totalWeight: 10,
+        totalWeight: productList.reduce(
+          (acc, item) => acc + item.totalWeight,
+          0
+        ),
       });
+
+      console.log(shippingInfo);
 
       setLocalShippingInfo(shippingInfo);
     } catch (error) {
@@ -76,10 +77,12 @@ export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
   };
 
   useEffect(() => {
-    if (deliveryAddress && deliveryAddress.cep) {
-      loadShippingInfo({ cep: deliveryAddress.cep });
+    const cep = watch("cep");
+
+    if ((deliveryAddress && deliveryAddress?.cep) || cep) {
+      loadShippingInfo({ cep: deliveryAddress?.cep || cep });
     }
-  }, []);
+  }, [productList]);
 
   return !loading ? (
     productList.length > 0 ? (
@@ -122,11 +125,13 @@ export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
             />
           </Form>
         )}
-        {(loadingShipping || shippingInfo) && (
+        {(loadingShipping || localShippingInfo?.days) && (
           <StyledSectionTitle>Prazo de Entrega</StyledSectionTitle>
         )}
         {!loadingShipping ? (
-          shippingInfo?.days && <StyledShippingInfo {...shippingInfo} />
+          localShippingInfo?.days && (
+            <StyledShippingInfo {...localShippingInfo} />
+          )
         ) : (
           <StyledShippingInfoLoader />
         )}

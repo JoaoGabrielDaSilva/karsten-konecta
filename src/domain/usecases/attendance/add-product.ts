@@ -11,6 +11,8 @@ export namespace AddProduct {
   };
 
   export type Model = {
+    id: string;
     addedAmount: number;
+    totalPrice: number;
   };
 }

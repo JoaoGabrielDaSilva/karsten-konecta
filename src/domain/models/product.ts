@@ -5,10 +5,12 @@ export type ProductModel = {
   ean: string;
   amount?: number;
   hasAvailableAmount?: boolean;
-  weigth?: number;
+  weight?: number;
   price?: number;
 };
 
 export type AttendanceProductModel = ProductModel & {
   id: string;
+  totalPrice: number;
+  totalWeight: number;
 };

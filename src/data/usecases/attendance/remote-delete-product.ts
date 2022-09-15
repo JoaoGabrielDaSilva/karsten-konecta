@@ -8,16 +8,24 @@ export class RemoteDeleteProduct implements DeleteProduct {
     private readonly httpClient: HttpClient<RemoteDeleteProduct.Model>
   ) {}
 
-  async delete(params: DeleteProduct.Params): Promise<DeleteProduct.Model> {
+  async execute({
+    id,
+    storeId,
+  }: DeleteProduct.Params): Promise<DeleteProduct.Model> {
     const httpResponse = await this.httpClient.request({
       url: this.url,
       method: "delete",
-      body: params,
+      body: {
+        IdAtendimentoItem: id,
+        IdPessoaLoja: storeId,
+      },
     });
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        return httpResponse.body;
+        return {
+          deletedProductId: id,
+        };
       default:
         throw new UnexpectedError();
     }
@@ -25,5 +33,5 @@ export class RemoteDeleteProduct implements DeleteProduct {
 }
 
 export namespace RemoteDeleteProduct {
-  export type Model = DeleteProduct.Model;
+  export type Model = null;
 }

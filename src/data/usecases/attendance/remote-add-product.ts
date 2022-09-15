@@ -27,8 +27,12 @@ export class RemoteAddProduct implements AddProduct {
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
+        console.log(httpResponse.body);
+        const result = httpResponse.body.Result;
         return {
-          addedAmount: httpResponse.body.Result.QuantidadeAdicionada,
+          id: String(result.Id),
+          addedAmount: result.QuantidadeAdicionada,
+          totalPrice: result.TotalItem,
         };
       default:
         throw new UnexpectedError();
@@ -40,6 +44,8 @@ export namespace RemoteAddProduct {
   export type Model = {
     Result: {
       QuantidadeAdicionada: number;
+      Id: number;
+      TotalItem: number;
     };
   };
 }

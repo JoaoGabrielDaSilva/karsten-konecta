@@ -37,8 +37,10 @@ export class RemoteGetAttendance implements GetAttendance {
             name: product.Produto.Nome,
             uri: product.Produto.FotoPrincipal,
             amount: product.Quantidade,
-            weight: product.Produto.Peso,
+            weight: Number(product.Produto.Peso),
             price: product.Produto.Preco,
+            totalPrice: product.Produto.TotalItem,
+            totalWeight: product.Quantidade * Number(product.Produto.Peso),
           })),
           deliveryAddress: result?.EnderecoEntrega
             ? {
@@ -74,8 +76,9 @@ export namespace RemoteGetAttendance {
           Ean: string;
           FotoPrincipal: string;
           Nome: string;
-          Peso: number;
+          Peso: string;
           Preco: number;
+          TotalItem: number;
         };
         Quantidade: number;
       }[];

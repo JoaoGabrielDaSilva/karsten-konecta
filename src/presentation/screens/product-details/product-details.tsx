@@ -96,14 +96,27 @@ export const ProductDetails = ({
 
   const handleAddProduct = async () => {
     try {
-      const a = await addProduct.add({
+      const { id, addedAmount, totalPrice } = await addProduct.add({
         amount: String(productAmount),
         attendanceId: attendanceId,
         productId: product.code,
         storeId: store.id,
       });
 
-      console.log(a);
+      console.log(product.weight, addedAmount * product.weight);
+
+      addAttendanceProduct({
+        id,
+        code: product.code,
+        ean: product.ean,
+        name: product.name,
+        uri: product.carouselImages[0],
+        amount: addedAmount,
+        weight: product.weight,
+        price: Number(String(product.price).replace(/\,/, ".")),
+        totalPrice,
+        totalWeight: addedAmount * product.weight,
+      });
 
       navigate("Attendance");
     } catch (error) {
