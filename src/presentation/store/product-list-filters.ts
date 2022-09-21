@@ -4,6 +4,8 @@ import { Filter } from "../models/filter-model";
 export type Filters = {
   query?: Filter;
   category?: Filter;
+  brand?: Filter;
+  ordination?: Filter;
 };
 
 type ProductListFiltersState = {

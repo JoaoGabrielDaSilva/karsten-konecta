@@ -1,5 +1,6 @@
 import React from "react";
 import { View } from "react-native";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 import { QueryClientProvider } from "react-query";
 import { ThemeProvider } from "styled-components/native";
 import { queryClient } from "./src/infra/protocols/cache/query-client";

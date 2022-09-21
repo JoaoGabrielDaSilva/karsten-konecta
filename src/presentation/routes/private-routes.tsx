@@ -27,6 +27,8 @@ import { Sales } from "../screens/sales/sales";
 import { StoreSelect } from "../screens/store-select/store-select";
 import { DeliveryMode } from "../store/attendance";
 import { makeCatalog } from "../../main/factories/pages/catalog-factory";
+import { ProductListFilters } from "../screens/product-list-filters/product-list-filters";
+import { makeProductListFilters } from "../../main/factories/pages/product-list-filters-factory";
 
 export type RootPrivateStackParamList = {
   Login: undefined;
@@ -51,6 +53,7 @@ export type RootPrivateStackParamList = {
   ProductList: {
     defaultFocus?: boolean;
   };
+  ProductListFilters: undefined;
   ProductDetails: {
     code: string;
     ean: string;
@@ -103,16 +106,6 @@ const StackNavigator = () => {
         component={makeAttendance}
         options={{
           title: "Carrinho",
-
-          header: (props) => (
-            <StackNavbar
-              headerLeftIcon="close"
-              onLeftIconPress={() => props.navigation.navigate("Sales")}
-              rightIcon="text-search"
-              onRightIconPress={() => props.navigation.navigate("ProductList")}
-              {...props}
-            />
-          ),
         }}
       />
 
@@ -202,7 +195,15 @@ const StackNavigator = () => {
           defaultFocus: false,
         }}
       />
-
+      <Stack.Screen
+        name="ProductListFilters"
+        component={makeProductListFilters}
+        options={{
+          title: "Filtros",
+          presentation: "modal",
+          cardOverlayEnabled: false,
+        }}
+      />
       <Stack.Screen
         name="AttendanceList"
         component={makeAttendanceList}

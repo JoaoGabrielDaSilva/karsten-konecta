@@ -187,6 +187,13 @@ export const ProductDetails = ({
         {!loading ? (
           <ProductInfo
             {...product}
+            disabled={loading}
+            maxAmount={
+              store.isMultiBrand
+                ? stockList?.find((item) => item.locale === "E-COMMERCE KSA")
+                    ?.availableAmount
+                : null
+            }
             amount={productAmount}
             decreaseAmount={handleDecrease}
             increaseAmount={handleIncrease}

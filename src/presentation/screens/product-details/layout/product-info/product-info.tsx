@@ -8,6 +8,8 @@ import { Container, Name, Code, Ean, Col, Content } from "./styles";
 type Props = Omit<ProductModel, "uri" | "hasAvailableStock"> & {
   increaseAmount: () => void;
   decreaseAmount: () => void;
+  maxAmount: number;
+  disabled: boolean;
 };
 
 export const ProductInfo = ({
@@ -15,6 +17,8 @@ export const ProductInfo = ({
   code,
   ean,
   amount,
+  maxAmount,
+  disabled,
   increaseAmount,
   decreaseAmount,
 }: Props) => {
@@ -30,6 +34,8 @@ export const ProductInfo = ({
             <Ean>EAN: {ean}</Ean>
           </Col>
           <AmountButton
+            disabled={disabled}
+            maxAmount={maxAmount}
             amount={amount}
             onDecrease={decreaseAmount}
             onIncrease={increaseAmount}

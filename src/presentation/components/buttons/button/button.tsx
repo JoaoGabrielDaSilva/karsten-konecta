@@ -3,6 +3,7 @@ import {
   ActivityIndicator,
   StyleProp,
   TextStyle,
+  TouchableOpacity,
   ViewStyle,
 } from "react-native";
 import { RectButton } from "react-native-gesture-handler";
@@ -34,9 +35,10 @@ export const Button = ({
   const theme = useTheme();
 
   return (
-    <RectButton
+    <TouchableOpacity
       onPress={onPress}
-      enabled={!disabled && !loading}
+      activeOpacity={0.5}
+      disabled={disabled || loading}
       style={containerStyle}
       {...props}
     >
@@ -49,6 +51,6 @@ export const Button = ({
           <ActivityIndicator color={theme.color.text.inverted} />
         )}
       </Container>
-    </RectButton>
+    </TouchableOpacity>
   );
 };

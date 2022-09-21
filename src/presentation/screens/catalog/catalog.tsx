@@ -169,7 +169,9 @@ export const Catalog = ({
     setRefreshing(false);
   };
 
-  console.log(filters);
+  const handlePressProduct = (product: ProductModel) => {
+    push("ProductDetails", { code: product.code, ean: product.ean });
+  };
 
   return (
     <Container>
@@ -220,10 +222,12 @@ export const Catalog = ({
             data={recentProducts}
             horizontal
             keyExtractor={(_, index) => String(index)}
+            showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
               <ProductCard
-                {...item}
+                onPress={() => handlePressProduct(item)}
                 style={{ marginHorizontal: theme.spacing.lg }}
+                {...item}
               />
             )}
           />
@@ -240,10 +244,12 @@ export const Catalog = ({
             data={bestSellers}
             horizontal
             keyExtractor={(_, index) => String(index)}
+            showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
               <ProductCard
-                {...item}
+                onPress={() => handlePressProduct(item)}
                 style={{ marginHorizontal: theme.spacing.lg }}
+                {...item}
               />
             )}
           />

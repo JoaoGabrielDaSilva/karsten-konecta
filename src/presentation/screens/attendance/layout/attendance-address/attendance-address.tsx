@@ -39,21 +39,23 @@ type Props = {
   loading: boolean;
   getShippingInfo: GetShippingInfo;
   handleRemovePickUpAddress: () => Promise<void>;
+  setLoadingShipping: (loading: boolean) => void;
+  loadingShipping: boolean;
 };
 
 type FormValues = {
   cep: string;
-  responsible: string;
+  responsible?: string;
 };
 
 export const AttendanceAddress = ({
   loading,
   getShippingInfo,
+  loadingShipping,
+  setLoadingShipping,
   handleRemovePickUpAddress,
 }: Props) => {
   const theme = useTheme();
-
-  const [loadingShipping, setLoadingShipping] = useState(false);
 
   const { deliveryAddress, pickUpAddress, productList, toggleDeliveryMode } =
     useAttendanceStore();

@@ -33,34 +33,34 @@ export const BottomSheet = React.forwardRef(
       },
     }));
 
+    const handleClose = () => {
+      setVisible(false);
+      bottomSheetRef?.current?.close();
+      onClose && onClose();
+    };
+
     return (
       <Modal transparent visible={visible}>
-        <BottomSheetBase
-          ref={bottomSheetRef}
-          detached
-          enablePanDownToClose
-          onClose={() => setVisible(false)}
-          backdropComponent={() => {
-            return (
-              <TouchableOpacity
-                activeOpacity={1}
-                style={[
-                  {
-                    flex: 1,
-                    position: "absolute",
-                    width: "100%",
-                    height: "100%",
-                    backgroundColor: "#222222A1",
-                  },
-                ]}
-                onPress={onClose}
-              />
-            );
-          }}
-          {...props}
+        <TouchableOpacity
+          activeOpacity={1}
+          style={[
+            {
+              flex: 1,
+
+              backgroundColor: "#222222A1",
+            },
+          ]}
+          onPress={onClose}
         >
-          {children}
-        </BottomSheetBase>
+          <BottomSheetBase
+            ref={bottomSheetRef}
+            enablePanDownToClose
+            onClose={handleClose}
+            {...props}
+          >
+            {children}
+          </BottomSheetBase>
+        </TouchableOpacity>
       </Modal>
     );
   }

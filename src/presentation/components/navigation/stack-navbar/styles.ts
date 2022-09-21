@@ -24,7 +24,11 @@ export const HeaderRight = styled(Row).attrs(() => ({
   flex: 1;
 `;
 
-export const HeaderIcon = styled(MaterialCommunityIcons)`
+export const HeaderIcon = styled(MaterialCommunityIcons)<{
+  disabled?: boolean;
+}>`
   font-size: ${({ theme }) => theme.fontSize.xl}px;
   color: ${({ theme }) => theme.color.text.primary};
+
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 `;

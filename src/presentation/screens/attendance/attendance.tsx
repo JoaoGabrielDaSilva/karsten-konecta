@@ -10,19 +10,24 @@ import {
 import { BorderlessButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
 import { RemoteGetAttendance } from "../../../data/usecases/attendance/remote-get-attendance";
+import { SalesModality } from "../../../domain/models/attendance";
 import { AttendanceProductModel } from "../../../domain/models/product";
 import { CreateAttendance } from "../../../domain/usecases/attendance/create-attendance";
+import { DeleteAttendance } from "../../../domain/usecases/attendance/delete-attendance";
 import { DeleteProduct } from "../../../domain/usecases/attendance/delete-product";
 import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
 import { RetrieveAttendance } from "../../../domain/usecases/attendance/retrieve-attendance";
 import { UpdateAttendancePickUpAddress } from "../../../domain/usecases/attendance/update-attendance-pickup-address";
 import { UpdateProductAmount } from "../../../domain/usecases/attendance/update-product-amount";
+import { VerifyAttendanceProducts } from "../../../domain/usecases/attendance/verify-attendance-products";
 import { GetCustomer } from "../../../domain/usecases/customer/get-customer";
 import { GetShippingInfo } from "../../../domain/usecases/shipping/get-shipping-info";
 import { Address } from "../../components/address/address";
 import { Button } from "../../components/buttons/button/button";
 import { AttendanceListProductLoader } from "../../components/list/attendance-list-product/loader/attendance-list-product-loader";
+import { StackNavbar } from "../../components/navigation/stack-navbar/stack-navbar";
 import { ShippingInfo } from "../../components/shipping-info/shipping-info";
+import { Toast } from "../../components/toast/toast";
 
 import { RootPrivateStackParamList } from "../../routes";
 import { DeliveryMode, useAttendanceStore } from "../../store/attendance";
@@ -53,11 +58,13 @@ type Props = NavigationProps & {
   getCustomer: GetCustomer;
   updateProductAmount: UpdateProductAmount;
   deleteProduct: DeleteProduct;
+  deleteAttendance: DeleteAttendance;
   updatePickUpAddress: UpdateAttendancePickUpAddress;
+  verifyAttendanceProducts: VerifyAttendanceProducts;
 };
 
 export const Attendance = ({
-  navigation: { navigate, setOptions },
+  navigation: { navigate, setOptions, reset },
   route,
   getAttendance,
   retrieveAttendance,
@@ -66,13 +73,17 @@ export const Attendance = ({
   getCustomer,
   updateProductAmount,
   deleteProduct,
+  deleteAttendance,
   updatePickUpAddress,
+  verifyAttendanceProducts,
 }: Props) => {
   const params = route.params;
 
   const attendanceName = params?.name;
 
   const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
+  const [loadingShipping, setLoadingShipping] = useState(false);
   const [updtadingProduct, setUpdtadingProduct] = useState(false);
   const {
     productList,
@@ -94,8 +105,6 @@ export const Attendance = ({
       storeId: store.id,
     });
 
-    console.log(attendance);
-
     setAttendance({
       ...attendance,
       id: String(id),
@@ -104,8 +113,10 @@ export const Attendance = ({
   };
 
   const loadData = async () => {
+    console.log("params", params);
+
     try {
-      if (params?.cpfCnpj) {
+      if (params?.cpfCnpj && !customer?.id) {
         if (!loading) setLoading(true);
         const customer = await getCustomer.get({
           storeId: store.id,
@@ -119,8 +130,6 @@ export const Attendance = ({
       }
 
       await getAttendanceData();
-
-      console.log("CUSTOMER", params);
     } catch (error) {
       console.log(error);
     }
@@ -142,9 +151,8 @@ export const Attendance = ({
 
         loadAttendance(retrievedAttendance.id);
       }
-
-      await createNewAttendance();
     } catch (error) {
+      await createNewAttendance();
       console.log(error);
     }
   };
@@ -211,6 +219,42 @@ export const Attendance = ({
     }
   };
 
+  const handleVerifyAttendanceProducts = async () => {
+    try {
+      const { deletedProducts, updatedProducts } =
+        await verifyAttendanceProducts.execute({
+          attendanceId: attendance.id,
+          saleModality: SalesModality.InfiniteShelf,
+          storeId: store.id,
+        });
+
+      console.log(updatedProducts, deletedProducts);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleDeleteAttendance = async () => {
+    try {
+      setDeleting(true);
+      await deleteAttendance.delete({
+        id: attendance.id,
+        storeId: store.id,
+      });
+      setDeleting(false);
+      reset({
+        routes: [{ name: "Sales" }],
+      });
+    } catch (error) {
+      Toast({
+        type: "error",
+        title: "Erro!",
+        message: "Houve um erro ao excluir atendimento! Tente novamente.",
+      });
+      setDeleting(false);
+    }
+  };
+
   const handleRemovePickUpAddress = async () => {
     await updatePickUpAddress.execute({
       addressId: undefined,
@@ -238,6 +282,21 @@ export const Attendance = ({
       )})`,
     });
   }, [productList]);
+
+  useEffect(() => {
+    setOptions({
+      header: (props) => (
+        <StackNavbar
+          rightIconsDisabled={!attendance?.id}
+          headerLeftIcon="close"
+          onLeftIconPress={() => props.navigation.navigate("Sales")}
+          rightIcon="text-search"
+          onRightIconPress={() => props.navigation.navigate("ProductList")}
+          {...props}
+        />
+      ),
+    });
+  }, [attendance?.id]);
 
   return (
     <KeyboardAvoidingView
@@ -284,26 +343,33 @@ export const Attendance = ({
                     <AttendanceListProductLoader />
                   </>
                 )}
-                {productList.length > 0 ||
-                  (loading && (
-                    <DeleteAttendanceContainer>
-                      <Button
-                        disabled={loading}
-                        text="Excluir Atendimento"
-                        onPress={() => {}}
-                      />
-                    </DeleteAttendanceContainer>
-                  ))}
+                {(productList.length > 0 || loading) && (
+                  <DeleteAttendanceContainer>
+                    <Button
+                      disabled={loading}
+                      loading={deleting}
+                      text="Excluir Atendimento"
+                      onPress={handleDeleteAttendance}
+                    />
+                  </DeleteAttendanceContainer>
+                )}
                 <AttendanceAddress
                   getShippingInfo={getShippingInfo}
                   handleRemovePickUpAddress={handleRemovePickUpAddress}
                   loading={loading}
+                  loadingShipping={loadingShipping}
+                  setLoadingShipping={(loading) => setLoadingShipping(loading)}
                 />
               </>
             }
           />
 
-          <AttendanceFooter loading={updtadingProduct} />
+          <AttendanceFooter
+            loading={updtadingProduct || loadingShipping}
+            deleting={deleting}
+            handleDeleteAttendance={handleDeleteAttendance}
+            handleVerifyAttendanceProducts={handleVerifyAttendanceProducts}
+          />
         </Content>
       </Container>
     </KeyboardAvoidingView>

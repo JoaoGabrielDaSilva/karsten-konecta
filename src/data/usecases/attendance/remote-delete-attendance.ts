@@ -8,11 +8,14 @@ export class RemoteDeleteAttendance implements DeleteAttendance {
     private readonly httpClient: HttpClient
   ) {}
 
-  async delete(params: DeleteAttendance.Params): Promise<void> {
+  async delete({ id, storeId }: DeleteAttendance.Params): Promise<void> {
     const httpResponse = await this.httpClient.request({
       url: this.url,
       method: "delete",
-      body: params,
+      body: {
+        IdAtendimento: id,
+        IdPessoaLoja: storeId,
+      },
     });
 
     switch (httpResponse.statusCode) {

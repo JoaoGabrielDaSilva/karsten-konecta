@@ -25,7 +25,7 @@ export class RemoteGetProductStock implements GetProductStock {
 
         return {
           stockList: result.map((item) => ({
-            locale: item.LocalEstoque,
+            locale: item.Apelido,
             availableAmount: item.QuantidadeDisponivel,
           })),
         };
@@ -38,7 +38,7 @@ export class RemoteGetProductStock implements GetProductStock {
 export namespace RemoteGetProductStock {
   export type Model = {
     Result: {
-      LocalEstoque: string;
+      Apelido: string;
       QuantidadeDisponivel: number;
     }[];
   };

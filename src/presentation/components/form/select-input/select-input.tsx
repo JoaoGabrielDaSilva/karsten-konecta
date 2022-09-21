@@ -105,7 +105,8 @@ export const SelectInput = React.forwardRef(
     const focus = useSharedValue(FocusState.UNFOCUSED);
 
     const label = useMemo(
-      () => options.find((option) => option.value === value)?.label,
+      () =>
+        options ? options.find((option) => option.value === value)?.label : "",
       [value]
     );
 
@@ -205,9 +206,6 @@ export const SelectInput = React.forwardRef(
                   <>
                     <Input align="center" justify="space-between" {...props}>
                       {label ? <Value>{String(label)}</Value> : null}
-                      {loading && (
-                        <ActivityIndicator color={theme.color.text.primary} />
-                      )}
                       {!!String(value) && !loading && label && (
                         <ClearIcon
                           name="ios-close-circle-outline"
@@ -220,6 +218,9 @@ export const SelectInput = React.forwardRef(
                         {placeholder}
                       </Placeholder>
                     ) : null}
+                    {loading && (
+                      <ActivityIndicator color={theme.color.text.primary} />
+                    )}
                   </>
                 )}
               />

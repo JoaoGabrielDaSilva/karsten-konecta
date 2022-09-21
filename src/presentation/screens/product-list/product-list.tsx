@@ -61,12 +61,12 @@ export const ProductList = ({
   ): Promise<PaginatedListGetFunctionReturn<ProductModel>> => {
     try {
       const { productList, totalResults } = await getProductList.get({
-        brandId: "1",
-        order: "D",
         page,
+        storeId: store.id,
+        brandId: filters?.brand?.apiValue,
+        order: filters?.ordination?.apiValue,
         query: filters?.query?.apiValue,
         category: filters?.category?.apiValue,
-        storeId: store.id,
       });
 
       return {
@@ -88,8 +88,6 @@ export const ProductList = ({
       filters,
       disabled: !filters,
     });
-
-  console.log(filters);
 
   const onSubmit = ({ search }: FormValues) => {
     try {
@@ -126,8 +124,6 @@ export const ProductList = ({
     }
   };
 
-  console.log("focused", inputIsFocused);
-
   useEffect(() => {
     navigation.setOptions({
       header: (props) => (
@@ -137,9 +133,22 @@ export const ProductList = ({
           defaultFocus={defaultFocus}
           onFocus={() => setInputIsFocused(true)}
           onBlur={() => setInputIsFocused(false)}
+          rightIcon="filter-outline"
+          onRightIconPress={() => navigation.navigate("ProductListFilters")}
           {...props}
         />
       ),
+    });
+
+    setFilters({
+      ...filters,
+      ordination: {
+        label: "Ordenação",
+        apiValue: "D",
+        value: "Alfabética",
+        key: "ordination",
+        hideRemove: true,
+      },
     });
 
     loadSearchHistory();

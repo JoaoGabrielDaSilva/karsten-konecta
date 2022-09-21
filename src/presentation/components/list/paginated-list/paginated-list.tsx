@@ -35,7 +35,6 @@ const { width } = Dimensions.get("window");
 
 export const PaginatedList = ({
   loading,
-
   loaderComponent,
   refreshControl,
   refreshing,
@@ -44,6 +43,7 @@ export const PaginatedList = ({
   page,
   filters,
   handleRemoveFilter,
+  ListHeaderComponent,
   ...props
 }: Props) => {
   const theme = useTheme();
@@ -70,6 +70,7 @@ export const PaginatedList = ({
       }
       ListHeaderComponent={
         <>
+          {ListHeaderComponent && ListHeaderComponent}
           {filters && (
             <FlatList
               data={Object.values(filters)}

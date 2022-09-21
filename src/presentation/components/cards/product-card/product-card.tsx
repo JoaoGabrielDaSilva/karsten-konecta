@@ -26,7 +26,7 @@ export const ProductCard = ({ style, onPress, ...props }: Props) => {
   const { uri, name, code, ean } = props;
 
   return (
-    <Pressable onPress={() => onPress({ ...props })}>
+    <Pressable onPress={() => onPress && onPress({ ...props })}>
       <Container style={style}>
         <ImageWrapper>
           <Image source={{ uri }} resizeMode="contain" />

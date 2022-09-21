@@ -6,6 +6,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StackHeaderProps } from "@react-navigation/stack";
 import { Typography } from "../../utils";
 import { DrawerActions } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native";
 
 type IconType = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -16,6 +17,7 @@ type Props = StackHeaderProps & {
   onRightIconPress?: () => void;
   backArrow?: boolean;
   drawer?: boolean;
+  rightIconsDisabled?: boolean;
 };
 
 export const StackNavbar = ({
@@ -27,6 +29,7 @@ export const StackNavbar = ({
   headerLeftIcon,
   backArrow = true,
   drawer,
+  rightIconsDisabled,
 }: Props) => {
   const { canGoBack, goBack, dispatch } = navigation;
 
@@ -51,11 +54,12 @@ export const StackNavbar = ({
       </Typography>
       <HeaderRight>
         {rightIcon && (
-          <BorderlessButton
+          <TouchableOpacity
+            disabled={rightIconsDisabled}
             onPress={() => onRightIconPress && onRightIconPress()}
           >
-            <HeaderIcon name={rightIcon} />
-          </BorderlessButton>
+            <HeaderIcon name={rightIcon} disabled={rightIconsDisabled} />
+          </TouchableOpacity>
         )}
         {drawer && (
           <BorderlessButton onPress={openDrawer}>

@@ -18,6 +18,7 @@ type Props = {
   onIncrease: () => void;
   style?: StyleProp<ViewStyle>;
   loading?: boolean;
+  disabled?: boolean;
 };
 
 export const AmountButton = ({
@@ -27,21 +28,25 @@ export const AmountButton = ({
   maxAmount,
   style,
   loading,
+  disabled,
 }: Props) => {
   return (
     <Container style={style} align="center">
       <BorderlessButton
         onPress={() => onDecrease && onDecrease()}
-        enabled={amount > 1}
+        enabled={amount > 1 && !disabled}
       >
-        <Button text="-" disabled={amount === 1} />
+        <Button text="-" disabled={amount === 1 || disabled} />
       </BorderlessButton>
       <Button text={String(amount)} centerOne loading={loading} />
       <BorderlessButton
         onPress={() => onIncrease && onIncrease()}
-        enabled={!maxAmount || (maxAmount && amount < maxAmount)}
+        enabled={(!maxAmount || (maxAmount && amount < maxAmount)) && !disabled}
       >
-        <Button text="+" disabled={maxAmount && amount === maxAmount} />
+        <Button
+          text="+"
+          disabled={(maxAmount && amount === maxAmount) || disabled}
+        />
       </BorderlessButton>
     </Container>
   );
