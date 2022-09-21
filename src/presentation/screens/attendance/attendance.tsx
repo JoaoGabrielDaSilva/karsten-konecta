@@ -15,6 +15,7 @@ import { CreateAttendance } from "../../../domain/usecases/attendance/create-att
 import { DeleteProduct } from "../../../domain/usecases/attendance/delete-product";
 import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
 import { RetrieveAttendance } from "../../../domain/usecases/attendance/retrieve-attendance";
+import { UpdateAttendancePickUpAddress } from "../../../domain/usecases/attendance/update-attendance-pickup-address";
 import { UpdateProductAmount } from "../../../domain/usecases/attendance/update-product-amount";
 import { GetCustomer } from "../../../domain/usecases/customer/get-customer";
 import { GetShippingInfo } from "../../../domain/usecases/shipping/get-shipping-info";
@@ -24,10 +25,11 @@ import { AttendanceListProductLoader } from "../../components/list/attendance-li
 import { ShippingInfo } from "../../components/shipping-info/shipping-info";
 
 import { RootPrivateStackParamList } from "../../routes";
-import { useAttendanceStore } from "../../store/attendance";
+import { DeliveryMode, useAttendanceStore } from "../../store/attendance";
 import { useCustomerStore } from "../../store/customer";
 import { useUserStore } from "../../store/user";
 import { AttendanceAddress } from "./layout/attendance-address/attendance-address";
+import { AttendanceEmptyIndicator } from "./layout/attendance-empty-indicator/attendance-empty-indicator";
 import { AttendanceFooter } from "./layout/attendance-footer/attendance-footer";
 import { AttendanceHeader } from "./layout/attendance-header/attendance-header";
 
@@ -51,6 +53,7 @@ type Props = NavigationProps & {
   getCustomer: GetCustomer;
   updateProductAmount: UpdateProductAmount;
   deleteProduct: DeleteProduct;
+  updatePickUpAddress: UpdateAttendancePickUpAddress;
 };
 
 export const Attendance = ({
@@ -63,18 +66,22 @@ export const Attendance = ({
   getCustomer,
   updateProductAmount,
   deleteProduct,
+  updatePickUpAddress,
 }: Props) => {
   const params = route.params;
 
   const attendanceName = params?.name;
 
   const [loading, setLoading] = useState(true);
+  const [updtadingProduct, setUpdtadingProduct] = useState(false);
   const {
     productList,
     setAttendance,
     clearAttendance,
     refreshProductList,
     removeProduct,
+    setAddressPickupAddress,
+    ...attendance
   } = useAttendanceStore();
   const { data: customer, clearCustomer, setCustomer } = useCustomerStore();
   const { store } = useUserStore();
@@ -87,6 +94,8 @@ export const Attendance = ({
       storeId: store.id,
     });
 
+    console.log(attendance);
+
     setAttendance({
       ...attendance,
       id: String(id),
@@ -96,8 +105,8 @@ export const Attendance = ({
 
   const loadData = async () => {
     try {
-      if (!loading) setLoading(true);
       if (params?.cpfCnpj) {
+        if (!loading) setLoading(true);
         const customer = await getCustomer.get({
           storeId: store.id,
           cpfCnpj: params?.cpfCnpj,
@@ -114,15 +123,16 @@ export const Attendance = ({
       console.log("CUSTOMER", params);
     } catch (error) {
       console.log(error);
-      await createNewAttendance();
     }
   };
 
   const getAttendanceData = async () => {
     try {
-      if (params?.id) return loadAttendance(params.id);
+      if (params?.id) {
+        setLoading(true);
+        return loadAttendance(params.id);
+      }
 
-      setLoading(true);
       if (customer?.cpfCnpj) {
         const retrievedAttendance = await retrieveAttendance.retrieve({
           cpfCnpj: customer.cpfCnpj,
@@ -132,9 +142,10 @@ export const Attendance = ({
 
         loadAttendance(retrievedAttendance.id);
       }
+
+      await createNewAttendance();
     } catch (error) {
       console.log(error);
-      setLoading(false);
     }
   };
 
@@ -150,6 +161,7 @@ export const Attendance = ({
       loadAttendance(createdAttendance.id);
     } catch (error) {
       console.log(error);
+    } finally {
       setLoading(false);
     }
   };
@@ -162,6 +174,7 @@ export const Attendance = ({
     sum: boolean;
   }) => {
     try {
+      setUpdtadingProduct(true);
       const { id: productId, totalAmount } = await updateProductAmount.execute({
         id,
         sum,
@@ -169,8 +182,6 @@ export const Attendance = ({
       });
 
       const updatedProduct = productList.find((item) => item.id === id);
-
-      console.log("UPDATED", totalAmount, updatedProduct);
 
       refreshProductList({
         id: productId,
@@ -181,7 +192,10 @@ export const Attendance = ({
           totalPrice: totalAmount * updatedProduct.price,
         },
       });
-    } catch (error) {}
+    } catch (error) {
+    } finally {
+      setUpdtadingProduct(false);
+    }
   };
 
   const handleDeleteProduct = async ({ id }: { id: string }) => {
@@ -197,27 +211,22 @@ export const Attendance = ({
     }
   };
 
-  console.log(productList);
-
-  console.log(
-    productList.reduce(
-      (acc, item) => ({
-        amount: acc.amount + item.amount,
-        totalPrice: acc.totalPrice + item.totalPrice,
-        totalWeight: acc.totalWeight + item.totalWeight,
-      }),
-      { totalPrice: 0, totalWeight: 0, amount: 0 }
-    )
-  );
+  const handleRemovePickUpAddress = async () => {
+    await updatePickUpAddress.execute({
+      addressId: undefined,
+      attendanceId: attendance.id,
+      storeId: store.id,
+      customerId: customer.id,
+    });
+    setAddressPickupAddress({ address: null });
+  };
 
   useEffect(() => {
     loadData();
 
     return () => {
       clearAttendance();
-      if (customer?.id) {
-        clearCustomer();
-      }
+      clearCustomer();
     };
   }, []);
 
@@ -238,6 +247,7 @@ export const Attendance = ({
     >
       <Container>
         <AttendanceHeader loading={loading} />
+        {productList.length === 0 && !loading && <AttendanceEmptyIndicator />}
         <Content>
           <FlatList
             bounces={false}
@@ -286,13 +296,14 @@ export const Attendance = ({
                   ))}
                 <AttendanceAddress
                   getShippingInfo={getShippingInfo}
+                  handleRemovePickUpAddress={handleRemovePickUpAddress}
                   loading={loading}
                 />
               </>
             }
           />
 
-          <AttendanceFooter loading={loading} />
+          <AttendanceFooter loading={updtadingProduct} />
         </Content>
       </Container>
     </KeyboardAvoidingView>

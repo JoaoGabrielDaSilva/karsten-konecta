@@ -9,20 +9,31 @@ export enum Direction {
 type Props = {
   leftLabel: string;
   rightLabel: string;
-  onSelect: (direction: Direction) => void;
+  onSelect: (direction: Direction) => void | Promise<void>;
+  defaultValue: Direction;
 };
 
-export const LabelToggleButton = ({ leftLabel, rightLabel }: Props) => {
-  const [selectedSide, setSelectedSide] = useState(Direction.LEFT);
+export const LabelToggleButton = ({
+  leftLabel,
+  rightLabel,
+  onSelect,
+  defaultValue,
+}: Props) => {
+  const [selectedSide, setSelectedSide] = useState(defaultValue);
 
   const isLeftActive = selectedSide === Direction.LEFT;
+
+  const handlePress = async (direction: Direction) => {
+    onSelect && (await onSelect(direction));
+    setSelectedSide(direction);
+  };
 
   return (
     <Container>
       <Button
         active={isLeftActive}
         leftSide={true}
-        onPress={() => setSelectedSide(Direction.LEFT)}
+        onPress={() => handlePress(Direction.LEFT)}
       >
         <Label bold={isLeftActive} active={isLeftActive}>
           {leftLabel}
@@ -31,7 +42,7 @@ export const LabelToggleButton = ({ leftLabel, rightLabel }: Props) => {
       <Button
         active={!isLeftActive}
         leftSide={false}
-        onPress={() => setSelectedSide(Direction.RIGHT)}
+        onPress={() => handlePress(Direction.RIGHT)}
       >
         <Label bold={!isLeftActive} active={!isLeftActive}>
           {rightLabel}

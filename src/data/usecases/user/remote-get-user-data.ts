@@ -21,7 +21,22 @@ export class RemoteGetUserData implements GetUserData {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
 
-        const excludedCategories = ["Home", "Vendas"];
+        const excludedCategories = [
+          "Home",
+          "Vendas",
+          "Catálogo",
+          "Minha Conta",
+        ];
+
+        const menuOrder = [
+          "Gerencial",
+          "Operação",
+          "Relacionamento Digital",
+          "Logística",
+          "Treinamento",
+          "Configurações",
+          "Ajuda",
+        ];
 
         const categories = [];
         const menus = [];
@@ -35,10 +50,7 @@ export class RemoteGetUserData implements GetUserData {
               )
                 return;
 
-              if (
-                item.NomeCategoriaPai === item.NomeInterno &&
-                !categories.includes(item.NomeCategoriaPai)
-              )
+              if (!categories.includes(item.NomeCategoriaPai))
                 return categories.push(item.NomeCategoriaPai);
 
               if (
@@ -63,16 +75,22 @@ export class RemoteGetUserData implements GetUserData {
             profileList: [] as Profile[],
           }
         );
+        console.log(categories);
+        console.log(menus);
 
-        const menuList = categories.reduce((acc, item) => {
-          return [
-            ...acc,
-            {
-              title: item,
-              data: menus.filter((menu) => menu.parentName === item),
-            },
-          ];
-        }, []);
+        const menuList = categories
+          .reduce((acc, item) => {
+            return [
+              ...acc,
+              {
+                title: item,
+                data: menus.filter((menu) => menu.parentName === item),
+              },
+            ];
+          }, [])
+          .sort(
+            (a, b) => menuOrder.indexOf(a.title) - menuOrder.indexOf(b.title)
+          );
 
         return {
           name: result.Nome,

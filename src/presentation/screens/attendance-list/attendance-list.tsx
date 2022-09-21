@@ -16,6 +16,7 @@ import {
 } from "../../hooks/use-paginated-list";
 import { RootPrivateStackParamList } from "../../routes";
 import { useAttendanceListFiltersStore } from "../../store/attendance-list-filters";
+import { useUserStore } from "../../store/user";
 import { Container } from "./styles";
 
 type NavigationProps = StackScreenProps<
@@ -34,6 +35,7 @@ export const AttendanceList = ({
   const theme = useTheme();
   const { filters, clearFilters, removeFilter } =
     useAttendanceListFiltersStore();
+  const { store } = useUserStore();
 
   const { data, loading, page, onEndReached, totalResults, reset, refreshing } =
     usePaginatedList({
@@ -53,7 +55,7 @@ export const AttendanceList = ({
     try {
       const { attendanceList, totalResults } = await getAttendanceList.execute({
         page,
-        storeId: "28",
+        storeId: store.id,
         name: filters?.name?.apiValue,
         cpfCnpj: filters?.cpfCnpj?.apiValue,
         initialDate: filters?.initialDate?.apiValue,

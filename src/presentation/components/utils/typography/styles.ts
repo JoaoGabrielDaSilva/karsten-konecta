@@ -1,6 +1,6 @@
 import { RFValue } from "react-native-responsive-fontsize";
 import styled, { DefaultTheme } from "styled-components/native";
-import { TextAlign, TypographyVariant } from "../..";
+import { TextAlign, TypographyVariant } from "..";
 
 const fontSizeDictionary = (
   theme: DefaultTheme,

@@ -5,7 +5,11 @@ const URLs = {
   attendance: "https://6xhpqthjil.execute-api.us-east-1.amazonaws.com/PRD/v1",
   product: "https://1z855c323f.execute-api.us-east-1.amazonaws.com/PRD/v1",
   shipping: "https://2qiyqni09l.execute-api.us-east-1.amazonaws.com/PRD/v1",
-  store: "https://228brgmn5l.execute-api.us-east-1.amazonaws.com/PRD/v1",
+  store: "https://mp7oaud04i.execute-api.us-east-1.amazonaws.com/PRD/v1",
+  storeInfo: "https://228brgmn5l.execute-api.us-east-1.amazonaws.com/PRD/v1",
+  cep: "https://n39n4k4emc.execute-api.us-east-1.amazonaws.com/PRD/v1",
+  stock: "https://pje3oa5qlk.execute-api.us-east-1.amazonaws.com/PRD/v1",
+  reports: "https://xhnbwpl1ob.execute-api.us-east-1.amazonaws.com/PRD/v1",
 };
 
 export const makeApiUrl = (

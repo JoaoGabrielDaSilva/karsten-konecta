@@ -35,7 +35,6 @@ import { GetStoreList } from "../../../domain/usecases/store/get-store-list";
 type FormValues = {
   login: string;
   password: string;
-  rememberMe: boolean;
 };
 
 type Props = {
@@ -53,17 +52,13 @@ export const Login = ({ authentication, getUserData, getStoreList }: Props) => {
     resolver: yupResolver(makeLoginSchema()),
   });
 
-  const onSubmit = async ({ login, password, rememberMe }: FormValues) => {
+  const onSubmit = async ({ login, password }: FormValues) => {
     try {
       setLoading(true);
       const response = await authentication.auth({ login, password });
 
       setUserId({ id: response.userId });
-      if (rememberMe) {
-        setLastLoggedInAccountAdapter({ login, password, rememberMe });
-      } else {
-        setLastLoggedInAccountAdapter(null);
-      }
+      setLastLoggedInAccountAdapter({ login, password });
 
       const userData = await getUserData.execute();
       const { storeList } = await getStoreList.execute({ page: 0 });
@@ -113,7 +108,6 @@ export const Login = ({ authentication, getUserData, getStoreList }: Props) => {
             control={control}
             editable={!loading}
           />
-          <Checkbox control={control} label="Lembre-me" name="rememberMe" />
           <StyledButton
             text="Login"
             testID="submit-button"

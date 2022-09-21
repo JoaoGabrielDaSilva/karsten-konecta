@@ -5,6 +5,7 @@ import { makeRemoteCreateAttendance } from "../../usecases/attendance/remote-cre
 import { makeRemoteDeleteProduct } from "../../usecases/attendance/remote-delete-product-factory.ts";
 import { makeRemoteGetAttendance } from "../../usecases/attendance/remote-get-attendance-factory";
 import { makeRemoteRetrieveAttendance } from "../../usecases/attendance/remote-retrieve-attendance-factory";
+import { makeRemoteUpdatePickupAddress } from "../../usecases/attendance/remote-update-attendance-pickup-address-factory";
 import { makeRemoteUpdateProductAmount } from "../../usecases/attendance/remote-update-product-amount-factory";
 import { makeRemoteGetCustomer } from "../../usecases/customer/remote-get-customer-factory";
 import { makeRemoteGetShippingInfo } from "../../usecases/shipping/remote-get-shipping-info";
@@ -21,6 +22,7 @@ export const makeAttendance = (props: Props) => {
       getCustomer={makeRemoteGetCustomer()}
       deleteProduct={makeRemoteDeleteProduct()}
       updateProductAmount={makeRemoteUpdateProductAmount()}
+      updatePickUpAddress={makeRemoteUpdatePickupAddress()}
       {...props}
     />
   );

@@ -24,12 +24,14 @@ export class RemoteGetAttendance implements GetAttendance {
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
-
         console.log(result);
 
         return {
-          name: result.NomeAtendimento,
-          cpfCnpj: result.CpfCnpjConsumidor,
+          name: result?.Consumidor
+            ? result?.Consumidor.NomeConsumidor
+            : result.NomeAtendimento,
+          cpfCnpj:
+            result?.CpfCnpjConsumidor || result?.Consumidor.CpfConsumidor,
           productList: result.ListaAtendimentoItens.map((product) => ({
             id: String(product.IdAtendimentoItem),
             code: product.Produto.Codigo,
@@ -56,6 +58,21 @@ export class RemoteGetAttendance implements GetAttendance {
                 complement: result.EnderecoEntrega?.LogradouroComplemento,
               }
             : null,
+          ...(result?.EnderecoRetireLoja
+            ? {
+                pickUpAddress: {
+                  id: result?.EnderecoRetireLoja?.IdPontoRetirada,
+                  name: result?.EnderecoRetireLoja?.NomeLoja,
+                  cep: result?.EnderecoRetireLoja?.Cep,
+                  street: result?.EnderecoRetireLoja?.Logradouro,
+                  number: result?.EnderecoRetireLoja?.LogradouroNumero,
+                  district: result?.EnderecoRetireLoja?.Bairro,
+                  city: result?.EnderecoRetireLoja?.Cidade,
+                  state: result?.EnderecoRetireLoja?.Uf,
+                  instructions: result?.EnderecoRetireLoja?.InstrucoesRetirada,
+                },
+              }
+            : {}),
         };
 
       default:
@@ -68,6 +85,10 @@ export namespace RemoteGetAttendance {
   export type Model = {
     Result: {
       CpfCnpjConsumidor: string;
+      Consumidor: {
+        CpfConsumidor: string;
+        NomeConsumidor: string;
+      };
       NomeAtendimento: string;
       ListaAtendimentoItens: {
         IdAtendimentoItem: string;
@@ -93,6 +114,17 @@ export namespace RemoteGetAttendance {
         LogradouroNumero: string;
         NomeEndereco: string;
         Referencia: string;
+      };
+      EnderecoRetireLoja: {
+        IdPontoRetirada: string;
+        NomeLoja: string;
+        Cep: string;
+        Logradouro: string;
+        LogradouroNumero: string;
+        Bairro: string;
+        Cidade: string;
+        Uf: string;
+        InstrucoesRetirada: string;
       };
     };
   };

@@ -1,4 +1,4 @@
-import { AddressModel } from "../../models/address";
+import { CustomerAddressModel } from "../../models/address";
 
 export interface GetCustomerAddressList {
   execute(
@@ -12,6 +12,6 @@ export namespace GetCustomerAddressList {
   };
 
   export type Model = {
-    addressList: AddressModel[];
+    addressList: CustomerAddressModel[];
   };
 }

@@ -1,17 +1,27 @@
 import create from "zustand";
-import { Address } from "../models/Address";
+import { CustomerAddressModel } from "../../domain/models/address";
 
 import { AttendanceModel } from "../../domain/models/attendance";
 import { AttendanceProductModel } from "../../domain/models/product";
+import { StoreAddressModel } from "../../domain/models/store-address-model";
 
-enum DeliveryMode {
+export enum DeliveryMode {
   DELIVERY,
   PICK_UP,
 }
 
 type AttendanceState = AttendanceModel & {
   setAttendance?: (data: AttendanceModel) => void;
-  setAddress?: ({ address }: { address: Address }) => void;
+  setAddressDeliveryAddress?: ({
+    address,
+  }: {
+    address: CustomerAddressModel;
+  }) => void;
+  setAddressPickupAddress?: ({
+    address,
+  }: {
+    address: StoreAddressModel;
+  }) => void;
   toggleDeliveryMode?: () => void;
   addProduct?: (product: AttendanceProductModel) => void;
   refreshProductList?: (params: {
@@ -30,10 +40,11 @@ const initialState: AttendanceState = {
   cpfCnpj: "",
   customer: null,
   deliveryAddress: null,
-
+  pickUpAddress: null,
   deliveryMode: DeliveryMode.DELIVERY,
   productList: [],
   loading: false,
+  shipping: null,
 };
 
 export const useAttendanceStore = create<AttendanceState>()((set, get) => ({
@@ -46,10 +57,15 @@ export const useAttendanceStore = create<AttendanceState>()((set, get) => ({
         days: 2,
       },
     })),
-  setAddress: ({ address }) =>
+  setDeliveryAddress: ({ address }) =>
     set((state) => ({
       ...state,
-      address,
+      deliveryAddress: address,
+    })),
+  setAddressPickupAddress: ({ address }) =>
+    set((state) => ({
+      ...state,
+      pickUpAddress: address,
     })),
   toggleDeliveryMode: () =>
     set((state) => ({

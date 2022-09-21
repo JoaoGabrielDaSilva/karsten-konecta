@@ -13,7 +13,10 @@ export const Container = styled(Row)<{ borderless: boolean }>`
     borderless ? "transparent" : theme.color.background.secondary};
 `;
 
-export const Content = styled.View``;
+export const Content = styled.View<{ disabled: boolean }>`
+  max-width: 90%;
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
+`;
 
 export const Title = styled(Typography).attrs(() => ({
   semibold: true,
@@ -39,10 +42,14 @@ export const Value = styled(Typography).attrs(() => ({ semibold: true }))`
   color: ${({ theme }) => theme.color.text.secondary};
 `;
 
-export const EditLabel = styled(Typography)`
+export const EditLabel = styled(Typography)<{ disabled: boolean }>`
   color: ${({ theme }) => theme.color.text.secondary};
+
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 `;
 
-export const ArrowIcon = styled(MaterialCommunityIcons)`
+export const ArrowIcon = styled(MaterialCommunityIcons)<{ disabled: boolean }>`
   font-size: ${({ theme }) => RFValue(theme.fontSize.xl)}px;
+
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 `;

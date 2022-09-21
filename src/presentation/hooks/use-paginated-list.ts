@@ -53,29 +53,32 @@ export const usePaginatedList = <T>({
   };
 
   const getDataMiddleware = async ({ reset }: GetDataMiddlewareParams) => {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    const requestPage = reset ? 0 : page;
+      const requestPage = reset ? 0 : page;
 
-    const { data: newData, totalResults: baseTotalResults } = await getFunction(
-      requestPage
-    );
+      const { data: newData, totalResults: baseTotalResults } =
+        await getFunction(requestPage);
 
-    const nextPage = requestPage + 1;
+      const nextPage = requestPage + 1;
 
-    if (reset) setRefreshing(false);
+      if (reset) setRefreshing(false);
 
-    if (requestPage === 0) {
-      setTotalResults(baseTotalResults);
-      setData(newData);
+      if (requestPage === 0) {
+        setTotalResults(baseTotalResults);
+        setData(newData);
+        setPage(nextPage);
+        setLoading(false);
+        return;
+      }
+      setData((data) => [...data, ...newData]);
+
       setPage(nextPage);
       setLoading(false);
-      return;
+    } catch (error) {
+      setLoading(false);
     }
-    setData((data) => [...data, ...newData]);
-
-    setPage(nextPage);
-    setLoading(false);
   };
 
   useEffect(() => {

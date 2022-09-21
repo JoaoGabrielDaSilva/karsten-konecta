@@ -27,8 +27,7 @@ export const Right = styled.View`
 export const ImageWrapper = styled.View`
   border: 0.5px solid ${({ theme }) => theme.color.background.inverted};
 
-  padding: ${({ theme }) => theme.spacing.sm}px;
-
+  overflow: hidden;
   border-radius: ${({ theme }) => theme.radii.md}px;
 
   width: ${width * 0.2}px;
@@ -37,6 +36,8 @@ export const ImageWrapper = styled.View`
 
 export const Image = styled.Image`
   flex: 1;
+
+  border-radius: ${({ theme }) => theme.radii.md}px;
 `;
 
 export const AmountContainer = styled.View`

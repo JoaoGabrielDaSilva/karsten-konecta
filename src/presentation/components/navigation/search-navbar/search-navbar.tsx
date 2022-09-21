@@ -1,4 +1,4 @@
-import React from "react";
+import React, { RefObject, useRef, useState } from "react";
 
 import {
   Center,
@@ -15,6 +15,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { StackHeaderProps } from "@react-navigation/stack";
 import { DrawerActions } from "@react-navigation/native";
 import { Control } from "react-hook-form";
+import { TextInputRef } from "../../form/text-input/text-input";
 
 type IconType = keyof typeof MaterialCommunityIcons.glyphMap;
 
@@ -29,6 +30,7 @@ type Props = StackHeaderProps & {
   handleSubmit?: () => void;
   defaultFocus?: boolean;
   onFocus?: () => void;
+  onBlur?: () => void;
 };
 
 export const StackSearchNavbar = ({
@@ -43,6 +45,7 @@ export const StackSearchNavbar = ({
   handleSubmit,
   defaultFocus,
   onFocus,
+  onBlur,
 }: Props) => {
   const { canGoBack, goBack, dispatch, push } = navigation;
 
@@ -52,24 +55,47 @@ export const StackSearchNavbar = ({
     dispatch(action);
   };
 
+  const inputRef = useRef<TextInputRef>();
+
+  const [inputIsFocused, setInputIsFocused] = useState(defaultFocus);
+
+  const handleBlur = () => {
+    setInputIsFocused(false);
+    onBlur && onBlur();
+  };
+  const handleFocus = () => {
+    setInputIsFocused(true);
+    onFocus && onFocus();
+  };
+
+  const handleBackArrowPress = () => {
+    if (onLeftIconPress) return onLeftIconPress();
+
+    if (inputIsFocused) return inputRef?.current?.blur();
+
+    goBack();
+  };
+
   return (
     <Container align="center">
       <HeaderLeft>
         {((canGoBack() && backArrow) || headerLeftIcon) && (
           <LeftIcon
             name={headerLeftIcon || "chevron-left"}
-            onPress={onLeftIconPress || goBack}
+            onPress={handleBackArrowPress}
           />
         )}
         <Center>
           <StyledTextInput
+            ref={inputRef}
             size="small"
             control={control}
             name="search"
-            onFocus={onFocus}
+            onFocus={handleFocus}
+            onBlur={handleBlur}
             disableFloatingPlaceholder
             placeholder="Buscar produtos..."
-            onEndEditing={handleSubmit}
+            onSubmitEditing={handleSubmit}
             autoFocus={defaultFocus}
           />
         </Center>

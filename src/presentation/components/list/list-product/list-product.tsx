@@ -36,7 +36,7 @@ export const ListProduct = ({
     <Container borderless={borderless} style={style}>
       <Left>
         <ImageWrapper>
-          <Image source={{ uri }} resizeMode="contain" />
+          <Image source={{ uri }} resizeMode="cover" />
         </ImageWrapper>
         {amount ? (
           <AmountContainer>

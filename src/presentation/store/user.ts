@@ -24,17 +24,6 @@ type UserState = {
   setUserId?: (params: { id: string }) => void;
 };
 
-export const mockStore = (): StoreModel => ({
-  name: "Loja Cascavel",
-  corporateName: "KCM FILIAL 04",
-  cnpj: "14164922000149",
-  hasAcceptedMembershipTerm: true,
-  id: "28",
-  isMultiBrand: false,
-  adhesionModalityId: "1",
-  saleModalityId: "3",
-});
-
 const initialState: UserState = {
   name: "",
   email: "",

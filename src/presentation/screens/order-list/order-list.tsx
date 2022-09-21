@@ -17,6 +17,7 @@ import {
 
 import { RootPrivateStackParamList } from "../../routes";
 import { useOrderListFiltersStore } from "../../store/order-list-filters";
+import { useUserStore } from "../../store/user";
 
 import { Container } from "./styles";
 
@@ -32,6 +33,8 @@ export const OrderList = ({
 }: Props) => {
   const theme = useTheme();
   const { filters, removeFilter, clearFilters } = useOrderListFiltersStore();
+  const { store } = useUserStore();
+
   const { data, loading, refreshing, page, totalResults, onEndReached, reset } =
     usePaginatedList({
       getFunction: loadOrderList,
@@ -44,7 +47,7 @@ export const OrderList = ({
     try {
       const { orderList, totalResults } = await getOrderList.execute({
         page,
-        storeId: "28",
+        storeId: store.id,
         code: filters?.orderCode?.apiValue,
         cpfCnpj: filters?.cpfCnpj?.apiValue,
         customerName: filters?.name?.apiValue,

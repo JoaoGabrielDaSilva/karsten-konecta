@@ -17,6 +17,7 @@ import { RadioButton } from "../../components/buttons/radio-button/radio-button"
 import { PersonType } from "../../../domain/models/customer";
 import { makeCnpjRule } from "../../utils/yup-schemas/cnpj-rule";
 import { FormRadioButton } from "../../components/form/radio-button/radio-button";
+import { useUserStore } from "../../store/user";
 
 type NavigationProps = StackScreenProps<
   RootPrivateStackParamList,
@@ -35,6 +36,8 @@ export const NewAttendance = ({ navigation, getCustomer }: Props) => {
   const [loading, setLoading] = useState(false);
 
   const { data, setCustomer } = useCustomerStore();
+  const { store } = useUserStore();
+
   const { control, handleSubmit, clearErrors, reset, watch, setValue } =
     useForm({
       resolver: yupResolver(
@@ -63,7 +66,7 @@ export const NewAttendance = ({ navigation, getCustomer }: Props) => {
 
       const customerData = await getCustomer.get({
         cpfCnpj,
-        storeId: "28",
+        storeId: store.id,
       });
       setCustomer({
         ...customerData,

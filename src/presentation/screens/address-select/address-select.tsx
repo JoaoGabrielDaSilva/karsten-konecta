@@ -5,8 +5,13 @@ import { useEffect, useState } from "react";
 import { FlatList, ListRenderItemInfo } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
-import { AddressModel } from "../../../domain/models/address";
+import { CustomerAddressModel } from "../../../domain/models/address";
+import { StoreAddressModel } from "../../../domain/models/store-address-model";
+import { UpdateAttendanceDeliveryAddress } from "../../../domain/usecases/attendance/update-attendance-delivery-address";
+import { UpdateAttendancePickUpAddress } from "../../../domain/usecases/attendance/update-attendance-pickup-address";
 import { GetCustomerAddressList } from "../../../domain/usecases/customer/get-customer-address-list";
+import { GetStoreAddressList } from "../../../domain/usecases/store/get-store-address-list";
+import { AddressLoader } from "../../components/address/loader/address-loader";
 import { Button } from "../../components/buttons/button/button";
 import { PaginatedList } from "../../components/list/paginated-list/paginated-list";
 import { StackNavbar } from "../../components/navigation/stack-navbar/stack-navbar";
@@ -16,10 +21,16 @@ import {
 } from "../../hooks/use-paginated-list";
 import { Address } from "../../models/Address";
 import { RootPrivateStackParamList } from "../../routes";
-import { useAttendanceStore } from "../../store/attendance";
+import { DeliveryMode, useAttendanceStore } from "../../store/attendance";
 import { useCustomerStore } from "../../store/customer";
+import { useUserStore } from "../../store/user";
 
-import { Container, Footer, StyledAddress } from "./styles";
+import {
+  Container,
+  Footer,
+  StyledAddress,
+  StyledAddressLoader,
+} from "./styles";
 
 type NavigationProps = StackScreenProps<
   RootPrivateStackParamList,
@@ -28,17 +39,35 @@ type NavigationProps = StackScreenProps<
 
 type Props = NavigationProps & {
   getCustomerAddressList: GetCustomerAddressList;
+  updateAttendanceDeliveryAddress: UpdateAttendanceDeliveryAddress;
+  getStoreAddressList: GetStoreAddressList;
+  updateAttendancePickupAddress: UpdateAttendancePickUpAddress;
 };
 
 export const AddressSelect = ({
   navigation: { setOptions, goBack },
+  route,
   getCustomerAddressList,
+  updateAttendanceDeliveryAddress,
+  getStoreAddressList,
+  updateAttendancePickupAddress,
 }: Props) => {
-  const theme = useTheme();
-  const { deliveryAddress, setAddress } = useAttendanceStore();
-  const { data: customer } = useCustomerStore();
+  const { deliveryMode } = route.params;
 
-  const [selectedAddress, setSelectedAddress] = useState(deliveryAddress);
+  const theme = useTheme();
+  const {
+    deliveryAddress,
+    pickUpAddress,
+    setAddressDeliveryAddress,
+    setAddressPickupAddress,
+    ...attendance
+  } = useAttendanceStore();
+  const { data: customer } = useCustomerStore();
+  const { store } = useUserStore();
+
+  const [selectedAddress, setSelectedAddress] = useState<
+    CustomerAddressModel | StoreAddressModel
+  >(deliveryMode === DeliveryMode.DELIVERY ? deliveryAddress : pickUpAddress);
 
   const {
     data: addressList,
@@ -46,15 +75,21 @@ export const AddressSelect = ({
     totalResults,
     refreshing,
     reset,
+    page,
   } = usePaginatedList({ getFunction: loadAddressList });
 
   async function loadAddressList(): Promise<
-    PaginatedListGetFunctionReturn<AddressModel>
+    PaginatedListGetFunctionReturn<CustomerAddressModel | StoreAddressModel>
   > {
     try {
-      const { addressList } = await getCustomerAddressList.execute({
-        id: customer.id,
-      });
+      const { addressList } =
+        deliveryMode === DeliveryMode.DELIVERY
+          ? await getCustomerAddressList.execute({
+              id: customer.id,
+            })
+          : await getStoreAddressList.execute();
+
+      console.log(addressList);
 
       return {
         data: addressList,
@@ -67,7 +102,29 @@ export const AddressSelect = ({
 
   const handleChangeAddress = async () => {
     try {
-      setAddress({ address: selectedAddress });
+      const payload:
+        | UpdateAttendanceDeliveryAddress.Params
+        | UpdateAttendancePickUpAddress.Params = {
+        storeId: store.id,
+        addressId: selectedAddress.id,
+        attendanceId: attendance.id,
+        customerId: customer.id,
+      };
+
+      if (deliveryMode === DeliveryMode.DELIVERY) {
+        await updateAttendanceDeliveryAddress.execute({
+          ...payload,
+        });
+        return setAddressDeliveryAddress({ address: selectedAddress });
+      }
+
+      await updateAttendancePickupAddress.execute({
+        ...payload,
+      });
+      setAddressPickupAddress({
+        address: "instructions" in selectedAddress && { ...selectedAddress },
+      });
+
       goBack();
     } catch (error) {
       console.log(error);
@@ -75,8 +132,13 @@ export const AddressSelect = ({
     }
   };
 
+  console.log(selectedAddress);
+
   useFocusEffect(() => {
     setOptions({
+      title: `Selecionar endereço de ${
+        deliveryMode === DeliveryMode.DELIVERY ? "entrega" : "retirada"
+      }`,
       header: (props) => (
         <StackNavbar
           rightIcon="plus"
@@ -91,6 +153,7 @@ export const AddressSelect = ({
     <Container>
       <PaginatedList
         data={addressList}
+        page={page}
         loading={loading}
         refreshing={refreshing}
         enableRefresh
@@ -105,7 +168,7 @@ export const AddressSelect = ({
             <StyledAddress
               {...item}
               selectable
-              selected={selectedAddress.id === item.id}
+              selected={selectedAddress && selectedAddress.id === item.id}
               borderless={index === addressList.length - 1}
               showMainLabel={false}
             />
@@ -114,13 +177,20 @@ export const AddressSelect = ({
         contentContainerStyle={{
           paddingHorizontal: theme.spacing.lg,
         }}
+        loaderComponent={<StyledAddressLoader selectable />}
         showsVerticalScrollIndicator={false}
       />
       <Footer>
         <Button
           text="Selecionar"
           onPress={handleChangeAddress}
-          disabled={selectedAddress.id === deliveryAddress?.id || loading}
+          disabled={
+            !selectedAddress ||
+            (selectedAddress &&
+              (selectedAddress.id === deliveryAddress?.id ||
+                (pickUpAddress && selectedAddress.id === pickUpAddress.id))) ||
+            loading
+          }
         />
       </Footer>
     </Container>

@@ -57,6 +57,8 @@ export const ProductGrid = ({
               data={grid?.colorList}
               keyExtractor={(_, index) => String(index)}
               renderItem={({ item }) => {
+                console.log(item.code, selectedProductColorCode);
+
                 const selected = item.code === selectedProductColorCode;
 
                 return (

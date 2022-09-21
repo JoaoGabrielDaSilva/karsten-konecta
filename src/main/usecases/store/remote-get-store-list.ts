@@ -5,6 +5,6 @@ import { RemoteGetStoreList } from "../../../data/usecases/store/remote-get-stor
 
 export const makeRemoteGetStoreList = (): GetStoreList =>
   new RemoteGetStoreList(
-    makeApiUrl("store", "/list-complementary-info"),
+    makeApiUrl("storeInfo", "/list-complementary-info"),
     makeAuthorizeHttpClientDecorator()
   );

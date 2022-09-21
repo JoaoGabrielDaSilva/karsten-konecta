@@ -15,7 +15,7 @@ import {
 } from "../../hooks/use-paginated-list";
 import { StoreModel } from "../../models/Store";
 import { RootPrivateStackParamList } from "../../routes";
-import { mockStore, useUserStore } from "../../store/user";
+import { useUserStore } from "../../store/user";
 
 import { Container, Footer } from "./styles";
 

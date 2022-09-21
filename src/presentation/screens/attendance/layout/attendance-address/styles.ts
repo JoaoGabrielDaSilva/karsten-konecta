@@ -4,12 +4,19 @@ import { AddressLoader } from "../../../../components/address/loader/address-loa
 import { TextInput } from "../../../../components/form/text-input/text-input";
 import { ShippingInfoLoader } from "../../../../components/shipping-info/loader/shipping-info-loader";
 import { ShippingInfo } from "../../../../components/shipping-info/shipping-info";
+import { Skeleton } from "../../../../components/skeleton/skeleton";
 import { SectionTitle } from "../../../../components/utils";
 
 export const Form = styled.View`
   background-color: ${({ theme }) => theme.color.background.primary};
 
   margin-top: ${({ theme }) => theme.spacing.lg}px;
+`;
+
+export const ResponsibleForm = styled.View`
+  background-color: ${({ theme }) => theme.color.background.primary};
+
+  padding: ${({ theme }) => theme.spacing.lg}px;
 `;
 
 export const StyledTextInput = styled(TextInput)`
@@ -40,4 +47,8 @@ export const DeliveryModeContainer = styled.View`
   background-color: ${({ theme }) => theme.color.background.primary};
 
   padding: ${({ theme }) => theme.spacing.lg}px;
+`;
+
+export const StyledSectionTitleLoader = styled(Skeleton)`
+  margin: ${({ theme }) => theme.spacing.lg}px;
 `;

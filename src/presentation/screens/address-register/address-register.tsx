@@ -1,15 +1,25 @@
 import { yupResolver } from "@hookform/resolvers/yup";
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useEffect } from "react";
+import React, { RefObject, useEffect, useState } from "react";
+import { useRef } from "react";
 import { useForm } from "react-hook-form";
-import { KeyboardAvoidingView, ScrollView } from "react-native";
+import { Keyboard } from "react-native";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
+
 import { useTheme } from "styled-components/native";
+import { CustomerAddressModel } from "../../../domain/models/address";
+import { GetAddressByCep } from "../../../domain/usecases/cep/get-address-by-cep";
+import { CreateCustomerAddress } from "../../../domain/usecases/customer/create-customer-address";
+import { EditCustomerAddress } from "../../../domain/usecases/customer/edit-customer-address";
+import { GetCustomerAddressList } from "../../../domain/usecases/customer/get-customer-address-list";
 import { Button } from "../../components/buttons/button/button";
 import { Checkbox } from "../../components/form/checkbox/checkbox";
-import { Gender } from "../../constants/enums/Gender";
-import { Address } from "../../models/Address";
+import { SelectInputRef } from "../../components/form/select-input/select-input";
+import { TextInputRef } from "../../components/form/text-input/text-input";
+import { Toast } from "../../components/toast/toast";
 
 import { RootPrivateStackParamList } from "../../routes";
+import { useCustomerStore } from "../../store/customer";
 import { addressRegisterSchema } from "./schema";
 import {
   Container,
@@ -24,7 +34,12 @@ type NavigationProps = StackScreenProps<
   "AddressRegister"
 >;
 
-type Props = NavigationProps;
+type Props = NavigationProps & {
+  getAddressList: GetCustomerAddressList;
+  createAddress: CreateCustomerAddress;
+  editAddress: EditCustomerAddress;
+  getAddressByCep: GetAddressByCep;
+};
 
 const stateOptions = [
   {
@@ -137,114 +152,209 @@ const stateOptions = [
   },
 ];
 
-const addressList = [];
+type FormValues = CustomerAddressModel;
 
-type FormValues = Address;
-
-export const AddressRegister = ({ navigation, route }: Props) => {
+export const AddressRegister = ({
+  navigation: { goBack, setOptions },
+  route,
+  getAddressList,
+  createAddress,
+  editAddress,
+  getAddressByCep,
+}: Props) => {
   const address = route.params?.address;
 
-  const loading = false;
+  const { data: customer, setCustomer } = useCustomerStore();
 
-  const hasNoAddress = addressList.length === 0;
+  const hasNoAddress = customer.addressList.length === 0;
+  const hasOnlyOneAddress = customer.addressList.length === 1;
 
-  const { control, handleSubmit } = useForm<FormValues>({
+  const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const cepRef = useRef<TextInputRef>();
+  const streetRef = useRef<TextInputRef>();
+  const numberRef = useRef<TextInputRef>();
+  const districtRef = useRef<TextInputRef>();
+  const complementRef = useRef<TextInputRef>();
+  const cityRef = useRef<TextInputRef>();
+  const stateRef = useRef<SelectInputRef>();
+
+  const { control, handleSubmit, reset, getValues } = useForm<FormValues>({
     resolver: yupResolver(addressRegisterSchema),
     shouldFocusError: true,
     defaultValues: {
       ...address,
-      isMain: address ? address?.isMain : !hasNoAddress,
+      isMain: address ? address?.isMain : hasNoAddress,
     },
   });
+
   const theme = useTheme();
 
-  const onSubmit = () => {};
+  const onSubmit = async (data: FormValues) => {
+    try {
+      setIsSubmitting(true);
+      !address
+        ? await createAddress.execute({
+            customerId: customer.id,
+            address: { ...data },
+          })
+        : await editAddress.execute({
+            customerId: customer.id,
+            address: { ...data, id: address.id },
+          });
+
+      const { addressList } = await getAddressList.execute({ id: customer.id });
+
+      setCustomer({ addressList });
+      setIsSubmitting(false);
+      Toast({
+        type: "success",
+        title: "Sucesso!",
+        message: `Endereço ${!address ? "cadastrado" : "editado"} com sucesso!`,
+      });
+      goBack();
+    } catch (error) {
+      Toast({
+        type: "error",
+        title: "Erro!",
+        message: `Erro ao ${!address ? "cadastrar" : "editar"} o endereço!`,
+      });
+      console.log(error);
+      setIsSubmitting(false);
+    }
+  };
+
+  const loadInfoByCep = async (cep: string) => {
+    try {
+      setLoading(true);
+
+      const currentFieldValues = getValues();
+      const { address } = await getAddressByCep.execute({ cep });
+
+      reset({
+        street: currentFieldValues?.street || address?.street || "",
+        cep: currentFieldValues?.cep,
+        district: currentFieldValues?.district || address?.district || "",
+        city: currentFieldValues?.city || address?.city || "",
+        state: currentFieldValues?.state || address?.state || "",
+      });
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    navigation.setOptions({
+    setOptions({
       title: !address ? "Cadastrar Endereço" : "Editar Endereço",
     });
   }, []);
 
-  return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior="height"
-      keyboardVerticalOffset={100}
-    >
-      <Container>
-        <ScrollView
-          contentContainerStyle={{
-            paddingBottom: theme.spacing.xxl,
-          }}
-        >
-          <Form>
-            <CustomTextInput
-              name="name"
-              placeholder="Nome (Ex: Casa, Trabalho)"
-              control={control}
-            />
-            <CustomTextInput
-              control={control}
-              name="cep"
-              placeholder="CEP"
-              mask="cep"
-              loading={loading}
-            />
-            <CustomTextInput
-              control={control}
-              name="street"
-              placeholder="Logradouro"
-            />
-            <CustomTextInput
-              control={control}
-              name="number"
-              placeholder="Número"
-            />
-            <CustomTextInput
-              control={control}
-              name="district"
-              placeholder="Bairro"
-            />
-            <CustomTextInput
-              control={control}
-              name="complement"
-              placeholder="Complemento"
-            />
-            <CustomTextInput
-              control={control}
-              name="city"
-              placeholder="Cidade"
-            />
-            <StyledSelectInput
-              control={control}
-              name="state"
-              placeholder="Estado"
-              options={stateOptions}
-            />
-            <CustomTextInput
-              control={control}
-              name="reference"
-              placeholder="Referência"
-            />
-          </Form>
+  const handleFocusNextInput = (
+    nextInputRef: RefObject<TextInputRef | SelectInputRef>
+  ) => {
+    nextInputRef?.current?.focus();
+  };
 
-          <Form>
-            <Checkbox
-              name="isMain"
-              control={control}
-              label="Definir este endereço como Principal"
-              disabled={hasNoAddress && !address}
-            />
-          </Form>
-        </ScrollView>
-        <Footer>
-          <Button
-            text={!address ? "Cadastrar" : "Concluir"}
-            onPress={handleSubmit(onSubmit)}
+  return (
+    <Container>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{
+          paddingBottom: theme.spacing.xxl,
+        }}
+      >
+        <Form>
+          <CustomTextInput
+            name="name"
+            placeholder="Nome (Ex: Casa, Trabalho)"
+            control={control}
+            onSubmitEditing={() => handleFocusNextInput(cepRef)}
           />
-        </Footer>
-      </Container>
-    </KeyboardAvoidingView>
+          <CustomTextInput
+            ref={cepRef}
+            control={control}
+            name="cep"
+            placeholder="CEP"
+            mask="cep"
+            onMaxLength={loadInfoByCep}
+            loading={loading}
+            onSubmitEditing={() => handleFocusNextInput(streetRef)}
+          />
+
+          <CustomTextInput
+            ref={streetRef}
+            control={control}
+            name="street"
+            placeholder="Logradouro"
+            editable={!loading}
+            onSubmitEditing={() => handleFocusNextInput(numberRef)}
+          />
+          <CustomTextInput
+            ref={numberRef}
+            control={control}
+            name="number"
+            placeholder="Número"
+            editable={!loading}
+            onSubmitEditing={() => handleFocusNextInput(districtRef)}
+          />
+          <CustomTextInput
+            ref={districtRef}
+            control={control}
+            name="district"
+            placeholder="Bairro"
+            editable={!loading}
+            onSubmitEditing={() => handleFocusNextInput(complementRef)}
+          />
+          <CustomTextInput
+            ref={complementRef}
+            control={control}
+            name="complement"
+            placeholder="Complemento"
+            onSubmitEditing={() => handleFocusNextInput(cityRef)}
+          />
+          <CustomTextInput
+            ref={cityRef}
+            control={control}
+            name="city"
+            placeholder="Cidade"
+            editable={!loading}
+            onSubmitEditing={() => handleFocusNextInput(stateRef)}
+          />
+          <StyledSelectInput
+            ref={stateRef}
+            control={control}
+            name="state"
+            placeholder="Estado"
+            options={stateOptions}
+            editable={!loading}
+          />
+          <CustomTextInput
+            control={control}
+            name="reference"
+            placeholder="Referência"
+            onSubmitEditing={Keyboard.dismiss}
+          />
+        </Form>
+
+        <Form>
+          <Checkbox
+            name="isMain"
+            control={control}
+            label="Definir este endereço como Principal"
+            disabled={hasNoAddress || hasOnlyOneAddress}
+          />
+        </Form>
+      </KeyboardAwareScrollView>
+      <Footer>
+        <Button
+          text={!address ? "Cadastrar" : "Editar"}
+          onPress={handleSubmit(onSubmit)}
+          disabled={loading}
+          loading={isSubmitting}
+        />
+      </Footer>
+    </Container>
   );
 };

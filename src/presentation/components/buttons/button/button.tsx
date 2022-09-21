@@ -5,7 +5,7 @@ import {
   TextStyle,
   ViewStyle,
 } from "react-native";
-import { BorderlessButton } from "react-native-gesture-handler";
+import { RectButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
 import { string } from "yup/lib/locale";
 import { Container, Text } from "./styles";
@@ -34,7 +34,7 @@ export const Button = ({
   const theme = useTheme();
 
   return (
-    <BorderlessButton
+    <RectButton
       onPress={onPress}
       enabled={!disabled && !loading}
       style={containerStyle}
@@ -49,6 +49,6 @@ export const Button = ({
           <ActivityIndicator color={theme.color.text.inverted} />
         )}
       </Container>
-    </BorderlessButton>
+    </RectButton>
   );
 };

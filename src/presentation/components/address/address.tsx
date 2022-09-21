@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleProp, ViewStyle } from "react-native";
-import { Address as AddressModel } from "../../models/Address";
+import { CustomerAddressModel } from "../../../domain/models/address";
 import { RadioButton } from "../buttons/radio-button/radio-button";
 import {
   Container,
@@ -13,7 +13,7 @@ import {
   EditLabel,
 } from "./styles";
 
-type Props = AddressModel & {
+type Props = CustomerAddressModel & {
   style?: StyleProp<ViewStyle>;
   borderless?: boolean;
   showRightArrow?: boolean;
@@ -21,6 +21,7 @@ type Props = AddressModel & {
   selectable?: boolean;
   selected?: boolean;
   showMainLabel?: boolean;
+  disabled?: boolean;
 };
 
 export const Address = ({
@@ -41,6 +42,7 @@ export const Address = ({
   selectable,
   selected,
   showMainLabel = true,
+  disabled,
 }: Props) => {
   return (
     <Container
@@ -49,7 +51,7 @@ export const Address = ({
       align={editable ? "flex-start" : "center"}
       borderless={borderless}
     >
-      <Content>
+      <Content disabled={disabled}>
         {isMain && showMainLabel ? (
           <Title variant="heading" bold>
             Principal{" "}
@@ -77,10 +79,12 @@ export const Address = ({
         ) : null}
       </Content>
       {showRightArrow && !editable && !selectable && (
-        <ArrowIcon name="chevron-right" />
+        <ArrowIcon name="chevron-right" disabled={disabled} />
       )}
-      {editable ? <EditLabel>Alterar</EditLabel> : null}
-      {selectable ? <RadioButton active={selected} /> : null}
+      {editable ? <EditLabel disabled={disabled}>Alterar</EditLabel> : null}
+      {selectable ? (
+        <RadioButton active={selected} disabled={disabled} />
+      ) : null}
     </Container>
   );
 };

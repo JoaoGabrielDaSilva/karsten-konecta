@@ -1,5 +1,6 @@
 import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
+import { useImperativeHandle } from "react";
 import { Control, Controller, useController } from "react-hook-form";
 import {
   ActivityIndicator,
@@ -68,153 +69,167 @@ type Props = {
   loading?: boolean;
   disabled?: boolean;
   placeholder?: string;
+  editable?: boolean;
+};
+
+export type SelectInputRef = {
+  focus?: () => void;
 };
 
 const INPUT_RANGE = [InputState.OPEN, InputState.CLOSED];
 
-export const SelectInput = ({
-  name,
-  defaultValue = "",
-  control,
-  style,
-  loading,
-  disabled,
-  placeholder,
-  options,
-  ...props
-}: Props) => {
-  const {
-    field: { value, onChange },
+export const SelectInput = React.forwardRef(
+  (
+    {
+      name,
+      defaultValue = "",
+      control,
+      style,
+      loading,
+      disabled,
+      placeholder,
+      options,
+      editable = true,
+      ...props
+    }: Props,
+    ref: RefObject<SelectInputRef>
+  ) => {
+    const {
+      field: { value, onChange },
 
-    fieldState: { error },
-  } = useController({ name, control, defaultValue });
-  const theme = useTheme();
+      fieldState: { error },
+    } = useController({ name, control, defaultValue });
+    const theme = useTheme();
 
-  const [visible, setVisible] = useState(false);
+    const state = useSharedValue(InputState.CLOSED);
+    const focus = useSharedValue(FocusState.UNFOCUSED);
 
-  const state = useSharedValue(InputState.CLOSED);
-  const focus = useSharedValue(FocusState.UNFOCUSED);
+    const label = useMemo(
+      () => options.find((option) => option.value === value)?.label,
+      [value]
+    );
 
-  const label = useMemo(
-    () => options.find((option) => option.value === value)?.label,
-    [value]
-  );
+    const bottomSheetRef = useRef<BottomSheetRef>();
 
-  const bottomSheetRef = useRef<BottomSheetRef>();
-
-  const clearValue = () => {
-    onChange("");
-  };
-
-  const openModal = () => {
-    onFocus();
-    setVisible(true);
-    bottomSheetRef?.current?.expand();
-  };
-
-  const closeModal = () => {
-    bottomSheetRef?.current?.close();
-    setTimeout(() => setVisible(false), 250);
-  };
-
-  const onFocus = () => {
-    state.value = withTiming(InputState.OPEN);
-    focus.value = withTiming(FocusState.FOCUSED);
-  };
-
-  const onBlur = () => {
-    closeModal();
-
-    focus.value = withTiming(FocusState.UNFOCUSED);
-    if (value === undefined || value === "" || !label) {
-      state.value = withTiming(InputState.CLOSED);
-    }
-  };
-
-  const containerStyles = useAnimatedStyle(() => {
-    return {
-      borderColor: !error
-        ? interpolateColor(
-            focus.value,
-            [FocusState.FOCUSED, FocusState.UNFOCUSED],
-            [theme.color.background.emphasis, theme.color.background.secondary]
-          )
-        : theme.color.red[500],
+    const clearValue = () => {
+      onChange("");
     };
-  });
-  const placeholderStyles = useAnimatedStyle(() => {
-    const isValid = (!!value || value === 0) && label;
 
-    return {
-      fontSize: isValid ? 12 : interpolate(state.value, INPUT_RANGE, [12, 15]),
-      color: !error
-        ? interpolateColor(state.value, INPUT_RANGE, [
-            theme.color.text.primary,
-            theme.color.text.secondary,
-          ])
-        : theme.color.red[500],
-      top: !isValid
-        ? interpolate(state.value, INPUT_RANGE, [
-            PLACEHOLDER_POSITIONS[InputState.OPEN].top,
-            PLACEHOLDER_POSITIONS[InputState.CLOSED].top,
-          ])
-        : PLACEHOLDER_POSITIONS[InputState.OPEN].top,
-      left: !isValid
-        ? interpolate(state.value, INPUT_RANGE, [
-            PLACEHOLDER_POSITIONS[InputState.OPEN].left,
-            PLACEHOLDER_POSITIONS[InputState.CLOSED].left,
-          ])
-        : PLACEHOLDER_POSITIONS[InputState.OPEN].left,
+    const openModal = () => {
+      onFocus();
+      bottomSheetRef?.current?.open();
     };
-  });
 
-  useEffect(() => {
-    onBlur();
-  }, [value]);
+    const closeModal = () => {
+      bottomSheetRef?.current?.close();
+    };
 
-  return (
-    <>
-      <Container style={style}>
-        <Pressable disabled={loading || disabled} onPress={openModal}>
-          <InputContainer
-            style={[containerStyles]}
-            align="center"
-            editable={!disabled && !loading}
-          >
-            <Controller
-              name={name}
-              control={control}
-              defaultValue={defaultValue}
-              render={() => (
-                <>
-                  <Input align="center" justify="space-between" {...props}>
-                    {label ? <Value>{String(label)}</Value> : null}
-                    {loading && (
-                      <ActivityIndicator color={theme.color.text.primary} />
-                    )}
-                    {!!String(value) && !loading && label && (
-                      <ClearIcon
-                        name="ios-close-circle-outline"
-                        onPress={clearValue}
-                      />
-                    )}
-                  </Input>
-                  {placeholder ? (
-                    <Placeholder style={placeholderStyles}>
-                      {placeholder}
-                    </Placeholder>
-                  ) : null}
-                </>
-              )}
-            />
-          </InputContainer>
-        </Pressable>
+    const onFocus = () => {
+      state.value = withTiming(InputState.OPEN);
+      focus.value = withTiming(FocusState.FOCUSED);
+    };
 
-        {error?.message ? (
-          <CustomErrorMessage>{error.message}</CustomErrorMessage>
-        ) : null}
-      </Container>
-      <Modal transparent visible={visible}>
+    const onBlur = () => {
+      closeModal();
+
+      focus.value = withTiming(FocusState.UNFOCUSED);
+      if (value === undefined || value === "" || !label) {
+        state.value = withTiming(InputState.CLOSED);
+      }
+    };
+
+    const containerStyles = useAnimatedStyle(() => {
+      return {
+        borderColor: !error
+          ? interpolateColor(
+              focus.value,
+              [FocusState.FOCUSED, FocusState.UNFOCUSED],
+              [
+                theme.color.background.emphasis,
+                theme.color.background.secondary,
+              ]
+            )
+          : theme.color.red[500],
+      };
+    });
+    const placeholderStyles = useAnimatedStyle(() => {
+      const isValid = (!!value || value === 0) && label;
+
+      return {
+        fontSize: isValid
+          ? 12
+          : interpolate(state.value, INPUT_RANGE, [12, 15]),
+        color: !error
+          ? interpolateColor(state.value, INPUT_RANGE, [
+              theme.color.text.primary,
+              theme.color.text.secondary,
+            ])
+          : theme.color.red[500],
+        top: !isValid
+          ? interpolate(state.value, INPUT_RANGE, [
+              PLACEHOLDER_POSITIONS[InputState.OPEN].top,
+              PLACEHOLDER_POSITIONS[InputState.CLOSED].top,
+            ])
+          : PLACEHOLDER_POSITIONS[InputState.OPEN].top,
+        left: !isValid
+          ? interpolate(state.value, INPUT_RANGE, [
+              PLACEHOLDER_POSITIONS[InputState.OPEN].left,
+              PLACEHOLDER_POSITIONS[InputState.CLOSED].left,
+            ])
+          : PLACEHOLDER_POSITIONS[InputState.OPEN].left,
+      };
+    });
+
+    useImperativeHandle(ref, () => ({
+      focus: openModal,
+    }));
+
+    useEffect(() => {
+      onBlur();
+    }, [value]);
+
+    return (
+      <>
+        <Container style={style}>
+          <Pressable disabled={loading || disabled} onPress={openModal}>
+            <InputContainer
+              style={[containerStyles]}
+              align="center"
+              editable={!disabled && !loading && editable}
+            >
+              <Controller
+                name={name}
+                control={control}
+                defaultValue={defaultValue}
+                render={() => (
+                  <>
+                    <Input align="center" justify="space-between" {...props}>
+                      {label ? <Value>{String(label)}</Value> : null}
+                      {loading && (
+                        <ActivityIndicator color={theme.color.text.primary} />
+                      )}
+                      {!!String(value) && !loading && label && (
+                        <ClearIcon
+                          name="ios-close-circle-outline"
+                          onPress={clearValue}
+                        />
+                      )}
+                    </Input>
+                    {placeholder ? (
+                      <Placeholder style={placeholderStyles}>
+                        {placeholder}
+                      </Placeholder>
+                    ) : null}
+                  </>
+                )}
+              />
+            </InputContainer>
+          </Pressable>
+
+          {error?.message ? (
+            <CustomErrorMessage>{error.message}</CustomErrorMessage>
+          ) : null}
+        </Container>
         <BottomSheet
           ref={bottomSheetRef}
           snapPoints={options?.length > 5 ? ["95%"] : ["50%", "95%"]}
@@ -228,16 +243,22 @@ export const SelectInput = ({
             renderItem={({ item }) => (
               <RectButton
                 onPress={() => {
-                  if (value === item.value) return closeModal();
+                  if (value === item.value) {
+                    closeModal();
+                    onBlur();
+                  }
                   onChange(item.value);
                 }}
               >
-                <ListRow label={String(item.label)} />
+                <ListRow
+                  label={String(item.label)}
+                  rightIcon={item.value === value ? "check" : null}
+                />
               </RectButton>
             )}
           />
         </BottomSheet>
-      </Modal>
-    </>
-  );
-};
+      </>
+    );
+  }
+);

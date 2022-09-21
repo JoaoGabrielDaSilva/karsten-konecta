@@ -1,6 +1,6 @@
 import { faker } from "@faker-js/faker";
 import { RemoteGetAttendance } from "../../../src/data/usecases/attendance/remote-get-attendance";
-import { AddressModel } from "../../../src/domain/models/address";
+import { CustomerAddressModel } from "../../../src/domain/models/address";
 import { GetAttendance } from "../../../src/domain/usecases/attendance/get-attendance";
 
 type MockRemoteGetAttendanceModelParams = {
@@ -31,7 +31,7 @@ const district = faker.address.cityName();
 const name = faker.name.firstName();
 const state = faker.address.state();
 
-const mockAddress = (): AddressModel => ({
+const mockAddress = (): CustomerAddressModel => ({
   id,
   complement,
   reference,

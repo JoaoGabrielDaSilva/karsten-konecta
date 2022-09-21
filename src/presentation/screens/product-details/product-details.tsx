@@ -1,8 +1,9 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useEffect, useMemo, useState } from "react";
-import { KeyboardAvoidingView, Platform, ScrollView } from "react-native";
+import React, { useEffect, useState } from "react";
+import { Platform, FlatList } from "react-native";
 import { useTheme } from "styled-components/native";
 import { AddProduct } from "../../../domain/usecases/attendance/add-product";
+import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
 import { GetProductDetails } from "../../../domain/usecases/product/get-product-details";
 import { GetProductGrid } from "../../../domain/usecases/product/get-product-grid";
 import { GetShippingInfo } from "../../../domain/usecases/shipping/get-shipping-info";
@@ -10,7 +11,7 @@ import { Button } from "../../components/buttons/button/button";
 import { Carousel } from "../../components/carousel/carousel";
 import { ListRow } from "../../components/list/list-row/list-row";
 import { ListRowLoader } from "../../components/list/list-row/loader/list-row-loader";
-import { StoreStockModel } from "../../models/StoreStock";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 
 import { RootPrivateStackParamList } from "../../routes";
 import { useAttendanceStore } from "../../store/attendance";
@@ -20,39 +21,35 @@ import { ProductGrid } from "./layout/product-grid/product-grid";
 import { ProductInfoLoader } from "./layout/product-info/loader/product-info-loader";
 import { ProductInfo } from "./layout/product-info/product-info";
 import { ShippingSection } from "./layout/shipping-section/shipping-section";
-import { StockSectionLoader } from "./layout/stock-section/loader/stock-section-loader";
 import { StockSection } from "./layout/stock-section/stock-section";
-import { AdditionalInfo, Container, Footer } from "./styles";
+import {
+  AdditionalInfo,
+  AdditionalInfoLoader,
+  Container,
+  Footer,
+  SuggestedProductsTitle,
+  SuggestedProductsTitleLoader,
+} from "./styles";
+import { GetProductStock } from "../../../domain/usecases/stock/get-product-stock";
+import { StockModel } from "../../../domain/models/stock-model";
+import { ProductCard } from "../../components/cards/product-card/product-card";
+import { Row, SectionTitle } from "../../components/utils";
+import { ProductCardLoader } from "../../components/cards/product-card/loader/product-card-loader";
+import { BottomTab } from "../../components/navigation/bottom-tab/bottom-tab";
+import { ProductGridLoader } from "./layout/product-grid/loader/product-grid-loader";
 
 type NavigationProps = StackScreenProps<
   RootPrivateStackParamList,
   "ProductDetails"
 >;
 
-const stocks: StoreStockModel[] = [
-  {
-    store: "Loja A",
-    availableAmount: 5,
-  },
-  {
-    store: "Loja B",
-    availableAmount: 10,
-  },
-  {
-    store: "Loja C",
-    availableAmount: 2,
-  },
-  {
-    store: "Loja D",
-    availableAmount: 0,
-  },
-];
-
 type Props = NavigationProps & {
   addProduct: AddProduct;
   getProductDetails: GetProductDetails;
   getProductGrid: GetProductGrid;
   getShippingInfo: GetShippingInfo;
+  getAttendance: GetAttendance;
+  getProductStock: GetProductStock;
 };
 
 export const ProductDetails = ({
@@ -60,14 +57,15 @@ export const ProductDetails = ({
   getProductDetails,
   getProductGrid,
   getShippingInfo,
+  getAttendance,
+  getProductStock,
   route,
   navigation: { navigate },
 }: Props) => {
   const { code, ean } = route.params;
 
   const theme = useTheme();
-  const { id: attendanceId, addProduct: addAttendanceProduct } =
-    useAttendanceStore();
+  const { id: attendanceId, setAttendance } = useAttendanceStore();
 
   const { store } = useUserStore();
 
@@ -77,8 +75,10 @@ export const ProductDetails = ({
     useState<string>(code);
 
   const [loading, setLoading] = useState(true);
+  const [addingProduct, setAddingProduct] = useState(false);
   const [product, setProduct] = useState<GetProductDetails.Model>();
   const [productGrid, setProductGrid] = useState<GetProductGrid.Model>();
+  const [stockList, setStockList] = useState<StockModel[]>();
 
   const [productAmount, setProductAmount] = useState(1);
 
@@ -96,30 +96,37 @@ export const ProductDetails = ({
 
   const handleAddProduct = async () => {
     try {
-      const { id, addedAmount, totalPrice } = await addProduct.add({
+      if (!attendanceId) {
+        navigate("AttendanceSelect", {
+          product: {
+            code: product.code,
+            amount: String(productAmount),
+          },
+        });
+        return;
+      }
+
+      setAddingProduct(true);
+      await addProduct.add({
         amount: String(productAmount),
         attendanceId: attendanceId,
         productId: product.code,
         storeId: store.id,
       });
 
-      console.log(product.weight, addedAmount * product.weight);
-
-      addAttendanceProduct({
-        id,
-        code: product.code,
-        ean: product.ean,
-        name: product.name,
-        uri: product.carouselImages[0],
-        amount: addedAmount,
-        weight: product.weight,
-        price: Number(String(product.price).replace(/\,/, ".")),
-        totalPrice,
-        totalWeight: addedAmount * product.weight,
+      const attendance = await getAttendance.get({
+        id: attendanceId,
+        storeId: store.id,
       });
+
+      setAttendance({ ...attendance });
+
+      setAddingProduct(false);
 
       navigate("Attendance");
     } catch (error) {
+      setAddingProduct(false);
+
       console.log(error);
     }
   };
@@ -129,16 +136,27 @@ export const ProductDetails = ({
       setLoading(true);
       const productDetails = await getProductDetails.get({
         code,
-        storeId: "28",
+        storeId: store.id,
       });
+
+      setProduct(productDetails);
 
       const productGrid = await getProductGrid.get({
         code,
         color: productDetails.color,
       });
 
-      setProduct(productDetails);
+      handleChangeProductColorCode(
+        productGrid.colorList.find((item) => item.code === productDetails.code)
+          ?.code
+      );
+      handleChangeProductSizeCode(null);
+
       setProductGrid(productGrid);
+
+      const { stockList } = await getProductStock.execute({ ean });
+
+      setStockList(stockList);
     } catch (error) {
       console.log(error);
     } finally {
@@ -151,33 +169,32 @@ export const ProductDetails = ({
   }, []);
 
   return (
-    <KeyboardAvoidingView
-      style={{ flex: 1 }}
-      behavior={Platform.select({ android: "height", ios: "padding" })}
-      keyboardVerticalOffset={120}
-    >
-      <Container>
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: theme.spacing.xxl }}
-        >
-          {!loading ? (
-            <Carousel
-              images={product?.carouselImages}
-              style={{ backgroundColor: theme.color.background.primary }}
-            />
-          ) : (
-            <ProductCarouselLoader />
-          )}
-          {!loading ? (
-            <ProductInfo
-              {...product}
-              amount={productAmount}
-              decreaseAmount={handleDecrease}
-              increaseAmount={handleIncrease}
-            />
-          ) : (
-            <ProductInfoLoader />
-          )}
+    <Container>
+      <KeyboardAwareScrollView
+        contentContainerStyle={{
+          paddingBottom: theme.spacing.xxl * 2,
+        }}
+        behavior={Platform.select({ android: "height", ios: "padding" })}
+      >
+        {!loading ? (
+          <Carousel
+            images={product?.carouselImages}
+            style={{ backgroundColor: theme.color.background.primary }}
+          />
+        ) : (
+          <ProductCarouselLoader />
+        )}
+        {!loading ? (
+          <ProductInfo
+            {...product}
+            amount={productAmount}
+            decreaseAmount={handleDecrease}
+            increaseAmount={handleIncrease}
+          />
+        ) : (
+          <ProductInfoLoader />
+        )}
+        {!loading ? (
           <ProductGrid
             grid={productGrid}
             selectedProductColorCode={selectedProductColorCode}
@@ -186,40 +203,81 @@ export const ProductDetails = ({
             handleChangeProductColorCode={handleChangeProductColorCode}
             handleChangeProductSizeCode={handleChangeProductSizeCode}
           />
+        ) : (
+          <ProductGridLoader />
+        )}
 
-          {!loading ? <StockSection stocks={stocks} /> : <StockSectionLoader />}
+        <StockSection stocks={stockList} loading={loading} />
+
+        {!loading ? (
           <AdditionalInfo>
-            {!loading ? (
-              <>
-                <ListRow label="Descrição" rightIcon="chevron-right" />
-                <ListRow
-                  label="Informações Adicionais"
-                  rightIcon="chevron-right"
-                />
-                <ListRow
-                  label="Especificação do Produto"
-                  rightIcon="chevron-right"
-                  borderless
-                />
-              </>
-            ) : (
-              <>
-                <ListRowLoader value={false} rightIcon />
-                <ListRowLoader value={false} rightIcon />
-                <ListRowLoader value={false} rightIcon borderless />
-              </>
-            )}
+            <ListRow label="Descrição" rightIcon="chevron-right" />
+            <ListRow label="Informações Adicionais" rightIcon="chevron-right" />
+            <ListRow
+              label="Especificação do Produto"
+              rightIcon="chevron-right"
+              borderless
+            />
           </AdditionalInfo>
+        ) : (
+          <AdditionalInfoLoader>
+            <ListRowLoader value={false} rightIcon />
+            <ListRowLoader value={false} rightIcon />
+            <ListRowLoader value={false} rightIcon borderless />
+          </AdditionalInfoLoader>
+        )}
 
-          <ShippingSection
-            getShippingInfo={getShippingInfo}
-            loading={loading}
-          />
-        </ScrollView>
-        <Footer>
-          <Button text="Adicionar ao carrinho" onPress={handleAddProduct} />
-        </Footer>
-      </Container>
-    </KeyboardAvoidingView>
+        <ShippingSection getShippingInfo={getShippingInfo} loading={loading} />
+        {!loading ? (
+          product?.suggestions ? (
+            <>
+              <SuggestedProductsTitle>
+                Produtos Sugeridos
+              </SuggestedProductsTitle>
+              <FlatList
+                data={product.suggestions}
+                horizontal
+                keyExtractor={(item) => String(item.code)}
+                renderItem={({ item }) => (
+                  <ProductCard
+                    {...item}
+                    onPress={({ code }) => handleChangeProduct(code)}
+                    style={{
+                      marginHorizontal: theme.spacing.md,
+                    }}
+                  />
+                )}
+                showsHorizontalScrollIndicator={false}
+              />
+            </>
+          ) : null
+        ) : (
+          <>
+            <SuggestedProductsTitleLoader width={150} height={20} />
+            <Row>
+              <ProductCardLoader
+                style={{
+                  marginHorizontal: theme.spacing.md,
+                }}
+              />
+              <ProductCardLoader
+                style={{
+                  marginHorizontal: theme.spacing.md,
+                }}
+              />
+            </Row>
+          </>
+        )}
+      </KeyboardAwareScrollView>
+      <Footer>
+        <Button
+          text="Adicionar ao carrinho"
+          onPress={handleAddProduct}
+          disabled={loading}
+          loading={addingProduct}
+        />
+      </Footer>
+      <BottomTab />
+    </Container>
   );
 };

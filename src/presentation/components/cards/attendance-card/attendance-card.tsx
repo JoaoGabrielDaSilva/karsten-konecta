@@ -29,10 +29,12 @@ export const AttendanceCard = ({
         <Name variant="heading" bold>
           {name}
         </Name>
-        <Value>
-          <Label>CPF: </Label>
-          {cpfMask(cpfCnpj)}
-        </Value>
+        {cpfCnpj ? (
+          <Value>
+            <Label>CPF: </Label>
+            {cpfMask(cpfCnpj)}
+          </Value>
+        ) : null}
         <Value>
           <Label>Data de Criação: </Label>
           {createdAt}
@@ -41,9 +43,11 @@ export const AttendanceCard = ({
           <Label>Itens no Carrinho: </Label>
           {totalProductsInCart}
         </Value>
-        <Value>
-          <Label>Último Produto Adicionado:</Label>
-        </Value>
+        {lastAddedProduct && (
+          <Value>
+            <Label>Último Produto Adicionado:</Label>
+          </Value>
+        )}
 
         {lastAddedProduct && <ListProduct {...lastAddedProduct} />}
         <StyledButton text="Continuar Atendimento" onPress={onButtonPress} />

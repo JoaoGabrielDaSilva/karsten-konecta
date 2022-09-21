@@ -32,7 +32,6 @@ export const Drawer = ({
   const closeModal = () => setModalState(false);
 
   const handleLogout = async () => {
-    toggleDrawer();
     logoutUser();
   };
 

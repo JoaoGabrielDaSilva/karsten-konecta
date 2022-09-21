@@ -1,10 +1,5 @@
 import { UnexpectedError } from "../../../domain/errors/unexpected-error";
-import { AddressModel } from "../../../domain/models/address";
-import {
-  CustomerModel,
-  Gender,
-  PersonType,
-} from "../../../domain/models/customer";
+
 import { GetCustomerAddressList } from "../../../domain/usecases/customer/get-customer-address-list";
 import { HttpClient, HttpStatusCode } from "../../protocols/http/http-client";
 

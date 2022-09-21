@@ -2,9 +2,12 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 
 import { createSharedElementStackNavigator } from "react-navigation-shared-element";
 import { useTheme } from "styled-components/native";
-import { makeAddressSelect } from "../../main/factories/pages/addres-select-factory";
+import { makeAddressSelect } from "../../main/factories/pages/address-select-factory";
+import { makeAddressRegister } from "../../main/factories/pages/address-register-factory";
 import { makeAttendance } from "../../main/factories/pages/attendance-factory";
 import { makeAttendanceList } from "../../main/factories/pages/attendance-list-factory";
+import { makeAttendanceSelect } from "../../main/factories/pages/attendance-select-factory";
+import { makeCustomerRegister } from "../../main/factories/pages/customer-register-factory";
 import { makeNewAttendance } from "../../main/factories/pages/new-attendance.factory";
 import { makeNewNoCustomerAttendance } from "../../main/factories/pages/new-no-customer-attendance-factory";
 import { makeOrderList } from "../../main/factories/pages/order-list-factory";
@@ -12,6 +15,7 @@ import { makeProductDetails } from "../../main/factories/pages/product-details-f
 import { makeProductList } from "../../main/factories/pages/product-list-factory";
 import { makeStoreSelect } from "../../main/factories/pages/store-select-factory";
 import { Drawer as DrawerComponent } from "../components";
+import { AttendanceSelectCard } from "../components/cards/attendance-select-card/attendance-select-card";
 import { StackNavbar } from "../components/navigation/stack-navbar/stack-navbar";
 import { Address } from "../models/Address";
 import { AddressRegister } from "../screens/address-register/address-register";
@@ -21,6 +25,8 @@ import { CustomerRegister } from "../screens/customer-register/customer-register
 import { OrderListFilters } from "../screens/order-list-filters/order-list-filters";
 import { Sales } from "../screens/sales/sales";
 import { StoreSelect } from "../screens/store-select/store-select";
+import { DeliveryMode } from "../store/attendance";
+import { makeCatalog } from "../../main/factories/pages/catalog-factory";
 
 export type RootPrivateStackParamList = {
   Login: undefined;
@@ -33,7 +39,15 @@ export type RootPrivateStackParamList = {
     name?: string;
     cpfCnpj?: string;
   };
-  AddressSelect: undefined;
+  AddressSelect: {
+    deliveryMode: DeliveryMode;
+  };
+  AttendanceSelect: {
+    product: {
+      code: string;
+      amount: string;
+    };
+  };
   ProductList: {
     defaultFocus?: boolean;
   };
@@ -112,8 +126,26 @@ const StackNavigator = () => {
         }}
       />
       <Stack.Screen
+        name="AttendanceSelect"
+        component={makeAttendanceSelect}
+        options={{
+          title: "Selecionar Atendimento",
+          header: (props) => (
+            <StackNavbar
+              {...props}
+              rightIcon="filter-variant"
+              onRightIconPress={() =>
+                props.navigation.navigate("AttendanceListFilters")
+              }
+            />
+          ),
+          presentation: "modal",
+          cardOverlayEnabled: false,
+        }}
+      />
+      <Stack.Screen
         name="CustomerRegister"
-        component={CustomerRegister}
+        component={makeCustomerRegister}
         options={{
           title: "Consumidor",
 
@@ -122,7 +154,7 @@ const StackNavigator = () => {
       />
       <Stack.Screen
         name="AddressRegister"
-        component={AddressRegister}
+        component={makeAddressRegister}
         options={{
           header: (props) => <StackNavbar {...props} />,
         }}
@@ -131,7 +163,6 @@ const StackNavigator = () => {
         name="AddressSelect"
         component={makeAddressSelect}
         options={{
-          title: "Selecionar Endereço",
           header: (props) => <StackNavbar {...props} />,
         }}
       />
@@ -156,7 +187,7 @@ const StackNavigator = () => {
       />
       <Stack.Screen
         name="Catalog"
-        component={Catalog}
+        component={makeCatalog}
         options={{
           animationEnabled: false,
         }}

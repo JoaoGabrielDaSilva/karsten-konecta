@@ -4,17 +4,23 @@ import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Keyboard } from "react-native";
+import { Keyboard, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import Animated, { SlideInDown, SlideInUp } from "react-native-reanimated";
+import { useTheme } from "styled-components/native";
 import { ShippingModel } from "../../../../../domain/models/shipping";
 import { GetShippingInfo } from "../../../../../domain/usecases/shipping/get-shipping-info";
+import { Collapsible } from "../../../../components/animated/test/Collapsible/Collapsible";
+import { Button } from "../../../../components/buttons/button/button";
 import {
   Direction,
   LabelToggleButton,
 } from "../../../../components/buttons/label-toggle-button/label-toggle-button";
+import { Checkbox } from "../../../../components/form/checkbox/checkbox";
+import { TextInput } from "../../../../components/form/text-input/text-input";
 
 import { RootPrivateStackParamList } from "../../../../routes";
-import { useAttendanceStore } from "../../../../store/attendance";
+import { DeliveryMode, useAttendanceStore } from "../../../../store/attendance";
 
 import {
   Form,
@@ -25,27 +31,39 @@ import {
   StyledAddressLoader,
   StyledShippingInfoLoader,
   DeliveryModeContainer,
+  StyledSectionTitleLoader,
+  ResponsibleForm,
 } from "./styles";
 
 type Props = {
   loading: boolean;
   getShippingInfo: GetShippingInfo;
+  handleRemovePickUpAddress: () => Promise<void>;
 };
 
 type FormValues = {
   cep: string;
+  responsible: string;
 };
 
-export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
+export const AttendanceAddress = ({
+  loading,
+  getShippingInfo,
+  handleRemovePickUpAddress,
+}: Props) => {
+  const theme = useTheme();
+
   const [loadingShipping, setLoadingShipping] = useState(false);
 
-  const { deliveryAddress, productList, toggleDeliveryMode } =
+  const { deliveryAddress, pickUpAddress, productList, toggleDeliveryMode } =
     useAttendanceStore();
   const [localShippingInfo, setLocalShippingInfo] = useState<ShippingModel>({
     days: null,
   });
 
-  const { control, handleSubmit, watch } = useForm<{ cep: string }>();
+  const { control, handleSubmit, watch } = useForm<FormValues>();
+
+  const responsible = watch("responsible");
 
   const { navigate } =
     useNavigation<
@@ -77,6 +95,8 @@ export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
   };
 
   useEffect(() => {
+    if (productList.length === 0) return;
+
     const cep = watch("cep");
 
     if ((deliveryAddress && deliveryAddress?.cep) || cep) {
@@ -87,31 +107,73 @@ export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
   return !loading ? (
     productList.length > 0 ? (
       <>
-        {deliveryAddress ? (
+        {deliveryAddress || pickUpAddress ? (
           <>
-            <StyledSectionTitle>Endereço de Entrega</StyledSectionTitle>
+            <StyledSectionTitle>
+              Endereço de {pickUpAddress ? "Retirada" : "Entrega"}
+            </StyledSectionTitle>
             <DeliveryModeContainer>
               <LabelToggleButton
                 leftLabel="Receber"
                 rightLabel="Retirar"
-                onSelect={(direction) => {
+                defaultValue={pickUpAddress ? Direction.RIGHT : Direction.LEFT}
+                onSelect={async (direction) => {
+                  console.log(direction);
+
                   toggleDeliveryMode();
                   if (direction === Direction.RIGHT)
-                    return navigate("AddressSelect");
+                    return navigate("AddressSelect", {
+                      deliveryMode: DeliveryMode.PICK_UP,
+                    });
+
+                  await handleRemovePickUpAddress();
                 }}
               />
             </DeliveryModeContainer>
 
             <TouchableOpacity
               activeOpacity={0.7}
-              onPress={() => navigate("AddressSelect")}
+              onPress={() =>
+                navigate("AddressSelect", {
+                  deliveryMode: DeliveryMode.DELIVERY,
+                })
+              }
             >
               <StyledAddress
-                {...deliveryAddress}
+                {...(pickUpAddress
+                  ? { ...pickUpAddress }
+                  : { ...deliveryAddress })}
                 showMainLabel={false}
                 editable
               />
             </TouchableOpacity>
+            {pickUpAddress ? (
+              <>
+                <ResponsibleForm>
+                  <Checkbox
+                    label="Responsável pela retirada"
+                    control={control}
+                    name="responsible"
+                  />
+                  {!!responsible && (
+                    <>
+                      <TextInput
+                        control={control}
+                        name="name"
+                        placeholder="Nome do responsável"
+                        style={{ marginVertical: 15 }}
+                      />
+                      <TextInput
+                        control={control}
+                        name="cpf"
+                        placeholder="CPF"
+                        mask="cpf"
+                      />
+                    </>
+                  )}
+                </ResponsibleForm>
+              </>
+            ) : null}
           </>
         ) : (
           <Form>
@@ -121,7 +183,7 @@ export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
               name="cep"
               mask="cep"
               placeholder="CEP"
-              onMaxLength={handleSubmit(loadShippingInfo)}
+              onMaxLength={() => handleSubmit(loadShippingInfo)()}
             />
           </Form>
         )}
@@ -139,9 +201,9 @@ export const AttendanceAddress = ({ loading, getShippingInfo }: Props) => {
     ) : null
   ) : (
     <>
-      <StyledSectionTitle>Endereço de Entrega</StyledSectionTitle>
+      <StyledSectionTitleLoader width={150} height={20} />
       <StyledAddressLoader editable />
-      <StyledSectionTitle>Prazo de Entrega</StyledSectionTitle>
+      <StyledSectionTitleLoader width={150} height={20} />
       <StyledShippingInfoLoader />
     </>
   );

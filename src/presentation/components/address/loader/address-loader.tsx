@@ -1,12 +1,10 @@
 import React from "react";
 import { Dimensions, StyleProp, ViewStyle } from "react-native";
-import { Address as AddressModel } from "../../../models/Address";
-import { RadioButton } from "../../buttons/radio-button/radio-button";
 import {
   Container,
   Title,
   Name,
-  Label,
+  RadioButton,
   Value,
   Content,
   ArrowIcon,
@@ -19,7 +17,6 @@ type Props = {
   showRightArrow?: boolean;
   editable?: boolean;
   selectable?: boolean;
-  selected?: boolean;
   isMain?: boolean;
 };
 
@@ -31,7 +28,6 @@ export const AddressLoader = ({
   showRightArrow = true,
   editable,
   selectable,
-  selected,
   isMain,
 }: Props) => {
   return (
@@ -54,7 +50,9 @@ export const AddressLoader = ({
         <ArrowIcon name="chevron-right" />
       )}
       {editable ? <EditLabel>Alterar</EditLabel> : null}
-      {selectable ? <RadioButton active={selected} /> : null}
+      {selectable ? (
+        <RadioButton width={25} height={25} borderRadius={25} />
+      ) : null}
     </Container>
   );
 };

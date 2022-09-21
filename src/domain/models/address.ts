@@ -1,4 +1,4 @@
-export type AddressModel = {
+export type CustomerAddressModel = {
   id: string;
   name: string;
   cep: string;

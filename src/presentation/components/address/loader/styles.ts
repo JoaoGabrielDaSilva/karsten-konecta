@@ -18,12 +18,6 @@ export const Content = styled.View``;
 
 export const Title = styled(Skeleton)``;
 
-export const Label = styled(Typography).attrs(() => ({
-  semibold: true,
-}))`
-  color: ${({ theme }) => theme.color.text.secondary};
-`;
-
 export const Name = styled(Skeleton)`
   margin-top: ${({ theme }) => theme.spacing.md}px;
   margin-bottom: ${({ theme }) => theme.spacing.lg}px;
@@ -43,3 +37,5 @@ export const EditLabel = styled(Typography)`
 export const ArrowIcon = styled(MaterialCommunityIcons)`
   font-size: ${({ theme }) => RFValue(theme.fontSize.xl)}px;
 `;
+
+export const RadioButton = styled(Skeleton)``;

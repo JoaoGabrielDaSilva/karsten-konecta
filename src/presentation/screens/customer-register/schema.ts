@@ -10,7 +10,7 @@ export const customerRegisterSchema = yup.object().shape({
     .string()
     .required("O e-mail deve ser informado")
     .email("O e-mail deve ser válido"),
-  cpf: makeCpfRule(),
+  cpfCnpj: makeCpfRule(),
   phone: yup
     .string()
     .required("O telefone deve ser informado")
@@ -19,5 +19,5 @@ export const customerRegisterSchema = yup.object().shape({
       "Digite um telefone válido",
       (value) => value && value.replace(/\D/g, "").length >= 8
     ),
-  gender: yup.string().required("EEEE"),
+  gender: yup.string(),
 });

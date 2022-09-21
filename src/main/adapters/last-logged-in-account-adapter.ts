@@ -1,9 +1,7 @@
 import { Authentication } from "../../domain/usecases/authentication/authentication";
 import { makeAsyncStorageAdapter } from "../factories/cache/local-storage-adapter-factory";
 
-type lastLoggedInAccount = Authentication.Params & {
-  rememberMe: boolean;
-};
+type lastLoggedInAccount = Authentication.Params;
 
 export const setLastLoggedInAccountAdapter = async (
   data: lastLoggedInAccount

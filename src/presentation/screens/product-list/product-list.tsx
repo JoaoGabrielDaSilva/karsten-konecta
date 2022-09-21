@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { StackScreenProps } from "@react-navigation/stack";
 import { RootPrivateStackParamList } from "../../routes";
 import { Container, HistoryItem, NoResultsFound } from "./styles";
@@ -52,13 +52,9 @@ export const ProductList = ({
 
   const [loadingSearchHistory, setLoadingSearchHistory] = useState(true);
   const [searchHistory, setSearchHistory] = useState([]);
+  const [inputIsFocused, setInputIsFocused] = useState(defaultFocus);
 
-  const {
-    control,
-    handleSubmit,
-    setValue,
-    formState: { submitCount },
-  } = useForm<FormValues>();
+  const { control, handleSubmit, setValue } = useForm<FormValues>();
 
   const getProducts = async (
     page: number
@@ -69,7 +65,8 @@ export const ProductList = ({
         order: "D",
         page,
         query: filters?.query?.apiValue,
-        storeId: "28",
+        category: filters?.category?.apiValue,
+        storeId: store.id,
       });
 
       return {
@@ -89,14 +86,18 @@ export const ProductList = ({
     usePaginatedList<ProductModel>({
       getFunction: getProducts,
       filters,
-      disabled: submitCount === 0 || !filters,
+      disabled: !filters,
     });
+
+  console.log(filters);
 
   const onSubmit = ({ search }: FormValues) => {
     try {
       Keyboard.dismiss();
       if (!search) return;
+
       setFilters({
+        ...filters,
         query: {
           label: "Busca",
           apiValue: search,
@@ -105,8 +106,6 @@ export const ProductList = ({
           key: "query",
         },
       });
-
-      // reset({});
     } catch (error) {
       console.log(error);
     }
@@ -127,6 +126,8 @@ export const ProductList = ({
     }
   };
 
+  console.log("focused", inputIsFocused);
+
   useEffect(() => {
     navigation.setOptions({
       header: (props) => (
@@ -134,6 +135,8 @@ export const ProductList = ({
           control={control}
           handleSubmit={() => handleSubmit(onSubmit)()}
           defaultFocus={defaultFocus}
+          onFocus={() => setInputIsFocused(true)}
+          onBlur={() => setInputIsFocused(false)}
           {...props}
         />
       ),
@@ -148,7 +151,7 @@ export const ProductList = ({
 
   return (
     <Container>
-      {filters ? (
+      {filters && !inputIsFocused ? (
         <PaginatedList
           data={data}
           loading={loading}
@@ -187,6 +190,7 @@ export const ProductList = ({
         <>
           {!loadingSearchHistory ? (
             <FlatList
+              keyboardShouldPersistTaps="always"
               data={searchHistory}
               contentContainerStyle={{
                 paddingHorizontal: theme.spacing.lg,

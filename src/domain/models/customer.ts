@@ -1,4 +1,4 @@
-import { AddressModel } from "./address";
+import { CustomerAddressModel } from "./address";
 
 export enum PersonType {
   NATURAL,
@@ -6,7 +6,7 @@ export enum PersonType {
 }
 
 export enum Gender {
-  UNINFORMED = 0,
+  UNINFORMED = "NI",
   MALE = "M",
   FEMALE = "F",
 }
@@ -17,9 +17,10 @@ type GenericCustomer = {
   email: string;
   cpfCnpj: string;
   phone: string;
-  personType?: PersonType;
   optEmail: boolean;
-  addressList: AddressModel[];
+  personType: PersonType;
+
+  addressList: CustomerAddressModel[];
   optSms: boolean;
   optPhoneCall: boolean;
   optWhatsapp: boolean;

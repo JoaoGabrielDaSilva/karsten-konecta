@@ -43,7 +43,7 @@ export const StyledTextInput = styled(TextInput)`
 `;
 
 export const StyledButton = styled(Button)`
-  margin-top: ${({ theme }) => theme.spacing.xxl}px;
+  margin-top: ${({ theme }) => theme.spacing.lg}px;
 `;
 
 export const Title = styled(Typography)`

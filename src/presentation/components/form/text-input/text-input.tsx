@@ -1,6 +1,12 @@
 import { TouchableOpacity } from "@gorhom/bottom-sheet";
-import React, { useEffect, useRef, useState } from "react";
+import React, { RefObject, useEffect, useRef, useState } from "react";
 import { Control, Controller, useController } from "react-hook-form";
+import {
+  TextInput as RnTextInput,
+  ReturnKeyTypeOptions,
+  BackHandler,
+  Keyboard,
+} from "react-native";
 import {
   ActivityIndicator,
   Dimensions,
@@ -52,7 +58,7 @@ const PLACEHOLDER_POSITIONS = {
   },
   [InputState.UNFOCUSED]: {
     left: 20,
-    top: width * 0.15 * 0.35,
+    top: width * 0.15 * 0.3,
   },
 };
 
@@ -60,6 +66,7 @@ type TypeConfig = {
   maxLength?: number;
   onChange: (value: string) => string;
   keyboardType?: KeyboardTypeOptions;
+  returnKeyType?: ReturnKeyTypeOptions;
 };
 
 const inputConfigObject: { [key: string]: TypeConfig } = {
@@ -67,26 +74,31 @@ const inputConfigObject: { [key: string]: TypeConfig } = {
     maxLength: 14,
     onChange: cpfMask,
     keyboardType: "number-pad",
+    returnKeyType: "done",
   },
   cnpj: {
     maxLength: 18,
     onChange: cnpjMask,
     keyboardType: "number-pad",
+    returnKeyType: "done",
   },
   cpfCnpj: {
     maxLength: 18,
     onChange: CpfOrCnpjMask,
     keyboardType: "number-pad",
+    returnKeyType: "done",
   },
   cep: {
     maxLength: 9,
     onChange: cepMask,
     keyboardType: "number-pad",
+    returnKeyType: "done",
   },
   phone: {
     maxLength: 15,
     onChange: phoneMask,
     keyboardType: "number-pad",
+    returnKeyType: "done",
   },
 };
 
@@ -96,183 +108,212 @@ type Props = TextInputProps & {
   mask?: keyof typeof inputConfigObject;
   defaultValue?: string;
   style?: StyleProp<ViewStyle>;
-  onMaxLength?: () => void;
+  onMaxLength?: (value: string) => void;
   loading?: boolean;
   disableFloatingPlaceholder?: boolean;
   size?: "small" | "normal";
 };
 
+export type TextInputRef = RnTextInput;
+
 const INPUT_RANGE = [InputState.FOCUSED, InputState.UNFOCUSED];
 
-export const TextInput = ({
-  name,
-  defaultValue,
-  control,
-  style,
-  onMaxLength,
-  mask,
-  loading,
-  placeholder,
-  keyboardType,
-  size = "normal",
-  editable = true,
-  disableFloatingPlaceholder,
-  ...props
-}: Props) => {
-  const {
-    field: { value, onChange },
+export const TextInput = React.forwardRef(
+  (
+    {
+      name,
+      defaultValue,
+      control,
+      style,
+      onMaxLength,
+      mask,
+      loading,
+      placeholder,
+      keyboardType,
+      size = "normal",
+      editable = true,
+      disableFloatingPlaceholder,
+      returnKeyType,
+      ...props
+    }: Props,
+    componentRef: RefObject<TextInputRef>
+  ) => {
+    const ref = componentRef || useRef<TextInputBaseComponent>();
 
-    fieldState: { error },
-  } = useController({ name, control, defaultValue });
-  const theme = useTheme();
+    const {
+      field: { value, onChange },
 
-  const clearValue = () => onChange("");
-  const ref = useRef<TextInputBaseComponent>();
-  const state = useSharedValue(InputState.UNFOCUSED);
+      fieldState: { error },
+    } = useController({ name, control, defaultValue });
+    const theme = useTheme();
 
-  const [isFocused, setIsFocused] = useState(!!state.value);
+    const clearValue = () => onChange("");
+    const state = useSharedValue(InputState.UNFOCUSED);
 
-  const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    if (!disableFloatingPlaceholder) {
-      state.value = withTiming(InputState.FOCUSED);
-    }
+    const [isFocused, setIsFocused] = useState(!!state.value);
 
-    props.onFocus && props.onFocus(e);
-    setIsFocused(true);
-  };
+    const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      if (!disableFloatingPlaceholder) {
+        state.value = withTiming(InputState.FOCUSED);
+      }
 
-  const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-    if (!disableFloatingPlaceholder) {
-      state.value = withTiming(InputState.UNFOCUSED);
-    }
-
-    props.onBlur && props.onBlur(e);
-    setIsFocused(false);
-  };
-
-  const containerStyles = useAnimatedStyle(() => {
-    return {
-      borderColor: !error
-        ? interpolateColor(state.value, INPUT_RANGE, [
-            theme.color.background.emphasis,
-            theme.color.background.secondary,
-          ])
-        : theme.color.red[500],
+      props.onFocus && props.onFocus(e);
+      setIsFocused(true);
     };
-  });
-  const placeholderStyles = useAnimatedStyle(() => {
-    return {
-      fontSize: value ? 12 : interpolate(state.value, INPUT_RANGE, [12, 15]),
-      color: !error
-        ? interpolateColor(state.value, INPUT_RANGE, [
-            theme.color.text.primary,
-            theme.color.text.secondary,
-          ])
-        : theme.color.red[500],
+
+    const handleBlur = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      if (!disableFloatingPlaceholder) {
+        state.value = withTiming(InputState.UNFOCUSED);
+      }
+
+      props.onBlur && props.onBlur(e);
+      setIsFocused(false);
     };
-  });
 
-  const placeholderContainerStyles = useAnimatedStyle(() => {
-    return {
-      top: !value
-        ? interpolate(state.value, INPUT_RANGE, [
-            PLACEHOLDER_POSITIONS[InputState.FOCUSED].top,
-            PLACEHOLDER_POSITIONS[InputState.UNFOCUSED].top,
-          ])
-        : PLACEHOLDER_POSITIONS[InputState.FOCUSED].top,
-      left: !value
-        ? interpolate(state.value, INPUT_RANGE, [
-            PLACEHOLDER_POSITIONS[InputState.FOCUSED].left,
-            PLACEHOLDER_POSITIONS[InputState.UNFOCUSED].left,
-          ])
-        : PLACEHOLDER_POSITIONS[InputState.FOCUSED].left,
-    };
-  });
+    const containerStyles = useAnimatedStyle(() => {
+      return {
+        borderColor: !error
+          ? interpolateColor(state.value, INPUT_RANGE, [
+              theme.color.background.emphasis,
+              theme.color.background.secondary,
+            ])
+          : theme.color.red[500],
+      };
+    });
+    const placeholderStyles = useAnimatedStyle(() => {
+      return {
+        fontSize: value ? 12 : interpolate(state.value, INPUT_RANGE, [12, 15]),
+        color: !error
+          ? interpolateColor(state.value, INPUT_RANGE, [
+              theme.color.text.primary,
+              theme.color.text.secondary,
+            ])
+          : theme.color.red[500],
+      };
+    });
 
-  useEffect(() => {
-    if (value && mask) {
-      onChange(inputConfigObject[mask].onChange(value));
-    }
-  }, [mask]);
+    const placeholderContainerStyles = useAnimatedStyle(() => {
+      return {
+        top: !value
+          ? interpolate(state.value, INPUT_RANGE, [
+              PLACEHOLDER_POSITIONS[InputState.FOCUSED].top,
+              PLACEHOLDER_POSITIONS[InputState.UNFOCUSED].top,
+            ])
+          : PLACEHOLDER_POSITIONS[InputState.FOCUSED].top,
+        left: !value
+          ? interpolate(state.value, INPUT_RANGE, [
+              PLACEHOLDER_POSITIONS[InputState.FOCUSED].left,
+              PLACEHOLDER_POSITIONS[InputState.UNFOCUSED].left,
+            ])
+          : PLACEHOLDER_POSITIONS[InputState.FOCUSED].left,
+      };
+    });
 
-  return (
-    <Container style={style}>
-      <InputContainer
-        style={[containerStyles]}
-        align="center"
-        size={size}
-        editable={editable && !loading}
-      >
-        <Controller
-          name={name}
-          control={control}
-          defaultValue={defaultValue}
-          render={() => (
-            <>
-              <Input
-                ref={ref}
-                error={!!error}
-                value={value}
-                onChangeText={(value) => {
-                  mask
-                    ? onChange(inputConfigObject[mask].onChange(value))
-                    : onChange(value);
+    useEffect(() => {
+      if (value && mask) {
+        onChange(inputConfigObject[mask].onChange(value));
+      }
+    }, [mask, value]);
 
-                  if (
-                    onMaxLength &&
-                    value.length === inputConfigObject[mask]?.maxLength
-                  )
-                    onMaxLength();
-                }}
-                maxLength={
-                  props?.maxLength || inputConfigObject[mask]?.maxLength || 100
-                }
-                autoComplete="off"
-                autoCapitalize="none"
-                onFocus={handleFocus}
-                onBlur={handleBlur}
-                placeholder={disableFloatingPlaceholder ? placeholder : ""}
-                placeholderTextColor={
-                  !error
-                    ? disableFloatingPlaceholder
-                      ? theme.color.text.secondary
-                      : "transparent"
-                    : theme.color.red[500]
-                }
-                editable={!loading && editable}
-                keyboardType={
-                  keyboardType ||
-                  inputConfigObject[mask]?.keyboardType ||
-                  "default"
-                }
-                {...props}
-              />
-              {placeholder && !disableFloatingPlaceholder ? (
-                <PlaceholderContainer
-                  activeOpacity={1}
-                  onPress={() => ref?.current?.focus()}
-                  style={placeholderContainerStyles}
-                >
-                  <Placeholder style={placeholderStyles}>
-                    {placeholder}
-                  </Placeholder>
-                </PlaceholderContainer>
-              ) : null}
-              {loading && (
-                <ActivityIndicator color={theme.color.text.primary} />
-              )}
-            </>
+    useEffect(() => {
+      const backhandler = BackHandler.addEventListener(
+        "hardwareBackPress",
+        () => {
+          ref?.current?.blur();
+          alert("teste");
+          return false;
+        }
+      );
+
+      return backhandler.remove();
+    }, []);
+
+    return (
+      <Container style={style}>
+        <InputContainer
+          style={[containerStyles]}
+          align="center"
+          size={size}
+          editable={editable && !loading}
+        >
+          <Controller
+            name={name}
+            control={control}
+            defaultValue={defaultValue}
+            render={() => (
+              <>
+                <Input
+                  ref={ref}
+                  error={!!error}
+                  value={value}
+                  returnKeyType={
+                    returnKeyType ||
+                    (mask ? inputConfigObject[mask].returnKeyType : "none")
+                  }
+                  blurOnSubmit
+                  onChangeText={(value) => {
+                    mask
+                      ? onChange(inputConfigObject[mask].onChange(value))
+                      : onChange(value);
+
+                    if (
+                      onMaxLength &&
+                      value.length === inputConfigObject[mask]?.maxLength
+                    )
+                      onMaxLength(value);
+                  }}
+                  maxLength={
+                    props?.maxLength ||
+                    inputConfigObject[mask]?.maxLength ||
+                    100
+                  }
+                  autoComplete="off"
+                  autoCapitalize="none"
+                  onFocus={handleFocus}
+                  onBlur={handleBlur}
+                  placeholder={disableFloatingPlaceholder ? placeholder : ""}
+                  placeholderTextColor={
+                    !error
+                      ? disableFloatingPlaceholder
+                        ? theme.color.text.secondary
+                        : "transparent"
+                      : theme.color.red[500]
+                  }
+                  editable={!loading && editable}
+                  keyboardType={
+                    keyboardType ||
+                    inputConfigObject[mask]?.keyboardType ||
+                    "default"
+                  }
+                  {...props}
+                />
+                {placeholder && !disableFloatingPlaceholder ? (
+                  <PlaceholderContainer
+                    activeOpacity={1}
+                    onPress={() => ref?.current?.focus()}
+                    style={placeholderContainerStyles}
+                  >
+                    <Placeholder style={placeholderStyles}>
+                      {placeholder}
+                    </Placeholder>
+                  </PlaceholderContainer>
+                ) : null}
+                {loading && (
+                  <ActivityIndicator color={theme.color.text.primary} />
+                )}
+              </>
+            )}
+          />
+          {value && !loading && isFocused && (
+            <BorderlessButton onPress={clearValue}>
+              <ClearIcon name="ios-close-circle-outline" />
+            </BorderlessButton>
           )}
-        />
-        {value && !loading && isFocused && (
-          <BorderlessButton onPress={clearValue}>
-            <ClearIcon name="ios-close-circle-outline" />
-          </BorderlessButton>
-        )}
-      </InputContainer>
-      {error?.message ? (
-        <CustomErrorMessage>{error.message}</CustomErrorMessage>
-      ) : null}
-    </Container>
-  );
-};
+        </InputContainer>
+        {error?.message ? (
+          <CustomErrorMessage>{error.message}</CustomErrorMessage>
+        ) : null}
+      </Container>
+    );
+  }
+);

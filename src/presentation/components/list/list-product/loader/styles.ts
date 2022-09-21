@@ -19,6 +19,9 @@ export const Right = styled.View`
   flex: 1;
 
   margin-left: ${({ theme }) => theme.spacing.lg}px;
+  margin-top: ${({ theme }) => theme.spacing.sm}px;
+
+  overflow: hidden;
 `;
 
 export const Image = styled(Skeleton)``;

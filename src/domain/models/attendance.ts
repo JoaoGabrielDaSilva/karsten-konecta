@@ -1,7 +1,8 @@
-import { AddressModel } from "./address";
+import { CustomerAddressModel } from "./address";
 import { CustomerModel } from "./customer";
 import { AttendanceProductModel } from "./product";
 import { ShippingModel } from "./shipping";
+import { StoreAddressModel } from "./store-address-model";
 
 export type AttendanceModel = {
   id?: string;
@@ -9,5 +10,7 @@ export type AttendanceModel = {
   cpfCnpj: string;
   productList: AttendanceProductModel[];
   customer?: CustomerModel;
-  deliveryAddress?: AddressModel;
+  deliveryAddress?: CustomerAddressModel;
+  pickUpAddress?: StoreAddressModel;
+  shipping?: ShippingModel;
 };
