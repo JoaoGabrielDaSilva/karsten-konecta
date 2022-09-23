@@ -21,7 +21,7 @@ export class RemoteVerifyAttendanceProducts
     const httpResponse = await this.httpClient.request({
       url: this.url,
       method: "get",
-      body: {
+      params: {
         IdAtendimento: attendanceId,
         IdPessoaLoja: storeId,
         ModalidadeVenda: saleModality,
@@ -31,11 +31,6 @@ export class RemoteVerifyAttendanceProducts
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        return {
-          updatedProducts: [],
-          deletedProducts: [],
-        };
-      case HttpStatusCode.notFound:
         const result = httpResponse.body.Result;
 
         return {
@@ -51,8 +46,12 @@ export class RemoteVerifyAttendanceProducts
             code: item.Codigo,
             uri: item.Url,
             ean: item.Ean,
+            availableAmount: 0,
           })),
         };
+
+      case HttpStatusCode.notFound:
+        throw new UnexpectedError();
       default:
         throw new UnexpectedError();
     }

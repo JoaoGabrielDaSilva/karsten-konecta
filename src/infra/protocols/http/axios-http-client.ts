@@ -18,8 +18,11 @@ export class AxiosHttpClient implements HttpClient {
         params: data.params,
       });
     } catch (error) {
+      console.log("error", error.response);
       axiosResponse = error.response;
     }
+
+    console.log("response", axiosResponse);
 
     return {
       statusCode: axiosResponse.status,
@@ -27,3 +30,9 @@ export class AxiosHttpClient implements HttpClient {
     };
   }
 }
+
+axios.interceptors.request.use((config) => {
+  console.log(config);
+
+  return config;
+});

@@ -14,3 +14,7 @@ export type AttendanceProductModel = ProductModel & {
   totalPrice: number;
   totalWeight: number;
 };
+
+export type RefreshedAttendanceProductModel = ProductModel & {
+  availableAmount?: number;
+};

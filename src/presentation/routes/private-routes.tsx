@@ -29,6 +29,11 @@ import { DeliveryMode } from "../store/attendance";
 import { makeCatalog } from "../../main/factories/pages/catalog-factory";
 import { ProductListFilters } from "../screens/product-list-filters/product-list-filters";
 import { makeProductListFilters } from "../../main/factories/pages/product-list-filters-factory";
+import {
+  ProductModel,
+  RefreshedAttendanceProductModel,
+} from "../../domain/models/product";
+import { makeAttendanceRefreshedProducts } from "../../main/factories/pages/attendance-refreshed-products-factory";
 
 export type RootPrivateStackParamList = {
   Login: undefined;
@@ -40,6 +45,10 @@ export type RootPrivateStackParamList = {
     id: string;
     name?: string;
     cpfCnpj?: string;
+  };
+  AttendanceRefreshedProducts: {
+    refreshedProducts: RefreshedAttendanceProductModel[];
+    removedProducts: RefreshedAttendanceProductModel[];
   };
   AddressSelect: {
     deliveryMode: DeliveryMode;
@@ -108,7 +117,16 @@ const StackNavigator = () => {
           title: "Carrinho",
         }}
       />
-
+      <Stack.Screen
+        name="AttendanceRefreshedProducts"
+        component={makeAttendanceRefreshedProducts}
+        options={{
+          title: "Carrinho Atualizado",
+          header: (props) => <StackNavbar {...props} />,
+          presentation: "modal",
+          cardOverlayEnabled: false,
+        }}
+      />
       <Stack.Screen
         name="ProductDetails"
         component={makeProductDetails}

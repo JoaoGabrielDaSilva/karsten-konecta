@@ -44,6 +44,7 @@ export const Modal = ({
 }: Props) => {
   const theme = useTheme();
   const transition = useSharedValue(0);
+  const isFirstRun = useSharedValue(true);
 
   const [isVisible, setIsVisible] = useState(visible);
 
@@ -52,13 +53,12 @@ export const Modal = ({
     transform: [{ scale: transition.value }],
   }));
 
-  const handleCloseModal = () => {
-    closeModal();
+  const onClose = (fn: () => void) => {
+    fn && fn();
     setIsVisible(false);
   };
 
   const handleConfirm = () => {
-    // closeModal();
     confirm();
   };
 
@@ -69,14 +69,18 @@ export const Modal = ({
         runOnJS(setIsVisible)(true);
       }
 
-      transition.value = withTiming(
-        value,
-        {},
-        () => !value && runOnJS(handleCloseModal)()
+      transition.value = withTiming(value, {}, () =>
+        !value && !isFirstRun
+          ? runOnJS(onClose)(cancel)
+          : (isFirstRun.value = false)
       );
     },
     [visible]
   );
+
+  const handleCloseModal = (fn: () => void) => {
+    transition.value = withTiming(0, {}, () => runOnJS(onClose)(fn));
+  };
 
   return (
     <RNModal visible={isVisible} transparent onRequestClose={closeModal}>
@@ -92,7 +96,11 @@ export const Modal = ({
               justify={ok ? "center" : "space-between"}
             >
               {ok ? (
-                <Button text="OK" onPress={ok} containerStyle={{ flex: 1 }} />
+                <Button
+                  text="OK"
+                  onPress={() => handleCloseModal(ok)}
+                  containerStyle={{ flex: 1 }}
+                />
               ) : (
                 <>
                   <Button
@@ -104,11 +112,11 @@ export const Modal = ({
                     textStyle={{
                       color: "#7f8286",
                     }}
-                    onPress={cancel}
+                    onPress={() => handleCloseModal(cancel)}
                   />
                   <Button
                     text={confirmLabel}
-                    onPress={handleConfirm}
+                    onPress={() => handleCloseModal(confirm)}
                     containerStyle={{ flex: 1 }}
                   />
                 </>

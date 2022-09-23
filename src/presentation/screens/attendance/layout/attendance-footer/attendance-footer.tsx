@@ -6,14 +6,14 @@ import { Container } from "./styles";
 
 type Props = {
   loading: boolean;
-  deleting: boolean;
+  disabled: boolean;
   handleDeleteAttendance: () => void;
   handleVerifyAttendanceProducts: () => void;
 };
 
 export const AttendanceFooter = ({
   loading,
-  deleting,
+  disabled,
   handleDeleteAttendance,
   handleVerifyAttendanceProducts,
 }: Props) => {
@@ -33,8 +33,8 @@ export const AttendanceFooter = ({
               ? "Finalizar Atendimento"
               : "Excluir Atendimento"
           }
-          disabled={loading}
-          loading={deleting}
+          disabled={disabled}
+          loading={loading}
         />
       </View>
     </Container>

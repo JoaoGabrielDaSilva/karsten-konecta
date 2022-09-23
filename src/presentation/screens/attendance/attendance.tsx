@@ -82,6 +82,7 @@ export const Attendance = ({
   const attendanceName = params?.name;
 
   const [loading, setLoading] = useState(true);
+  const [finishing, setFinishing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [loadingShipping, setLoadingShipping] = useState(false);
   const [updtadingProduct, setUpdtadingProduct] = useState(false);
@@ -221,6 +222,7 @@ export const Attendance = ({
 
   const handleVerifyAttendanceProducts = async () => {
     try {
+      setFinishing(true);
       const { deletedProducts, updatedProducts } =
         await verifyAttendanceProducts.execute({
           attendanceId: attendance.id,
@@ -228,9 +230,22 @@ export const Attendance = ({
           storeId: store.id,
         });
 
-      console.log(updatedProducts, deletedProducts);
+      if (deletedProducts.length > 0 || updatedProducts.length > 0) {
+        setFinishing(false);
+
+        navigate("AttendanceRefreshedProducts", {
+          refreshedProducts: updatedProducts.map((product) => ({
+            ...product,
+            amount: productList.find((item) => item.code === product.code)
+              .amount,
+          })),
+          removedProducts: deletedProducts,
+        });
+      }
     } catch (error) {
       console.log(error.response);
+    } finally {
+      setFinishing(false);
     }
   };
 
@@ -365,8 +380,8 @@ export const Attendance = ({
           />
 
           <AttendanceFooter
-            loading={updtadingProduct || loadingShipping || loading}
-            deleting={deleting}
+            loading={finishing}
+            disabled={updtadingProduct || loadingShipping || loading}
             handleDeleteAttendance={handleDeleteAttendance}
             handleVerifyAttendanceProducts={handleVerifyAttendanceProducts}
           />

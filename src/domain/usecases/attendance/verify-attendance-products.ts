@@ -1,5 +1,8 @@
 import { SalesModality } from "../../models/attendance";
-import { ProductModel } from "../../models/product";
+import {
+  ProductModel,
+  RefreshedAttendanceProductModel,
+} from "../../models/product";
 
 export interface VerifyAttendanceProducts {
   execute(
@@ -16,7 +19,7 @@ export namespace VerifyAttendanceProducts {
   };
 
   export type Model = {
-    updatedProducts: ProductModel[];
+    updatedProducts: RefreshedAttendanceProductModel[];
     deletedProducts: ProductModel[];
   };
 }
