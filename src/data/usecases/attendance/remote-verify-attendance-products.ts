@@ -37,7 +37,6 @@ export class RemoteVerifyAttendanceProducts
         };
       case HttpStatusCode.notFound:
         const result = httpResponse.body.Result;
-        console.log(result);
 
         return {
           updatedProducts: result?.ListaAtualizados.map((item) => ({

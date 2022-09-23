@@ -230,7 +230,7 @@ export const Attendance = ({
 
       console.log(updatedProducts, deletedProducts);
     } catch (error) {
-      console.log(error);
+      console.log(error.response);
     }
   };
 
@@ -365,7 +365,7 @@ export const Attendance = ({
           />
 
           <AttendanceFooter
-            loading={updtadingProduct || loadingShipping}
+            loading={updtadingProduct || loadingShipping || loading}
             deleting={deleting}
             handleDeleteAttendance={handleDeleteAttendance}
             handleVerifyAttendanceProducts={handleVerifyAttendanceProducts}

@@ -60,6 +60,8 @@ export const OrderList = ({
         totalResults,
       };
     } catch (error) {
+      console.log(error);
+
       return {
         data: [],
         totalResults: 0,
