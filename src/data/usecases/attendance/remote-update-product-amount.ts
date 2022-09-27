@@ -26,7 +26,6 @@ export class RemoteUpdateProductAmount implements UpdateProductAmount {
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
-        console.log(result);
         return {
           id: String(result.IdAtendimentoItem),
           totalAmount: result.Quantidade,

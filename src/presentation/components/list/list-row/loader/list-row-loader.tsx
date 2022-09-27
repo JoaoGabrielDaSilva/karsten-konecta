@@ -28,10 +28,16 @@ export const ListRowLoader = ({
   rightIcon,
   leftIcon,
   borderless,
+  style,
 }: Props) => {
   return (
     <Container>
-      <Content borderless={borderless} justify="space-between" align="center">
+      <Content
+        style={style}
+        borderless={borderless}
+        justify="space-between"
+        align="center"
+      >
         <LeftSide>
           {leftIcon && <LeftIconLoader width={20} height={15} />}
           {label ? <Label width={width * 0.15} height={15} /> : null}

@@ -1,3 +1,5 @@
+import { ShippingModel } from "../../models/shipping";
+
 export interface GetShippingInfo {
   get(params: GetShippingInfo.Params): Promise<GetShippingInfo.Model>;
 }
@@ -7,9 +9,8 @@ export namespace GetShippingInfo {
     cep: string;
     brandId: string;
     totalWeight: number;
+    isDedicated?: boolean;
   };
 
-  export type Model = {
-    days: number;
-  };
+  export type Model = ShippingModel;
 }

@@ -52,8 +52,6 @@ export const StoreSelect = ({
   async function loadStoreList(
     page: number
   ): Promise<PaginatedListGetFunctionReturn<StoreModel>> {
-    console.log(page);
-
     try {
       const { storeList, totalResults } = await getStoreList.execute({ page });
 

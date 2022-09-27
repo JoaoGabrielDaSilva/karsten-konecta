@@ -44,7 +44,6 @@ import {
   StyledRow,
   StyledSectionTitle,
 } from "./styles";
-import { AddressLoader } from "../../components/address/loader/address-loader";
 import { LinkCustomerToAttendance } from "../../../domain/usecases/attendance/link-customer-to-attendance";
 import { useRef } from "react";
 import { TextInputRef } from "../../components/form/text-input/text-input";
@@ -184,8 +183,6 @@ export const CustomerRegister = ({
   useEffect(() => {
     return () => {
       if (!attendance?.id) {
-        console.log("CLEANUP");
-
         clearAttendance();
         clearCustomer();
       }

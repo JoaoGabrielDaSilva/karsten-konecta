@@ -9,8 +9,6 @@ export const Container = styled(Row)<{
 }>`
   padding: ${({ theme }) => theme.spacing.xl}px 0px;
 
-  border-radius: ${({ theme }) => theme.radii.sm}px;
-
   background: ${({ theme, background }) =>
     background || theme.color.background.primary};
 

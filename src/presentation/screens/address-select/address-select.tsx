@@ -89,8 +89,6 @@ export const AddressSelect = ({
             })
           : await getStoreAddressList.execute();
 
-      console.log(addressList);
-
       return {
         data: addressList,
         totalResults: addressList.length,
@@ -131,8 +129,6 @@ export const AddressSelect = ({
       goBack();
     }
   };
-
-  console.log(selectedAddress);
 
   useFocusEffect(() => {
     setOptions({

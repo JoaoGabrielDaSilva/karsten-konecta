@@ -78,8 +78,6 @@ export const ProductListFilters = ({
   );
 
   const handleFilter = ({ category, brand, ordination }: FormValues) => {
-    console.log("TASDASD", category, brand);
-
     const categoryFilter = category
       ? {
           label: "Categoria",

@@ -32,8 +32,6 @@ export const AttendanceSelectCard = ({
   selected,
   style,
 }: Props) => {
-  console.log(createdAt);
-
   return (
     <Pressable onPress={() => onPress({ attendanceId: id })}>
       <Container style={style} justify="space-between">

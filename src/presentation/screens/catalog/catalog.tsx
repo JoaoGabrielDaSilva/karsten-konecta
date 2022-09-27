@@ -243,7 +243,7 @@ export const Catalog = ({
           <FlatList
             data={bestSellers}
             horizontal
-            keyExtractor={(_, index) => String(index)}
+            keyExtractor={(item, index) => item.code}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item }) => (
               <ProductCard

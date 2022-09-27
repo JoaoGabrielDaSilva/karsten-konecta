@@ -18,7 +18,7 @@ type Props = DrawerContentComponentProps;
 const ICON: keyof typeof Feather.glyphMap = "activity";
 
 export const Drawer = ({
-  navigation: { navigate, toggleDrawer },
+  navigation: { navigate, closeDrawer },
   state,
   ...props
 }: Props) => {
@@ -33,13 +33,14 @@ export const Drawer = ({
 
   const handleLogout = async () => {
     logoutUser();
+    closeDrawer();
   };
 
   return (
     <>
       <Modal
         visible={modalState}
-        closeModal={closeModal}
+        onPressOverlay={closeModal}
         title="Desejar deslogar"
         text="Ao concordar você será desconectado da aplicação!"
         confirmLabel="Sim"

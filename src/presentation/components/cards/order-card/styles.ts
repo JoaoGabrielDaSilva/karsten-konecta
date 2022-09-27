@@ -1,6 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
+import { ListRow } from "../../list/list-row/list-row";
 import { Row, Typography } from "../../utils";
 
 export const Container = styled.View`
@@ -13,7 +14,6 @@ export const Container = styled.View`
 
 export const Headline = styled(Row)`
   padding: ${({ theme }) => theme.spacing.lg}px;
-  padding-left: ${({ theme }) => theme.spacing.xl}px;
 `;
 
 export const BorderContainer = styled.View`
@@ -25,7 +25,7 @@ export const BorderContainer = styled.View`
 `;
 
 export const Content = styled.View`
-  padding: 0px ${({ theme }) => theme.spacing.xl}px;
+  padding: 0px ${({ theme }) => theme.spacing.lg}px;
 `;
 
 export const Name = styled(Typography)``;
@@ -43,4 +43,8 @@ export const Value = styled(Typography)`
 export const CopyIcon = styled(MaterialIcons)`
   font-size: ${({ theme }) => RFValue(theme.fontSize.lg)}px;
   color: ${({ theme }) => theme.color.text.secondary};
+`;
+
+export const StyledListRow = styled(ListRow)`
+  padding: ${({ theme }) => theme.spacing.lg}px;
 `;

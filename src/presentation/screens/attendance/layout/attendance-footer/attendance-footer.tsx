@@ -8,14 +8,14 @@ type Props = {
   loading: boolean;
   disabled: boolean;
   handleDeleteAttendance: () => void;
-  handleVerifyAttendanceProducts: () => void;
+  handleFinishAttendance: () => void;
 };
 
 export const AttendanceFooter = ({
   loading,
   disabled,
   handleDeleteAttendance,
-  handleVerifyAttendanceProducts,
+  handleFinishAttendance,
 }: Props) => {
   const productList = useAttendanceStore((state) => state.productList);
 
@@ -26,7 +26,7 @@ export const AttendanceFooter = ({
           onPress={() =>
             productList.length === 0
               ? handleDeleteAttendance()
-              : handleVerifyAttendanceProducts()
+              : handleFinishAttendance()
           }
           text={
             productList.length > 0 || loading

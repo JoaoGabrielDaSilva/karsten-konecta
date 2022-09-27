@@ -69,7 +69,10 @@ export const OrderList = ({
     }
   }
 
-  // const goToOrderDeails = () => navigate("OrderDetails");
+  const goToOrderDeails = (orderId: string) =>
+    navigate("OrderDetails", {
+      attendanceId: orderId,
+    });
 
   useEffect(() => {
     return () => {
@@ -94,7 +97,7 @@ export const OrderList = ({
           <OrderCard
             {...item}
             style={{ marginBottom: theme.spacing.lg }}
-            // onPress={goToOrderDeails}
+            onPress={goToOrderDeails}
           />
         )}
         loaderComponent={

@@ -17,6 +17,7 @@ const StackNavigator = () => {
         component={makeLogin}
         options={{
           headerShown: false,
+          animationEnabled: false,
         }}
       />
     </Stack.Navigator>

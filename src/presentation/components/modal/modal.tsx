@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   runOnJS,
   useAnimatedReaction,
@@ -22,7 +22,7 @@ type Props = {
   title?: string;
   text?: string;
   visible?: boolean;
-  closeModal?: () => void;
+  onPressOverlay?: () => void;
   confirmLabel?: string;
   cancelLabel?: string;
   ok?: () => void;
@@ -30,9 +30,11 @@ type Props = {
   cancel?: () => void;
 };
 
+const ANIMATION_DURATION = 250;
+
 export const Modal = ({
   visible,
-  closeModal,
+  onPressOverlay,
   confirmLabel = "Confirmar",
   cancelLabel = "Cancelar",
   confirm,
@@ -44,7 +46,6 @@ export const Modal = ({
 }: Props) => {
   const theme = useTheme();
   const transition = useSharedValue(0);
-  const isFirstRun = useSharedValue(true);
 
   const [isVisible, setIsVisible] = useState(visible);
 
@@ -53,38 +54,35 @@ export const Modal = ({
     transform: [{ scale: transition.value }],
   }));
 
-  const onClose = (fn: () => void) => {
-    fn && fn();
-    setIsVisible(false);
+  const handleClose = (fn: () => void) => {
+    fn();
+    setTimeout(() => {
+      setIsVisible(false);
+    }, ANIMATION_DURATION);
   };
 
-  const handleConfirm = () => {
-    confirm();
+  const closeModalMiddleware = (fn: () => void) => {
+    handleClose(fn);
+    transition.value = withTiming(0, { duration: ANIMATION_DURATION });
   };
 
-  useAnimatedReaction(
-    () => (visible ? 1 : 0),
-    (value) => {
-      if (visible) {
-        runOnJS(setIsVisible)(true);
-      }
-
-      transition.value = withTiming(value, {}, () =>
-        !value && !isFirstRun
-          ? runOnJS(onClose)(cancel)
-          : (isFirstRun.value = false)
-      );
-    },
-    [visible]
-  );
-
-  const handleCloseModal = (fn: () => void) => {
-    transition.value = withTiming(0, {}, () => runOnJS(onClose)(fn));
-  };
+  useEffect(() => {
+    if (!visible) return;
+    setIsVisible(true);
+    transition.value = withTiming(1, { duration: ANIMATION_DURATION });
+  }, [visible]);
 
   return (
-    <RNModal visible={isVisible} transparent onRequestClose={closeModal}>
-      <Overlay onPress={closeModal} activeOpacity={1}>
+    <RNModal
+      visible={isVisible}
+      transparent
+      onRequestClose={() => closeModalMiddleware(onPressOverlay)}
+      animationType="fade"
+    >
+      <Overlay
+        onPress={() => closeModalMiddleware(onPressOverlay)}
+        activeOpacity={1}
+      >
         <TouchableOpacity onPress={() => {}} activeOpacity={1}>
           <Container style={animatedStyles}>
             <TopSide>
@@ -98,7 +96,7 @@ export const Modal = ({
               {ok ? (
                 <Button
                   text="OK"
-                  onPress={() => handleCloseModal(ok)}
+                  onPress={() => closeModalMiddleware(ok)}
                   containerStyle={{ flex: 1 }}
                 />
               ) : (
@@ -112,11 +110,11 @@ export const Modal = ({
                     textStyle={{
                       color: "#7f8286",
                     }}
-                    onPress={() => handleCloseModal(cancel)}
+                    onPress={() => closeModalMiddleware(cancel)}
                   />
                   <Button
                     text={confirmLabel}
-                    onPress={() => handleCloseModal(confirm)}
+                    onPress={() => closeModalMiddleware(confirm)}
                     containerStyle={{ flex: 1 }}
                   />
                 </>

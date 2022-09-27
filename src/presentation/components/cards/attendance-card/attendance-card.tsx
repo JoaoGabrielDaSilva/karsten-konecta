@@ -21,8 +21,6 @@ export const AttendanceCard = ({
   onButtonPress,
   style,
 }: Props) => {
-  console.log(createdAt);
-
   return (
     <Container style={style} justify="space-between" align="center">
       <Content>

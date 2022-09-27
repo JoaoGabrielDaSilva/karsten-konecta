@@ -2,7 +2,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Keyboard, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
@@ -48,6 +48,14 @@ type FormValues = {
   responsible?: string;
 };
 
+const OWN_STORE_SHIPPING_COMPANIES = [
+  "2e589f40-4434-409b-b7b4-e1f6e3325c6e", // Blumenau
+  "cc041895-72cf-4ef5-94cd-f4f915193dda", // São José
+  "67faba62-7f0a-4bcf-82d6-c557041665ed", // Balneario Camboriú
+  "8555e625-1265-46d2-9d7e-e6c8f05a7c03", // Porto Belo
+  "8b2924d3-4443-4e05-a828-7de4f88e7682", // Florianópolis
+];
+
 export const AttendanceAddress = ({
   loading,
   getShippingInfo,
@@ -57,54 +65,71 @@ export const AttendanceAddress = ({
 }: Props) => {
   const theme = useTheme();
 
-  const { deliveryAddress, pickUpAddress, productList, toggleDeliveryMode } =
-    useAttendanceStore();
+  const {
+    deliveryAddress,
+    pickUpAddress,
+    productList,
+    toggleDeliveryMode,
+    shipping: attendanceShipping,
+    setShippingInfo,
+  } = useAttendanceStore();
   const [localShippingInfo, setLocalShippingInfo] = useState<ShippingModel>({
     days: null,
+    company: null,
   });
 
   const { control, handleSubmit, watch } = useForm<FormValues>();
 
   const responsible = watch("responsible");
 
+  const totalWeight = useMemo(
+    () => productList.reduce((acc, item) => acc + item.totalWeight, 0),
+    [productList]
+  );
+
   const { navigate } =
     useNavigation<
       StackNavigationProp<RootPrivateStackParamList, "Attendance", undefined>
     >();
 
-  const loadShippingInfo = async ({ cep }: FormValues) => {
-    try {
-      setLoadingShipping(true);
-      Keyboard.dismiss();
+  const loadShippingInfo = useCallback(
+    async ({ cep }: FormValues) => {
+      try {
+        setLoadingShipping(true);
+        Keyboard.dismiss();
 
-      const shippingInfo = await getShippingInfo.get({
-        cep,
-        brandId: "2",
-        totalWeight: productList.reduce(
-          (acc, item) => acc + item.totalWeight,
-          0
-        ),
-      });
+        const isDedicated = pickUpAddress
+          ? OWN_STORE_SHIPPING_COMPANIES.includes(pickUpAddress.id)
+          : false;
 
-      console.log(shippingInfo);
+        const shippingInfo = await getShippingInfo.get({
+          cep: !isDedicated ? cep : pickUpAddress.cep,
+          brandId: isDedicated ? "1" : "2",
+          totalWeight: isDedicated && totalWeight < 1 ? 1 : totalWeight,
+          isDedicated,
+        });
 
-      setLocalShippingInfo(shippingInfo);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setLoadingShipping(false);
-    }
-  };
+        !deliveryAddress && !pickUpAddress
+          ? setLocalShippingInfo(shippingInfo)
+          : setShippingInfo(shippingInfo);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoadingShipping(false);
+      }
+    },
+    [productList, pickUpAddress]
+  );
 
   useEffect(() => {
-    if (productList.length === 0) return;
+    if (!productList || productList.length === 0) return;
 
     const cep = watch("cep");
 
     if ((deliveryAddress && deliveryAddress?.cep) || cep) {
       loadShippingInfo({ cep: deliveryAddress?.cep || cep });
     }
-  }, [productList]);
+  }, [productList, pickUpAddress]);
 
   return !loading ? (
     productList.length > 0 ? (
@@ -120,8 +145,6 @@ export const AttendanceAddress = ({
                 rightLabel="Retirar"
                 defaultValue={pickUpAddress ? Direction.RIGHT : Direction.LEFT}
                 onSelect={async (direction) => {
-                  console.log(direction);
-
                   toggleDeliveryMode();
                   if (direction === Direction.RIGHT)
                     return navigate("AddressSelect", {
@@ -189,12 +212,16 @@ export const AttendanceAddress = ({
             />
           </Form>
         )}
-        {(loadingShipping || localShippingInfo?.days) && (
+        {(loadingShipping ||
+          localShippingInfo?.days ||
+          attendanceShipping?.days) && (
           <StyledSectionTitle>Prazo de Entrega</StyledSectionTitle>
         )}
         {!loadingShipping ? (
-          localShippingInfo?.days && (
-            <StyledShippingInfo {...localShippingInfo} />
+          (attendanceShipping?.days || localShippingInfo?.days) && (
+            <StyledShippingInfo
+              {...(attendanceShipping || { ...localShippingInfo })}
+            />
           )
         ) : (
           <StyledShippingInfoLoader />

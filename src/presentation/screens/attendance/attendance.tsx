@@ -3,6 +3,7 @@ import { CommonActions, StackActions } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
   KeyboardAvoidingView,
   ListRenderItemInfo,
@@ -15,6 +16,7 @@ import { AttendanceProductModel } from "../../../domain/models/product";
 import { CreateAttendance } from "../../../domain/usecases/attendance/create-attendance";
 import { DeleteAttendance } from "../../../domain/usecases/attendance/delete-attendance";
 import { DeleteProduct } from "../../../domain/usecases/attendance/delete-product";
+import { FinishAttendance } from "../../../domain/usecases/attendance/finish-attendance";
 import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
 import { RetrieveAttendance } from "../../../domain/usecases/attendance/retrieve-attendance";
 import { UpdateAttendancePickUpAddress } from "../../../domain/usecases/attendance/update-attendance-pickup-address";
@@ -32,6 +34,7 @@ import { Toast } from "../../components/toast/toast";
 import { RootPrivateStackParamList } from "../../routes";
 import { DeliveryMode, useAttendanceStore } from "../../store/attendance";
 import { useCustomerStore } from "../../store/customer";
+import { useProductListFiltersStore } from "../../store/product-list-filters";
 import { useUserStore } from "../../store/user";
 import { AttendanceAddress } from "./layout/attendance-address/attendance-address";
 import { AttendanceEmptyIndicator } from "./layout/attendance-empty-indicator/attendance-empty-indicator";
@@ -61,6 +64,7 @@ type Props = NavigationProps & {
   deleteAttendance: DeleteAttendance;
   updatePickUpAddress: UpdateAttendancePickUpAddress;
   verifyAttendanceProducts: VerifyAttendanceProducts;
+  finishAttendance: FinishAttendance;
 };
 
 export const Attendance = ({
@@ -76,6 +80,7 @@ export const Attendance = ({
   deleteAttendance,
   updatePickUpAddress,
   verifyAttendanceProducts,
+  finishAttendance,
 }: Props) => {
   const params = route.params;
 
@@ -85,7 +90,7 @@ export const Attendance = ({
   const [finishing, setFinishing] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [loadingShipping, setLoadingShipping] = useState(false);
-  const [updtadingProduct, setUpdtadingProduct] = useState(false);
+  const [updatingProduct, setUpdatingProduct] = useState(false);
   const {
     productList,
     setAttendance,
@@ -97,6 +102,7 @@ export const Attendance = ({
   } = useAttendanceStore();
   const { data: customer, clearCustomer, setCustomer } = useCustomerStore();
   const { store } = useUserStore();
+  const { setFilters } = useProductListFiltersStore();
 
   const theme = useTheme();
 
@@ -114,8 +120,6 @@ export const Attendance = ({
   };
 
   const loadData = async () => {
-    console.log("params", params);
-
     try {
       if (params?.cpfCnpj && !customer?.id) {
         if (!loading) setLoading(true);
@@ -153,10 +157,12 @@ export const Attendance = ({
         loadAttendance(retrievedAttendance.id);
       }
     } catch (error) {
-      await createNewAttendance();
+      createNewAttendance();
       console.log(error);
     }
   };
+
+  console.log(attendance.shipping);
 
   const createNewAttendance = async () => {
     try {
@@ -183,7 +189,7 @@ export const Attendance = ({
     sum: boolean;
   }) => {
     try {
-      setUpdtadingProduct(true);
+      setUpdatingProduct(true);
       const { id: productId, totalAmount } = await updateProductAmount.execute({
         id,
         sum,
@@ -200,10 +206,11 @@ export const Attendance = ({
           totalWeight: totalAmount * updatedProduct.weight,
           totalPrice: totalAmount * updatedProduct.price,
         },
+        sum,
       });
     } catch (error) {
     } finally {
-      setUpdtadingProduct(false);
+      setUpdatingProduct(false);
     }
   };
 
@@ -220,7 +227,7 @@ export const Attendance = ({
     }
   };
 
-  const handleVerifyAttendanceProducts = async () => {
+  const handleFinishAttendance = async () => {
     try {
       setFinishing(true);
       const { deletedProducts, updatedProducts } =
@@ -233,7 +240,7 @@ export const Attendance = ({
       if (deletedProducts.length > 0 || updatedProducts.length > 0) {
         setFinishing(false);
 
-        navigate("AttendanceRefreshedProducts", {
+        return navigate("AttendanceRefreshedProducts", {
           refreshedProducts: updatedProducts.map((product) => ({
             ...product,
             amount: productList.find((item) => item.code === product.code)
@@ -242,6 +249,22 @@ export const Attendance = ({
           removedProducts: deletedProducts,
         });
       }
+
+      const { splitMessage, wasSplitted } = await finishAttendance.execute({
+        storeId: store.id,
+        attendanceId: attendance.id,
+        shipping: attendance.shipping,
+      });
+
+      if (wasSplitted) {
+        Toast({
+          type: "success",
+          message: splitMessage,
+          title: "Atenção!",
+        });
+      }
+      navigate("OrderDetails", { attendanceId: attendance.id });
+      clearAttendance();
     } catch (error) {
       console.log(error.response);
     } finally {
@@ -284,19 +307,22 @@ export const Attendance = ({
     loadData();
 
     return () => {
+      console.log("CLEANUP");
+
       clearAttendance();
       clearCustomer();
     };
   }, []);
 
+  console.log(attendance.productAmount, productList);
+
   useEffect(() => {
     setOptions({
-      title: `Carrinho(${productList.reduce(
-        (acc, item) => acc + item.amount,
-        0
-      )})`,
+      title: `Carrinho(${
+        !loading && !updatingProduct ? attendance.productAmount : "..."
+      })`,
     });
-  }, [productList]);
+  }, [attendance.productAmount, loading, updatingProduct]);
 
   useEffect(() => {
     setOptions({
@@ -306,7 +332,9 @@ export const Attendance = ({
           headerLeftIcon="close"
           onLeftIconPress={() => props.navigation.navigate("Sales")}
           rightIcon="text-search"
-          onRightIconPress={() => props.navigation.navigate("ProductList")}
+          onRightIconPress={() => {
+            props.navigation.navigate("ProductList");
+          }}
           {...props}
         />
       ),
@@ -381,9 +409,9 @@ export const Attendance = ({
 
           <AttendanceFooter
             loading={finishing}
-            disabled={updtadingProduct || loadingShipping || loading}
+            disabled={updatingProduct || loadingShipping || loading}
             handleDeleteAttendance={handleDeleteAttendance}
-            handleVerifyAttendanceProducts={handleVerifyAttendanceProducts}
+            handleFinishAttendance={handleFinishAttendance}
           />
         </Content>
       </Container>

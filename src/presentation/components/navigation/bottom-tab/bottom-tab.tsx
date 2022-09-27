@@ -37,8 +37,6 @@ export const BottomTab = () => {
   const { routes, index } = getState();
   const activeRoute = routes[index]?.name;
 
-  console.log(canGoBack());
-
   const reset = (initialRoute: keyof RootPrivateStackParamList) => {
     dispatch(CommonActions.reset({ routes: [{ name: initialRoute }] }));
   };

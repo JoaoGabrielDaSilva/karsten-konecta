@@ -34,6 +34,13 @@ import {
   RefreshedAttendanceProductModel,
 } from "../../domain/models/product";
 import { makeAttendanceRefreshedProducts } from "../../main/factories/pages/attendance-refreshed-products-factory";
+import { CustomerSearch } from "../screens/customer-search/customer-search";
+import { makeCustomerSearch } from "../../main/factories/pages/customer-search-factory";
+import { Customer360Model } from "../../domain/models/customer-360-model";
+import { CustomerList } from "../screens/customer-list/customer-list";
+import { makeCustomerList } from "../../main/factories/pages/customer-list-factory";
+import { makeOrderDetails } from "../../main/factories/pages/order-details-factory";
+import { OrderTracking } from "../screens/order-tracking/order-tracking";
 
 export type RootPrivateStackParamList = {
   Login: undefined;
@@ -42,7 +49,7 @@ export type RootPrivateStackParamList = {
   NewAttendance: undefined;
   NewNoCustomerAttendance: undefined;
   Attendance: {
-    id: string;
+    id?: string;
     name?: string;
     cpfCnpj?: string;
   };
@@ -76,6 +83,17 @@ export type RootPrivateStackParamList = {
   AttendanceListFilters: undefined;
   OrderList: undefined;
   OrderListFilters: undefined;
+  CustomerSearch: undefined;
+  Customer360: {
+    customer: Customer360Model;
+  };
+  CustomerList: undefined;
+  OrderDetails: {
+    attendanceId: string;
+  };
+  OrderTracking: {
+    url: string;
+  };
 };
 
 export type RootPrivateDrawerParamList = {
@@ -204,6 +222,17 @@ const StackNavigator = () => {
         }}
       />
       <Stack.Screen
+        name="CustomerSearch"
+        component={makeCustomerSearch}
+        options={{
+          animationEnabled: false,
+          title: "Consultar Cliente",
+          header: (props) => (
+            <StackNavbar drawer {...props} backArrow={false} />
+          ),
+        }}
+      />
+      <Stack.Screen
         name="ProductList"
         component={makeProductList}
         options={{
@@ -211,6 +240,35 @@ const StackNavigator = () => {
         }}
         initialParams={{
           defaultFocus: false,
+        }}
+      />
+      <Stack.Screen
+        name="OrderTracking"
+        component={OrderTracking}
+        options={{
+          title: "Rastreio do Pedido",
+          header: (props) => <StackNavbar {...props} />,
+        }}
+        initialParams={{
+          url: "",
+        }}
+      />
+      <Stack.Screen
+        name="OrderDetails"
+        component={makeOrderDetails}
+        options={{
+          title: "Detalhes do Pedido",
+        }}
+        initialParams={{
+          attendanceId: null,
+        }}
+      />
+      <Stack.Screen
+        name="CustomerList"
+        component={makeCustomerList}
+        options={{
+          title: "Listagem de Clientes",
+          header: (props) => <StackNavbar {...props} />,
         }}
       />
       <Stack.Screen

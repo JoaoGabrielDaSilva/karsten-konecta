@@ -12,6 +12,7 @@ export class RemoteGetShippingInfo implements GetShippingInfo {
     cep,
     brandId,
     totalWeight,
+    isDedicated = false,
   }: GetShippingInfo.Params): Promise<GetShippingInfo.Model> {
     const httpResponse = await this.httpClient.request({
       url: this.url,
@@ -29,20 +30,29 @@ export class RemoteGetShippingInfo implements GetShippingInfo {
 
         console.log(result);
 
-        const mostCheaperOrFastShipping = result
-          .map((option) => ({
-            days: Number(option.DiasParaEntrega) + 3,
-            price:
-              option.CustoFreteFixo +
-              option.CustoFretePercentualDoPreco +
-              option.CustoFretePercentualDoPrecoPeloPeso,
-          }))
-          .sort((a, b) => {
-            return a.price - b.price || a.days - b.days;
-          })[0];
+        const formattedOptions = result.map((option) => ({
+          company: option.Transportadora,
+          days: Number(option.DiasParaEntrega) + 3,
+          price:
+            option.CustoFreteFixo +
+            option.CustoFretePercentualDoPreco +
+            option.CustoFretePercentualDoPrecoPeloPeso,
+        }));
+
+        const shipping = !isDedicated
+          ? formattedOptions.sort((a, b) => {
+              return a.price - b.price || a.days - b.days;
+            })[0]
+          : formattedOptions.find((option) =>
+              option.company.includes("Dedicado")
+            ) ||
+            formattedOptions.sort((a, b) => {
+              return a.price - b.price || a.days - b.days;
+            })[0];
 
         return {
-          days: mostCheaperOrFastShipping.days,
+          company: shipping.company,
+          days: shipping.days,
         };
 
       default:

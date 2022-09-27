@@ -48,10 +48,8 @@ export const PaginatedList = ({
 }: Props) => {
   const theme = useTheme();
 
+  const showTotalResults = totalResults !== undefined;
   const isFirstLoad = loading && page === 0;
-
-  const showTotalResults =
-    totalResults || (totalResults === 0 && (page || page === 0));
 
   return (
     <FlatList
@@ -88,7 +86,7 @@ export const PaginatedList = ({
             />
           )}
           {showTotalResults ? (
-            !isFirstLoad ? (
+            !isFirstLoad || page === undefined ? (
               <TotalResults>{formatTotalResults(totalResults)}</TotalResults>
             ) : (
               loaderComponent && (

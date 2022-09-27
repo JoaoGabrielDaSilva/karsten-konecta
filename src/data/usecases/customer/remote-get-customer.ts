@@ -25,8 +25,6 @@ export class RemoteGetCustomer implements GetCustomer {
 
     const result = httpResponse.body?.Result;
 
-    console.log(result);
-
     const personType = result?.PessoaJuridica
       ? PersonType.LEGAL
       : PersonType.NATURAL;

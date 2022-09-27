@@ -14,13 +14,9 @@ export class RemoteGetStoreAddressList implements GetStoreAddressList {
       method: "get",
     });
 
-    console.log(httpResponse);
-
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
-
-        console.log(result);
 
         return {
           addressList: result

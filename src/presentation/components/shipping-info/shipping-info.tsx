@@ -9,8 +9,6 @@ type Props = ShippingModel & {
 };
 
 export const ShippingInfo = ({ days, style }: Props) => {
-  console.log(days);
-
   return (
     <Container style={style}>
       <Label>Padrão</Label>

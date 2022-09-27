@@ -24,7 +24,6 @@ export class RemoteGetAttendance implements GetAttendance {
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
-        console.log(result);
 
         return {
           name: result?.Consumidor

@@ -75,8 +75,6 @@ export class RemoteGetUserData implements GetUserData {
             profileList: [] as Profile[],
           }
         );
-        console.log(categories);
-        console.log(menus);
 
         const menuList = categories
           .reduce((acc, item) => {

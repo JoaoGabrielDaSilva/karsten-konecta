@@ -15,21 +15,22 @@ import {
   BorderContainer,
   CopyIcon,
   Headline,
+  StyledListRow,
 } from "./styles";
 
 export type OrderCardProps = GetOrderList.OrderListItem;
 
 type Props = OrderCardProps & {
   style?: StyleProp<ViewStyle>;
-  onPress?: () => void;
+  onPress?: (orderId: string) => void;
 };
 
 export const OrderCard = ({
+  attendanceId,
   orderCode,
   status,
   customerName,
   createdAt,
-  approvedAt,
   totalProductsIn,
   onPress,
   style,
@@ -51,7 +52,7 @@ export const OrderCard = ({
           <CopyIcon name="content-copy" />
         </BorderlessButton>
       </Headline>
-      <Pressable onPress={onPress}>
+      <Pressable onPress={() => onPress(attendanceId)}>
         <Content>
           <BorderContainer>
             <Value>
@@ -74,12 +75,12 @@ export const OrderCard = ({
         </Content>
       </Pressable>
 
-      <ListRow
+      <StyledListRow
         label="Resumo do pedido"
         rightIconFamily="feather"
         rightIcon="chevron-right"
         borderless
-        onPress={onPress}
+        onPress={() => onPress(attendanceId)}
       />
     </Container>
   );

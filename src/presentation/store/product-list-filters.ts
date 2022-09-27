@@ -19,8 +19,6 @@ export const useProductListFiltersStore = create<ProductListFiltersState>(
   (set) => ({
     filters: null,
     setFilters: (filters) => {
-      console.log(filters);
-
       const newFilters = Object.entries(filters).reduce((acc, item) => {
         if (item[1]) {
           return {

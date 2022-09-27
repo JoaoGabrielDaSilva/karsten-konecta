@@ -3,6 +3,7 @@ import { CustomerAddressModel } from "../../domain/models/address";
 
 import { AttendanceModel } from "../../domain/models/attendance";
 import { AttendanceProductModel } from "../../domain/models/product";
+import { ShippingModel } from "../../domain/models/shipping";
 import { StoreAddressModel } from "../../domain/models/store-address-model";
 
 export enum DeliveryMode {
@@ -23,15 +24,17 @@ type AttendanceState = AttendanceModel & {
     address: StoreAddressModel;
   }) => void;
   toggleDeliveryMode?: () => void;
-  addProduct?: (product: AttendanceProductModel) => void;
+  setShippingInfo?: (data: ShippingModel) => void;
   refreshProductList?: (params: {
     id: string;
+    sum: boolean;
     data: Partial<AttendanceProductModel>;
   }) => void;
   removeProduct?: (params: { id: string }) => void;
   clearAttendance?: () => void;
   loading: boolean;
   deliveryMode: DeliveryMode;
+  productAmount: number;
 };
 
 const initialState: AttendanceState = {
@@ -45,18 +48,25 @@ const initialState: AttendanceState = {
   productList: [],
   loading: false,
   shipping: null,
+  productAmount: 0,
 };
 
-export const useAttendanceStore = create<AttendanceState>()((set, get) => ({
+export const useAttendanceStore = create<AttendanceState>()((set) => ({
   ...initialState,
-  setAttendance: (data: AttendanceModel) =>
+  setAttendance: (data: AttendanceModel) => {
+    const productAmount = data.productList.reduce(
+      (total, product) => total + product.amount,
+      0
+    );
+
+    console.log("TESTE", productAmount);
+
     set((state) => ({
       ...state,
       ...data,
-      shippingInfo: {
-        days: 2,
-      },
-    })),
+      productAmount,
+    }));
+  },
   setDeliveryAddress: ({ address }) =>
     set((state) => ({
       ...state,
@@ -74,55 +84,35 @@ export const useAttendanceStore = create<AttendanceState>()((set, get) => ({
           ? DeliveryMode.PICK_UP
           : DeliveryMode.DELIVERY,
     })),
-  refreshProductList({ id, data }) {
+  refreshProductList({ id, data, sum }) {
     set((state) => {
-      const productList = state.productList.map((item) => {
-        if (item.id === id) {
-          return { ...item, ...data };
-        }
-        return item;
-      });
-
-      return { ...state, productList };
-    });
-  },
-  addProduct: (params) =>
-    set((state) => {
-      const exists = state.productList.some(
-        (item) => item.code === params.code
+      const { productList, productAmount } = state.productList.reduce(
+        (acc, item) => {
+          if (item.id === id) {
+            return {
+              productList: [
+                ...acc.productList,
+                {
+                  ...item,
+                  ...data,
+                },
+              ],
+              productAmount: acc.productAmount + item.amount + (sum ? 1 : -1),
+            };
+          }
+          return {
+            productList: acc.productList,
+            productAmount: acc.productAmount + item.amount + (sum ? 1 : -1),
+          };
+        },
+        { productList: [], productAmount: 0 }
       );
 
-      if (exists)
-        return {
-          productList: state.productList.map((item) => {
-            if (item.code === params.code) {
-              return {
-                ...params,
-                amount: params.amount + item.amount,
-                totalPrice: Number(
-                  (item.price * (params.amount + item.amount)).toFixed(2)
-                ),
-                totalWeight: Number(
-                  (params.weight * (params.amount + item.amount)).toFixed(2)
-                ),
-              };
-            }
+      return { ...state, productList, productAmount };
+    });
+  },
+  setShippingInfo: (data) => set({ shipping: data }),
 
-            return item;
-          }),
-        };
-
-      return {
-        productList: [
-          ...state.productList,
-          {
-            ...params,
-            totalPrice: Number((params.amount * params.price).toFixed(2)),
-            totalWeight: Number((params.weight * params.amount).toFixed(2)),
-          },
-        ],
-      };
-    }),
   removeProduct: ({ id }) =>
     set((state) => ({
       productList: state.productList.filter((item) => item.id !== id),

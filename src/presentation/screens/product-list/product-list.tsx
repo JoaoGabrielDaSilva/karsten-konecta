@@ -92,6 +92,8 @@ export const ProductList = ({
   const onSubmit = ({ search }: FormValues) => {
     try {
       Keyboard.dismiss();
+      console.log("search", search);
+
       if (!search) return;
 
       setFilters({
@@ -160,7 +162,7 @@ export const ProductList = ({
 
   return (
     <Container>
-      {filters && !inputIsFocused ? (
+      {filters && Object.keys(filters).length > 1 && !inputIsFocused ? (
         <PaginatedList
           data={data}
           loading={loading}

@@ -27,7 +27,6 @@ export class RemoteAddProduct implements AddProduct {
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        console.log(httpResponse.body);
         const result = httpResponse.body.Result;
         return {
           id: String(result.Id),

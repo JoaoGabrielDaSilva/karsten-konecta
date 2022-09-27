@@ -20,7 +20,7 @@ export const Router = () => {
         paddingTop: logged ? Constants.statusBarHeight : 0,
       }}
     >
-      <StatusBar style="inverted" />
+      <StatusBar style="dark" />
       <NavigationContainer>
         {logged ? <PrivateRoutes /> : <PublicRoutes />}
       </NavigationContainer>

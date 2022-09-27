@@ -57,11 +57,7 @@ export const AttendanceRefreshedProducts = ({
       },
       {
         title: "Produtos Removidos",
-        data: refreshedProducts.map((item) => ({
-          ...item,
-          availableAmount: 0,
-          amount: 0,
-        })),
+        data: removedProducts,
         ListEmptyComponent: (
           <EmptyListText>Nenhum item atualizado</EmptyListText>
         ),

@@ -24,6 +24,7 @@ import { BorderlessButton } from "react-native-gesture-handler";
 import {
   interpolate,
   interpolateColor,
+  onChange,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -108,10 +109,11 @@ type Props = TextInputProps & {
   mask?: keyof typeof inputConfigObject;
   defaultValue?: string;
   style?: StyleProp<ViewStyle>;
-  onMaxLength?: (value: string) => void;
   loading?: boolean;
   disableFloatingPlaceholder?: boolean;
   size?: "small" | "normal";
+  onMaxLength?: (value: string) => void;
+  onChange?: (value: string) => void;
 };
 
 export type TextInputRef = RnTextInput;
@@ -134,6 +136,7 @@ export const TextInput = React.forwardRef(
       editable = true,
       disableFloatingPlaceholder,
       returnKeyType,
+      onChange,
       ...props
     }: Props,
     componentRef: RefObject<TextInputRef>
@@ -141,13 +144,13 @@ export const TextInput = React.forwardRef(
     const ref = componentRef || useRef<TextInputBaseComponent>();
 
     const {
-      field: { value, onChange },
+      field: { value, onChange: onTextChange },
 
       fieldState: { error },
     } = useController({ name, control, defaultValue });
     const theme = useTheme();
 
-    const clearValue = () => onChange("");
+    const clearValue = () => onTextChange("");
     const state = useSharedValue(InputState.UNFOCUSED);
 
     const [isFocused, setIsFocused] = useState(!!state.value);
@@ -211,7 +214,7 @@ export const TextInput = React.forwardRef(
 
     useEffect(() => {
       if (value && mask) {
-        onChange(inputConfigObject[mask].onChange(value));
+        onTextChange(inputConfigObject[mask].onChange(value));
       }
     }, [mask, value]);
 
@@ -253,8 +256,10 @@ export const TextInput = React.forwardRef(
                   blurOnSubmit
                   onChangeText={(value) => {
                     mask
-                      ? onChange(inputConfigObject[mask].onChange(value))
-                      : onChange(value);
+                      ? onTextChange(inputConfigObject[mask].onChange(value))
+                      : onTextChange(value);
+
+                    onChange && onChange(value);
 
                     if (
                       onMaxLength &&

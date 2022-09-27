@@ -43,10 +43,9 @@ export const StackNavbar = ({
     <Container align="center">
       <HeaderLeft>
         {((canGoBack() && backArrow) || headerLeftIcon) && (
-          <HeaderIcon
-            name={headerLeftIcon || "chevron-left"}
-            onPress={onLeftIconPress || goBack}
-          />
+          <TouchableOpacity onPress={onLeftIconPress || goBack}>
+            <HeaderIcon name={headerLeftIcon || "chevron-left"} />
+          </TouchableOpacity>
         )}
       </HeaderLeft>
       <Typography variant="heading" textAlign="center" bold>

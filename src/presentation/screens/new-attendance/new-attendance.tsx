@@ -74,7 +74,9 @@ export const NewAttendance = ({ navigation, getCustomer }: Props) => {
       });
 
       setLoading(false);
-      navigation.navigate("Attendance");
+      navigation.navigate("Attendance", {
+        cpfCnpj,
+      });
     } catch (error) {
       setLoading(false);
       console.log(error);
@@ -114,7 +116,7 @@ export const NewAttendance = ({ navigation, getCustomer }: Props) => {
           name="cpfCnpj"
           placeholder={naturalPersonField ? "CPF" : "CNPJ"}
           mask={naturalPersonField ? "cpf" : "cnpj"}
-          onMaxLength={handleSubmit(fetchCustomer)}
+          onMaxLength={() => handleSubmit(fetchCustomer)()}
           loading={loading}
         />
         <Button
