@@ -29,6 +29,7 @@ export const BottomSheet = React.forwardRef(
         setVisible(true);
       },
       close: () => {
+        setTimeout(() => setVisible(false), 300);
         bottomSheetRef?.current?.close();
       },
     }));

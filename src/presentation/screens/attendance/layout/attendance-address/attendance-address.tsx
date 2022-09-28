@@ -3,7 +3,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { useNavigation } from "@react-navigation/native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Control, useForm } from "react-hook-form";
 import { Keyboard, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import Animated, { SlideInDown, SlideInUp } from "react-native-reanimated";
@@ -41,11 +41,12 @@ type Props = {
   handleRemovePickUpAddress: () => Promise<void>;
   setLoadingShipping: (loading: boolean) => void;
   loadingShipping: boolean;
+  control: Control<any, any>;
+  hasResponsible?: boolean;
 };
 
 type FormValues = {
   cep: string;
-  responsible?: string;
 };
 
 const OWN_STORE_SHIPPING_COMPANIES = [
@@ -62,6 +63,8 @@ export const AttendanceAddress = ({
   loadingShipping,
   setLoadingShipping,
   handleRemovePickUpAddress,
+  control,
+  hasResponsible,
 }: Props) => {
   const theme = useTheme();
 
@@ -78,9 +81,11 @@ export const AttendanceAddress = ({
     company: null,
   });
 
-  const { control, handleSubmit, watch } = useForm<FormValues>();
-
-  const responsible = watch("responsible");
+  const {
+    control: shippingFormControl,
+    handleSubmit,
+    watch,
+  } = useForm<FormValues>();
 
   const totalWeight = useMemo(
     () => productList.reduce((acc, item) => acc + item.totalWeight, 0),
@@ -178,19 +183,19 @@ export const AttendanceAddress = ({
                   <Checkbox
                     label="Responsável pela retirada"
                     control={control}
-                    name="responsible"
+                    name="hasResponsible"
                   />
-                  {!!responsible && (
+                  {!!hasResponsible && (
                     <>
                       <TextInput
                         control={control}
-                        name="name"
+                        name="responsibleName"
                         placeholder="Nome do responsável"
                         style={{ marginVertical: 15 }}
                       />
                       <TextInput
                         control={control}
-                        name="cpf"
+                        name="responsibleCpf"
                         placeholder="CPF"
                         mask="cpf"
                       />
@@ -204,7 +209,7 @@ export const AttendanceAddress = ({
           <Form>
             <StyledSectionTitle>Calcule o Frete</StyledSectionTitle>
             <StyledTextInput
-              control={control}
+              control={shippingFormControl}
               name="cep"
               mask="cep"
               placeholder="CEP"

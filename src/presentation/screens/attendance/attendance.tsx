@@ -1,7 +1,9 @@
+import { yupResolver } from "@hookform/resolvers/yup";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { CommonActions, StackActions } from "@react-navigation/native";
 import { StackScreenProps } from "@react-navigation/stack";
 import React, { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   ActivityIndicator,
   FlatList,
@@ -18,6 +20,7 @@ import { DeleteAttendance } from "../../../domain/usecases/attendance/delete-att
 import { DeleteProduct } from "../../../domain/usecases/attendance/delete-product";
 import { FinishAttendance } from "../../../domain/usecases/attendance/finish-attendance";
 import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
+import { LinkResponsibleToAttendance } from "../../../domain/usecases/attendance/link-responsible-to-attendance";
 import { RetrieveAttendance } from "../../../domain/usecases/attendance/retrieve-attendance";
 import { UpdateAttendancePickUpAddress } from "../../../domain/usecases/attendance/update-attendance-pickup-address";
 import { UpdateProductAmount } from "../../../domain/usecases/attendance/update-product-amount";
@@ -40,6 +43,7 @@ import { AttendanceAddress } from "./layout/attendance-address/attendance-addres
 import { AttendanceEmptyIndicator } from "./layout/attendance-empty-indicator/attendance-empty-indicator";
 import { AttendanceFooter } from "./layout/attendance-footer/attendance-footer";
 import { AttendanceHeader } from "./layout/attendance-header/attendance-header";
+import { orderResponsibleSchema } from "./schema";
 
 import {
   Container,
@@ -65,6 +69,13 @@ type Props = NavigationProps & {
   updatePickUpAddress: UpdateAttendancePickUpAddress;
   verifyAttendanceProducts: VerifyAttendanceProducts;
   finishAttendance: FinishAttendance;
+  linkResponsibleToAttendance: LinkResponsibleToAttendance;
+};
+
+type AttendanceFormValues = {
+  hasResponsible: boolean;
+  responsibleName: string;
+  responsibleCpf: string;
 };
 
 export const Attendance = ({
@@ -81,6 +92,7 @@ export const Attendance = ({
   updatePickUpAddress,
   verifyAttendanceProducts,
   finishAttendance,
+  linkResponsibleToAttendance,
 }: Props) => {
   const params = route.params;
 
@@ -102,7 +114,12 @@ export const Attendance = ({
   } = useAttendanceStore();
   const { data: customer, clearCustomer, setCustomer } = useCustomerStore();
   const { store } = useUserStore();
-  const { setFilters } = useProductListFiltersStore();
+
+  const { control, handleSubmit, watch } = useForm<AttendanceFormValues>({
+    resolver: yupResolver(orderResponsibleSchema),
+  });
+
+  const hasResponsible = watch("hasResponsible");
 
   const theme = useTheme();
 
@@ -161,8 +178,6 @@ export const Attendance = ({
       console.log(error);
     }
   };
-
-  console.log(attendance.shipping);
 
   const createNewAttendance = async () => {
     try {
@@ -227,7 +242,7 @@ export const Attendance = ({
     }
   };
 
-  const handleFinishAttendance = async () => {
+  const handleFinishAttendance = async (data: AttendanceFormValues) => {
     try {
       setFinishing(true);
       const { deletedProducts, updatedProducts } =
@@ -240,13 +255,26 @@ export const Attendance = ({
       if (deletedProducts.length > 0 || updatedProducts.length > 0) {
         setFinishing(false);
 
-        return navigate("AttendanceRefreshedProducts", {
+        navigate("AttendanceRefreshedProducts", {
           refreshedProducts: updatedProducts.map((product) => ({
             ...product,
             amount: productList.find((item) => item.code === product.code)
               .amount,
           })),
           removedProducts: deletedProducts,
+        });
+        return;
+      }
+
+      if (data?.hasResponsible) {
+        await linkResponsibleToAttendance.execute({
+          attendanceId: attendance.id,
+          storeId: store.id,
+          responsibleCpf: data.responsibleCpf,
+          responsibleName: data.responsibleName,
+          deliveryAddressId: attendance.deliveryAddress.id,
+          pickUpPointId: attendance?.pickUpAddress?.id,
+          customerId: customer.id,
         });
       }
 
@@ -307,14 +335,10 @@ export const Attendance = ({
     loadData();
 
     return () => {
-      console.log("CLEANUP");
-
       clearAttendance();
       clearCustomer();
     };
   }, []);
-
-  console.log(attendance.productAmount, productList);
 
   useEffect(() => {
     setOptions({
@@ -397,11 +421,13 @@ export const Attendance = ({
                   </DeleteAttendanceContainer>
                 )}
                 <AttendanceAddress
+                  control={control}
                   getShippingInfo={getShippingInfo}
                   handleRemovePickUpAddress={handleRemovePickUpAddress}
                   loading={loading}
                   loadingShipping={loadingShipping}
                   setLoadingShipping={(loading) => setLoadingShipping(loading)}
+                  hasResponsible={hasResponsible}
                 />
               </>
             }
@@ -411,7 +437,9 @@ export const Attendance = ({
             loading={finishing}
             disabled={updatingProduct || loadingShipping || loading}
             handleDeleteAttendance={handleDeleteAttendance}
-            handleFinishAttendance={handleFinishAttendance}
+            handleFinishAttendance={() =>
+              handleSubmit(handleFinishAttendance)()
+            }
           />
         </Content>
       </Container>

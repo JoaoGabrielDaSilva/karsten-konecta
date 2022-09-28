@@ -41,6 +41,7 @@ import { CustomerList } from "../screens/customer-list/customer-list";
 import { makeCustomerList } from "../../main/factories/pages/customer-list-factory";
 import { makeOrderDetails } from "../../main/factories/pages/order-details-factory";
 import { OrderTracking } from "../screens/order-tracking/order-tracking";
+import { makeSaleLinkAttendance } from "../../main/factories/pages/sale-link-attendance-factory";
 
 export type RootPrivateStackParamList = {
   Login: undefined;
@@ -53,6 +54,7 @@ export type RootPrivateStackParamList = {
     name?: string;
     cpfCnpj?: string;
   };
+  SaleLinkAttendance: undefined;
   AttendanceRefreshedProducts: {
     refreshedProducts: RefreshedAttendanceProductModel[];
     removedProducts: RefreshedAttendanceProductModel[];
@@ -133,6 +135,14 @@ const StackNavigator = () => {
         component={makeAttendance}
         options={{
           title: "Carrinho",
+        }}
+      />
+      <Stack.Screen
+        name="SaleLinkAttendance"
+        component={makeSaleLinkAttendance}
+        options={{
+          title: "Atendimento Venda Link",
+          header: (props) => <StackNavbar {...props} />,
         }}
       />
       <Stack.Screen

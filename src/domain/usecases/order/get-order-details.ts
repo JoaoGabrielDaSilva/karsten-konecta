@@ -18,6 +18,8 @@ export namespace GetOrderDetails {
     status: string;
     createdAt: string;
     isPickUp: boolean;
+    responsibleName: string;
+    responsibleCpf: string;
     address: CustomerAddressModel | StoreAddressModel;
     deliveryForecast: string;
     customer: {

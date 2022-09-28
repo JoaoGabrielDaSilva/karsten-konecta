@@ -17,6 +17,7 @@ import { useUserStore } from "../../store/user";
 import { useTheme } from "styled-components/native";
 import { StackNavbar } from "../../components/navigation/stack-navbar/stack-navbar";
 import { StyledSectionTitleLoader } from "../attendance/layout/attendance-address/styles";
+import { cpfMask } from "../../utils/mask/cpf-mask";
 
 type NavigationProps = StackScreenProps<
   RootPrivateStackParamList,
@@ -99,10 +100,17 @@ export const OrderDetails = ({
                 label="Previsão de entrega"
                 value={order?.deliveryForecast}
               />
-              <StyledListRow label="Cliente" value={order?.customer?.name} />
+              <StyledListRow
+                label={order.isPickUp ? "Responsável" : "Cliente"}
+                value={
+                  order.isPickUp ? order.responsibleName : order?.customer?.name
+                }
+              />
               <StyledListRow
                 label="CPF"
-                value={order?.customer?.cpf}
+                value={cpfMask(
+                  order.isPickUp ? order.responsibleCpf : order?.customer?.cpf
+                )}
                 borderless
               />
             </Content>

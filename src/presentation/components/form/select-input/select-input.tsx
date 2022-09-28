@@ -55,16 +55,17 @@ const PLACEHOLDER_POSITIONS = {
   },
 };
 
-type Options = {
+export type SelectOption = {
   label: string;
   value: string | number;
+  disabled?: boolean;
 };
 
 type Props = {
   name: string;
-  options: Options[];
+  options: SelectOption[];
   control: Control<any>;
-  defaultValue?: string;
+  defaultValue?: string | number;
   style?: StyleProp<ViewStyle>;
   loading?: boolean;
   disabled?: boolean;
@@ -243,12 +244,14 @@ export const SelectInput = React.forwardRef(
             }}
             renderItem={({ item }) => (
               <RectButton
+                enabled={!item?.disabled}
+                style={{ opacity: item?.disabled ? 0.5 : 1 }}
                 onPress={() => {
-                  if (value === item.value) {
-                    closeModal();
-                    onBlur();
+                  if (value !== item.value) {
+                    onChange(item.value);
                   }
-                  onChange(item.value);
+                  onBlur();
+                  closeModal();
                 }}
               >
                 <ListRow

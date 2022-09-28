@@ -29,6 +29,8 @@ export class RemoteVerifyAttendanceProducts
       },
     });
 
+    console.log(httpResponse);
+
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;

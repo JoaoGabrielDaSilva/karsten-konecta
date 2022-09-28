@@ -1,7 +1,12 @@
+import { useNavigation } from "@react-navigation/native";
+import { StackNavigationProp } from "@react-navigation/stack";
 import React from "react";
 import { View } from "react-native";
+import { useTheme } from "styled-components/native";
 import { Button } from "../../../../components/buttons/button/button";
+import { RootPrivateStackParamList } from "../../../../routes";
 import { useAttendanceStore } from "../../../../store/attendance";
+import { useUserStore } from "../../../../store/user";
 import { Container } from "./styles";
 
 type Props = {
@@ -18,6 +23,16 @@ export const AttendanceFooter = ({
   handleFinishAttendance,
 }: Props) => {
   const productList = useAttendanceStore((state) => state.productList);
+
+  const theme = useTheme();
+  const { store } = useUserStore();
+
+  const { navigate } =
+    useNavigation<StackNavigationProp<RootPrivateStackParamList>>();
+
+  const handleFinishWithSaleLink = () => {
+    navigate("SaleLinkAttendance");
+  };
 
   return (
     <Container>
@@ -37,6 +52,16 @@ export const AttendanceFooter = ({
           loading={loading}
         />
       </View>
+      {!store.isMultiBrand && productList.length > 0 && (
+        <View style={{ flex: 1, marginLeft: theme.spacing.md }}>
+          <Button
+            onPress={handleFinishWithSaleLink}
+            text="Venda Link"
+            disabled={disabled}
+            loading={loading}
+          />
+        </View>
+      )}
     </Container>
   );
 };

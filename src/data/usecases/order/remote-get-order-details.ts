@@ -25,6 +25,7 @@ export class RemoteGetOrderDetails implements GetOrderDetails {
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
+        console.log(result);
 
         return {
           id: String(result.Id),
@@ -35,6 +36,8 @@ export class RemoteGetOrderDetails implements GetOrderDetails {
             cpf: cpfMask(result.Cpf),
           },
           isPickUp: result.RetireNaLoja,
+          responsibleName: result.Retirante,
+          responsibleCpf: result.CpfRetirante,
           address: !result.RetireNaLoja
             ? {
                 id: null,
@@ -90,6 +93,8 @@ export namespace RemoteGetOrderDetails {
       Cliente: string;
       Codigo: string;
       Cpf: string;
+      Retirante: string;
+      CpfRetirante: string;
       DataAprovacao: string;
       DataEmissao: string;
       DataHoraAprovacao: string;
