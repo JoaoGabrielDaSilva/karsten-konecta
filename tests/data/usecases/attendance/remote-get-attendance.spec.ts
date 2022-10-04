@@ -74,6 +74,7 @@ describe("RemoteGetAttendance", () => {
 
     expect(httpResponse).toEqual({
       ...httpResult,
+
       deliveryAddress: null,
     });
   });

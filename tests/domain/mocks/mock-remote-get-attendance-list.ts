@@ -1,12 +1,12 @@
 import { faker } from "@faker-js/faker";
-import { subDays } from "date-fns";
 import { RemoteGetAttendanceList } from "../../../src/data/usecases/attendance/remote-get-attendance-list";
 import { GetAttendanceList } from "../../../src/domain/usecases/attendance/get-attendance-list";
 
+const id = faker.random.numeric(4);
 const totalResults = Math.floor(Math.random() * 1000);
 const customerName = faker.name.fullName();
 const cpfCnpj = faker.random.numeric(11);
-const createdAt = faker.date.recent();
+const createdAt = faker.date.recent().toISOString();
 const totalProductsInCart = Math.floor(Math.random() * 50);
 const lastProductTotalAmount = Math.floor(Math.random() * 50);
 const lastAddedProduct = {
@@ -46,7 +46,7 @@ export const mockRemoteGetAttendanceListModel =
             Ean: lastAddedProduct.ean,
             FotoPrincipal: lastAddedProduct.uri,
           },
-          IdAtendimentoApp: faker.random.numeric(4),
+          IdAtendimentoApp: id,
           TotalItensProduto: lastProductTotalAmount,
         },
       ],
@@ -58,6 +58,7 @@ export const mockGetAttendanceListModel = (): GetAttendanceList.Model => ({
   totalResults,
   attendanceList: [
     {
+      id: id,
       lastAddedProduct,
       name: customerName,
       createdAt,

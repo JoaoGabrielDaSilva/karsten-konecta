@@ -29,8 +29,6 @@ export class RemoteVerifyAttendanceProducts
       },
     });
 
-    console.log(httpResponse);
-
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
@@ -53,7 +51,7 @@ export class RemoteVerifyAttendanceProducts
         };
 
       case HttpStatusCode.notFound:
-        throw new UnexpectedError();
+        throw new Error(httpResponse.body.ErrorMessage);
       default:
         throw new UnexpectedError();
     }
@@ -62,6 +60,7 @@ export class RemoteVerifyAttendanceProducts
 
 export namespace RemoteVerifyAttendanceProducts {
   export type Model = {
+    ErrorMessage?: string;
     Result: {
       ListaAtualizados: {
         NomeProduto: string;

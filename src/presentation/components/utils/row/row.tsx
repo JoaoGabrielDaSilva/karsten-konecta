@@ -16,6 +16,7 @@ type Props = {
   justify?: FlexJustifyType;
   style?: StyleProp<ViewStyle>;
   children?: React.ReactNode;
+  testID?: string;
 };
 
 export const Row = ({
@@ -23,6 +24,7 @@ export const Row = ({
   justify = "flex-start",
   style,
   children,
+  ...props
 }: Props) => {
   return (
     <Animated.View
@@ -34,6 +36,7 @@ export const Row = ({
           justifyContent: justify,
         },
       ]}
+      {...props}
     >
       {children}
     </Animated.View>

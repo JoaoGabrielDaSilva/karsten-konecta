@@ -26,8 +26,6 @@ export class RemoteFinishAttendance implements FinishAttendance {
       },
     });
 
-    console.log(httpResponse.body);
-
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
         const result = httpResponse.body.Result;
@@ -36,6 +34,8 @@ export class RemoteFinishAttendance implements FinishAttendance {
           splitMessage: result.MessageResponse,
           wasSplitted: result.PedidoDividio,
         };
+      case HttpStatusCode.notFound:
+        throw new Error(httpResponse.body.ErrorMessage);
 
       default:
         throw new UnexpectedError();
@@ -49,5 +49,6 @@ export namespace RemoteFinishAttendance {
       PedidoDividio: boolean;
       MessageResponse: string;
     };
+    ErrorMessage?: string;
   };
 }

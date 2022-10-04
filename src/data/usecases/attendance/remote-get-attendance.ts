@@ -96,7 +96,7 @@ export namespace RemoteGetAttendance {
           Ean: string;
           FotoPrincipal: string;
           Nome: string;
-          Peso: string;
+          Peso: number;
           Preco: number;
           TotalItem: number;
         };

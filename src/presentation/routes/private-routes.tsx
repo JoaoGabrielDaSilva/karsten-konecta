@@ -44,7 +44,6 @@ import { OrderTracking } from "../screens/order-tracking/order-tracking";
 import { makeSaleLinkAttendance } from "../../main/factories/pages/sale-link-attendance-factory";
 
 export type RootPrivateStackParamList = {
-  Login: undefined;
   Sales: undefined;
   Catalog: undefined;
   NewAttendance: undefined;

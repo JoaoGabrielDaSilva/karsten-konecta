@@ -29,8 +29,24 @@ export class AxiosHttpClient implements HttpClient {
 }
 
 axios.interceptors.request.use((config) => {
-  console.log(config.url);
-  console.log(config.data);
+  // console.log("API", {
+  //   url: config.url,
+  //   params: config.params,
+  //   data: config.data,
+  // });
 
   return config;
 });
+axios.interceptors.response.use(
+  (res) => res,
+  async (error) => {
+    let customError = { ...error };
+
+    if (customError?.response?.data?.ErrorMessage) {
+      customError.response.data.ErrorMessage =
+        error.response.data.ErrorMessage.replace(/HTTPERRO 422 /g, "");
+    }
+
+    return Promise.reject(customError);
+  }
+);

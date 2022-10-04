@@ -9,7 +9,7 @@ type Props = {
   duration?: 3000;
 };
 
-export const Toast = ({ type, title, message, duration }: Props) => {
+export const Toast = ({ type, title, message, duration = 3000 }: Props) => {
   return RNToast.show({
     type,
     text1: title,

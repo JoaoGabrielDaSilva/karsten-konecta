@@ -25,8 +25,8 @@ const makeSut = (url: string = faker.internet.url()): SutTypes => {
   };
 };
 
-describe("RemoteGetAttendanceListModel", () => {
-  it("should call HttpClient with correct URL and Method", async () => {
+describe("RemoteGetAttendanceList", () => {
+  it("should call HttpClient with correct values", async () => {
     const url = faker.internet.url();
 
     const getAttendanceParams = mockGetAttendanceListParams();

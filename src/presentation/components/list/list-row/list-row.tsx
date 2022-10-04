@@ -40,6 +40,7 @@ export type ListRowProps = {
   rightIconFamily?: IconFamily;
   onPress?: () => void;
   numberOfLines?: number;
+  testID?: string;
 };
 
 export const ListRow = ({

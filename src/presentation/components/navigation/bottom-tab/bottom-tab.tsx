@@ -1,8 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import {
   CommonActions,
+  NavigationProp,
   useNavigation,
-  useNavigationState,
 } from "@react-navigation/native";
 import React from "react";
 import { RootPrivateStackParamList } from "../../../routes";
@@ -33,12 +33,13 @@ const ROUTES: Route[] = [
 ];
 
 export const BottomTab = () => {
-  const { getState, dispatch, canGoBack } = useNavigation();
+  const { getState, reset } =
+    useNavigation<NavigationProp<RootPrivateStackParamList>>();
   const { routes, index } = getState();
   const activeRoute = routes[index]?.name;
 
-  const reset = (initialRoute: keyof RootPrivateStackParamList) => {
-    dispatch(CommonActions.reset({ routes: [{ name: initialRoute }] }));
+  const handlePress = (initialRoute: keyof RootPrivateStackParamList) => {
+    reset({ routes: [{ name: initialRoute }] });
   };
 
   return (
@@ -46,7 +47,7 @@ export const BottomTab = () => {
       {ROUTES.map((route) => (
         <Route
           key={route.name}
-          onPress={() => reset(route.name)}
+          onPress={() => handlePress(route.name)}
           active={activeRoute === route.name}
         >
           <RouteIcon name={route.icon} />

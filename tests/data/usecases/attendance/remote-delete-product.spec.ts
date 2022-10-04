@@ -33,11 +33,14 @@ describe("RemoteDeleteProduct", () => {
 
     const { sut, httpClientSpy } = makeSut(url);
 
-    await sut.delete(deleteProductParams);
+    await sut.execute(deleteProductParams);
 
     expect(httpClientSpy.url).toBe(url);
     expect(httpClientSpy.method).toBe("delete");
-    expect(httpClientSpy.body).toBe(deleteProductParams);
+    expect(httpClientSpy.body).toEqual({
+      IdAtendimentoItem: deleteProductParams.id,
+      IdPessoaLoja: deleteProductParams.storeId,
+    });
   });
   it("should throw UnexpectedError if HttpClient returns 422", async () => {
     const { sut, httpClientSpy } = makeSut();
@@ -45,7 +48,7 @@ describe("RemoteDeleteProduct", () => {
     httpClientSpy.response = {
       statusCode: HttpStatusCode.notFound,
     };
-    const promise = sut.delete(mockDeleteProductParams());
+    const promise = sut.execute(mockDeleteProductParams());
 
     expect(promise).rejects.toThrow(new UnexpectedError());
   });
@@ -53,13 +56,16 @@ describe("RemoteDeleteProduct", () => {
     const { sut, httpClientSpy } = makeSut();
     const httpResult = mockDeleteProductModel();
 
+    const deleteProductParams = mockDeleteProductParams();
+
     httpClientSpy.response = {
       statusCode: HttpStatusCode.ok,
-      body: httpResult,
     };
 
-    const httpResponse = await sut.delete(mockDeleteProductParams());
+    const httpResponse = await sut.execute(deleteProductParams);
 
-    expect(httpResponse).toEqual(httpResult);
+    expect(httpResponse).toEqual({
+      deletedProductId: deleteProductParams.id,
+    });
   });
 });

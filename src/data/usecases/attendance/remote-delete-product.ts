@@ -33,5 +33,5 @@ export class RemoteDeleteProduct implements DeleteProduct {
 }
 
 export namespace RemoteDeleteProduct {
-  export type Model = null;
+  export type Model = void;
 }

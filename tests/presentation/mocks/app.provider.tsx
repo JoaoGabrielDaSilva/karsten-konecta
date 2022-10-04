@@ -1,7 +1,6 @@
 import { render, RenderResult } from "@testing-library/react-native";
 import React from "react";
 import { ThemeProvider } from "styled-components/native";
-import { createStore } from "zustand";
 import { lightTheme } from "../../../src/presentation/themes";
 
 type Props = {

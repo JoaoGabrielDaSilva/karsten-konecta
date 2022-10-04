@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleProp, ViewStyle } from "react-native";
+import { StyleProp, ViewStyle, View } from "react-native";
 import { CustomerAddressModel } from "../../../domain/models/address";
 import { RadioButton } from "../buttons/radio-button/radio-button";
 import {
@@ -13,7 +13,7 @@ import {
   EditLabel,
 } from "./styles";
 
-type Props = CustomerAddressModel & {
+export type AddressProps = CustomerAddressModel & {
   style?: StyleProp<ViewStyle>;
   borderless?: boolean;
   showRightArrow?: boolean;
@@ -22,6 +22,7 @@ type Props = CustomerAddressModel & {
   selected?: boolean;
   showMainLabel?: boolean;
   disabled?: boolean;
+  testID?: string;
 };
 
 export const Address = ({
@@ -43,7 +44,8 @@ export const Address = ({
   selected,
   showMainLabel = true,
   disabled,
-}: Props) => {
+  testID,
+}: AddressProps) => {
   return (
     <Container
       style={style}
@@ -79,11 +81,17 @@ export const Address = ({
         ) : null}
       </Content>
       {showRightArrow && !editable && !selectable && (
-        <ArrowIcon name="chevron-right" disabled={disabled} />
+        <View testID={`${testID}-chevron-right`}>
+          <ArrowIcon name="chevron-right" disabled={disabled} />
+        </View>
       )}
       {editable ? <EditLabel disabled={disabled}>Alterar</EditLabel> : null}
       {selectable ? (
-        <RadioButton active={selected} disabled={disabled} />
+        <RadioButton
+          active={selected}
+          disabled={disabled}
+          testID={`${testID}-radio-button`}
+        />
       ) : null}
     </Container>
   );

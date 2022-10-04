@@ -294,6 +294,11 @@ export const Attendance = ({
       navigate("OrderDetails", { attendanceId: attendance.id });
       clearAttendance();
     } catch (error) {
+      Toast({
+        type: "error",
+        title: "Erro!",
+        message: error.message,
+      });
       console.log(error.response);
     } finally {
       setFinishing(false);

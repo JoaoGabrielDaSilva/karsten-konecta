@@ -1,22 +1,26 @@
 import { faker } from "@faker-js/faker";
 import { RemoteGetAttendance } from "../../../src/data/usecases/attendance/remote-get-attendance";
 import { CustomerAddressModel } from "../../../src/domain/models/address";
+import { AttendanceProductModel } from "../../../src/domain/models/product";
 import { GetAttendance } from "../../../src/domain/usecases/attendance/get-attendance";
 
-type MockRemoteGetAttendanceModelParams = {
-  withAddress?: boolean;
-};
-
+const productId = faker.random.numeric(4);
+const totalProductPrice = parseFloat(faker.commerce.price());
+const productWeight = Math.random() * 10;
+const productAmount = Math.floor(Math.random() * 50);
 const attendanceName = faker.name.firstName();
 const cpfCnpj = faker.random.numeric(11);
-const productList = [
+const productList: AttendanceProductModel[] = [
   {
+    id: productId,
+    totalPrice: totalProductPrice,
+    totalWeight: productWeight * productAmount,
     code: faker.random.numeric(6),
     ean: faker.random.numeric(11),
     name: faker.commerce.productName(),
     uri: faker.internet.url(),
-    amount: Math.floor(Math.random() * 50),
-    weight: Math.floor(Math.random() * 50),
+    amount: productAmount,
+    weight: productWeight,
     price: Math.random() * 50,
   },
 ];
@@ -64,11 +68,14 @@ export const mockRemoteGetAttendanceAddressModel = () => ({
 
 export const mockRemoteGetAttendanceModel = (): RemoteGetAttendance.Model => ({
   Result: {
+    Consumidor: null,
+    EnderecoRetireLoja: null,
     CpfCnpjConsumidor: cpfCnpj,
     EnderecoEntrega: null,
     ListaAtendimentoItens: productList.map((item) => ({
-      IdAtendimentoItem: faker.random.numeric(6),
+      IdAtendimentoItem: item.id,
       Produto: {
+        TotalItem: item.totalPrice,
         Codigo: item.code,
         Ean: item.ean,
         FotoPrincipal: item.uri,

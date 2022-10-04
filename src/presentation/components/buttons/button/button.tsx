@@ -11,7 +11,7 @@ import { useTheme } from "styled-components/native";
 import { string } from "yup/lib/locale";
 import { Container, Text } from "./styles";
 
-type Props = {
+export type ButtonProps = {
   text: string;
   onPress: () => void;
   disabled?: boolean;
@@ -31,7 +31,7 @@ export const Button = ({
   buttonStyle,
   textStyle,
   ...props
-}: Props) => {
+}: ButtonProps) => {
   const theme = useTheme();
 
   return (
@@ -48,7 +48,10 @@ export const Button = ({
             {text}
           </Text>
         ) : (
-          <ActivityIndicator color={theme.color.text.inverted} />
+          <ActivityIndicator
+            color={theme.color.text.inverted}
+            testID={props.testID ? `${props.testID}-loader` : ""}
+          />
         )}
       </Container>
     </TouchableOpacity>

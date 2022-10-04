@@ -1,4 +1,4 @@
-const ENV = "PRD";
+const ENV = "HML";
 
 const URLs = {
   auth: `https://m2pfccboh1.execute-api.us-east-1.amazonaws.com/${ENV}/v1`,
@@ -14,6 +14,7 @@ const URLs = {
   stock: `https://pje3oa5qlk.execute-api.us-east-1.amazonaws.com/${ENV}/v1`,
   reports: `https://xhnbwpl1ob.execute-api.us-east-1.amazonaws.com/${ENV}/v1`,
   action: `https://48uk60iihc.execute-api.us-east-1.amazonaws.com/${ENV}/v1`,
+  "sale-link": `https://b6vvpr1y4a.execute-api.us-east-1.amazonaws.com/${ENV}/v1`,
 };
 
 export const makeApiUrl = (

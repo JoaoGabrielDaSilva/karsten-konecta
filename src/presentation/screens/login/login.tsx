@@ -31,6 +31,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { makeLoginSchema } from "./login-schema";
 import { GetUserData } from "../../../domain/usecases/user/get-user-data";
 import { GetStoreList } from "../../../domain/usecases/store/get-store-list";
+import { Toast } from "../../components/toast/toast";
 
 type FormValues = {
   login: string;
@@ -69,6 +70,7 @@ export const Login = ({ authentication, getUserData, getStoreList }: Props) => {
 
       setLoading(false);
     } catch (error) {
+      Toast({ title: "Erro!", message: error.message, type: "error" });
       console.error(error.message);
       setLoading(false);
     }

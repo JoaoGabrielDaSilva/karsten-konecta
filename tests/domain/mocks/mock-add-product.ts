@@ -3,6 +3,8 @@ import { RemoteAddProduct } from "../../../src/data/usecases/attendance/remote-a
 import { AddProduct } from "../../../src/domain/usecases/attendance/add-product";
 
 const amount = Math.floor(Math.random() * 50);
+const id = Number(faker.random.numeric(4));
+const totalprice = parseFloat(faker.commerce.price());
 
 export const mockAddProductParams = (): AddProduct.Params => ({
   amount: String(amount),
@@ -14,9 +16,13 @@ export const mockAddProductParams = (): AddProduct.Params => ({
 export const mockRemoteAddProductModel = (): RemoteAddProduct.Model => ({
   Result: {
     QuantidadeAdicionada: amount,
+    Id: id,
+    TotalItem: totalprice,
   },
 });
 
 export const mockAddProductModel = (): AddProduct.Model => ({
   addedAmount: amount,
+  id: String(id),
+  totalPrice: totalprice,
 });

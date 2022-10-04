@@ -12,6 +12,7 @@ export type RadioButtonProps = {
   label?: string;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
+  testID?: string;
 };
 
 export const RadioButton = ({
@@ -21,12 +22,13 @@ export const RadioButton = ({
   style,
   label,
   disabled,
+  ...props
 }: RadioButtonProps) => {
   return (
-    <Pressable onPress={onPress} style={style} disabled={disabled}>
+    <Pressable onPress={onPress} style={style} disabled={disabled} {...props}>
       <StyledRow align="center" disabled={disabled}>
         <Container variant={variant}>
-          {active && <Fill variant={variant} />}
+          {active && <Fill variant={variant} testID={`${props.testID}-fill`} />}
         </Container>
         {label ? <Label>{label}</Label> : null}
       </StyledRow>

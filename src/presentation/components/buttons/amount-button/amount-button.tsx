@@ -1,6 +1,10 @@
 import React from "react";
-import { ActivityIndicator, StyleProp, ViewStyle } from "react-native";
-import { BorderlessButton, RectButton } from "react-native-gesture-handler";
+import {
+  ActivityIndicator,
+  StyleProp,
+  ViewStyle,
+  TouchableOpacity,
+} from "react-native";
 import { useTheme } from "styled-components/native";
 import { ButtonContainer, Container, Text } from "./styles";
 
@@ -9,9 +13,10 @@ type ButtonProps = {
   disabled?: boolean;
   centerOne?: boolean;
   loading?: boolean;
+  testID?: string;
 };
 
-type Props = {
+export type AmountButtonProps = {
   amount: number;
   maxAmount?: number;
   onDecrease: () => void;
@@ -19,6 +24,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   loading?: boolean;
   disabled?: boolean;
+  testID?: string;
 };
 
 export const AmountButton = ({
@@ -29,25 +35,33 @@ export const AmountButton = ({
   style,
   loading,
   disabled,
-}: Props) => {
+  ...props
+}: AmountButtonProps) => {
   return (
     <Container style={style} align="center">
-      <BorderlessButton
+      <TouchableOpacity
+        testID={`${props.testID}-decrease`}
         onPress={() => onDecrease && onDecrease()}
-        enabled={amount > 1 && !disabled}
+        disabled={amount === 1 || disabled}
       >
         <Button text="-" disabled={amount === 1 || disabled} />
-      </BorderlessButton>
-      <Button text={String(amount)} centerOne loading={loading} />
-      <BorderlessButton
+      </TouchableOpacity>
+      <Button
+        testID={`${props.testID}-amount`}
+        text={String(amount)}
+        centerOne
+        loading={loading}
+      />
+      <TouchableOpacity
+        testID={`${props.testID}-increase`}
         onPress={() => onIncrease && onIncrease()}
-        enabled={(!maxAmount || (maxAmount && amount < maxAmount)) && !disabled}
+        disabled={(maxAmount && amount === maxAmount) || disabled}
       >
         <Button
           text="+"
           disabled={(maxAmount && amount === maxAmount) || disabled}
         />
-      </BorderlessButton>
+      </TouchableOpacity>
     </Container>
   );
 };

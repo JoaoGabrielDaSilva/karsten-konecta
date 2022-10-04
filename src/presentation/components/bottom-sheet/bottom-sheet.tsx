@@ -5,7 +5,9 @@ import React, {
   useRef,
   useState,
 } from "react";
-import BottomSheetBase, { BottomSheetProps } from "@gorhom/bottom-sheet";
+import BottomSheetBase, {
+  BottomSheetProps as BaseBottomSheetProps,
+} from "@gorhom/bottom-sheet";
 import { Modal, TouchableOpacity } from "react-native";
 
 export type BottomSheetRef = {
@@ -13,13 +15,17 @@ export type BottomSheetRef = {
   close: () => void;
 };
 
-type Props = BottomSheetProps & {
+export type BottomSheetProps = BaseBottomSheetProps & {
   onClose?: () => void;
   children?: ReactNode;
+  testID?: string;
 };
 
 export const BottomSheet = React.forwardRef(
-  ({ onClose, children, ...props }: Props, ref: RefObject<BottomSheetRef>) => {
+  (
+    { onClose, children, testID, ...props }: BottomSheetProps,
+    ref: RefObject<BottomSheetRef>
+  ) => {
     const [visible, setVisible] = useState(false);
 
     const bottomSheetRef = useRef<BottomSheetBase>();
@@ -41,7 +47,7 @@ export const BottomSheet = React.forwardRef(
     };
 
     return (
-      <Modal transparent visible={visible}>
+      <Modal transparent visible={visible} testID={testID}>
         <TouchableOpacity
           activeOpacity={1}
           style={[
@@ -51,6 +57,7 @@ export const BottomSheet = React.forwardRef(
               backgroundColor: "#222222A1",
             },
           ]}
+          testID={`${testID}-overlay`}
           onPress={onClose}
         >
           <BottomSheetBase
@@ -59,7 +66,9 @@ export const BottomSheet = React.forwardRef(
             onClose={handleClose}
             {...props}
           >
-            {children}
+            <TouchableOpacity style={{ flex: 1 }} activeOpacity={1}>
+              {children}
+            </TouchableOpacity>
           </BottomSheetBase>
         </TouchableOpacity>
       </Modal>

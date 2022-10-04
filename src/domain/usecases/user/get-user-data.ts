@@ -1,4 +1,5 @@
 import { MenuListModel, MenuModel } from "../../models/menu-model";
+import { UserModel } from "../../models/user-model";
 
 export enum Profile {
   ADM = "ADM",
@@ -13,10 +14,5 @@ export interface GetUserData {
 }
 
 export namespace GetUserData {
-  export type Model = {
-    name: string;
-    email: string;
-    profileList: Profile[];
-    menuList: MenuListModel[];
-  };
+  export type Model = UserModel;
 }

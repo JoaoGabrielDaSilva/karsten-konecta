@@ -103,13 +103,17 @@ export const OrderDetails = ({
               <StyledListRow
                 label={order.isPickUp ? "Responsável" : "Cliente"}
                 value={
-                  order.isPickUp ? order.responsibleName : order?.customer?.name
+                  order.isPickUp && order?.responsibleName
+                    ? order.responsibleName
+                    : order?.customer?.name
                 }
               />
               <StyledListRow
                 label="CPF"
                 value={cpfMask(
-                  order.isPickUp ? order.responsibleCpf : order?.customer?.cpf
+                  order.isPickUp && order?.responsibleCpf
+                    ? order.responsibleCpf
+                    : order?.customer?.cpf
                 )}
                 borderless
               />

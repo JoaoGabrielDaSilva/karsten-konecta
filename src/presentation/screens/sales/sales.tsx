@@ -1,10 +1,11 @@
 import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
+import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import { BottomTab } from "../../components/navigation/bottom-tab/bottom-tab";
 import { RootPrivateStackParamList } from "../../routes";
 import { Container, ItemContainer, MenuItem } from "./styles";
 
-type NavigationProps = BottomTabScreenProps<RootPrivateStackParamList, "Sales">;
+type NavigationProps = StackScreenProps<RootPrivateStackParamList, "Sales">;
 
 type Props = NavigationProps;
 
@@ -17,6 +18,7 @@ export const Sales = ({ navigation: { navigate } }: Props) => {
           onPress={() => navigate("NewAttendance")}
           rightIconFamily="feather"
           rightIcon="chevron-right"
+          testID="new-attendance-menu"
         />
         <MenuItem
           label="Atendimentos em Aberto"

@@ -186,9 +186,9 @@ export const SelectInput = React.forwardRef(
       focus: openModal,
     }));
 
-    useEffect(() => {
-      onBlur();
-    }, [value]);
+    // useEffect(() => {
+    //   onBlur();
+    // }, [value]);
 
     return (
       <>

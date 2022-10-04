@@ -2,13 +2,13 @@ import { faker } from "@faker-js/faker";
 import { HttpStatusCode } from "../../../../src/data/protocols/http/http-client";
 import { UnexpectedError } from "../../../../src/domain/errors/unexpected-error";
 import { HttpClientSpy } from "../../mocks/mock-http";
-import {
-  mockGetAttendanceModel,
-  mockGetAttendanceParams,
-  mockRemoteGetAttendanceModel,
-} from "../../../domain/mocks/mock-get-attendance";
+
 import { RemoteGetOrderList } from "../../../../src/data/usecases/attendance/remote-get-order-list";
-import { mockRemoteGetOrderListModel } from "../../mocks/mock-remote-get-order-list";
+import {
+  mockGetOrderListModel,
+  mockRemoteGetOrderListModel,
+} from "../../mocks/mock-remote-get-order-list";
+import { mockGetOrderListParams } from "../../../domain/mocks/mock-get-order-list";
 
 type SutTypes = {
   sut: RemoteGetOrderList;
@@ -29,7 +29,7 @@ describe("RemoteGetOrderList", () => {
   it("should call HttpClient with correct URL and Method", async () => {
     const url = faker.internet.url();
 
-    const getAttendanceParams = mockGetAttendanceParams();
+    const getOrderListParams = mockGetOrderListParams();
 
     const { sut, httpClientSpy } = makeSut(url);
 
@@ -37,15 +37,23 @@ describe("RemoteGetOrderList", () => {
       statusCode: HttpStatusCode.ok,
       body: mockRemoteGetOrderListModel(),
     };
-    W;
 
-    await sut.get(getAttendanceParams);
+    await sut.execute(getOrderListParams);
 
     expect(httpClientSpy.url).toBe(url);
     expect(httpClientSpy.method).toBe("get");
     expect(httpClientSpy.params).toEqual({
-      IdAtendimento: getAttendanceParams.id,
-      IdPessoaLoja: getAttendanceParams.storeId,
+      IdPessoaLoja: getOrderListParams.storeId,
+      Page: getOrderListParams.page,
+      CodigoPedido: getOrderListParams?.code,
+      Cpf: getOrderListParams?.cpfCnpj,
+      NomeCliente: getOrderListParams?.customerName,
+      DataCriacao: getOrderListParams?.createDate,
+      Modalidade: getOrderListParams?.modality,
+      ...(getOrderListParams?.saleLinkStatus
+        ? { CodigoStatusVendaLink: getOrderListParams?.saleLinkStatus }
+        : { Status: getOrderListParams?.status }),
+      Status: getOrderListParams?.status,
     });
   });
   it("should throw UnexpectedError if HttpClient returns 422", async () => {
@@ -54,28 +62,23 @@ describe("RemoteGetOrderList", () => {
     httpClientSpy.response = {
       statusCode: HttpStatusCode.notFound,
     };
-    const promise = sut.get(mockGetAttendanceParams());
+    const promise = sut.execute(mockGetOrderListParams());
 
     expect(promise).rejects.toThrow(new UnexpectedError());
   });
   it("should return an object of RemoteGetOrderListModel if HttpClient returns 200", async () => {
     const { sut, httpClientSpy } = makeSut();
-    const httpResult = mockGetAttendanceModel();
+    const httpResult = mockGetOrderListModel();
 
     httpClientSpy.response = {
       statusCode: HttpStatusCode.ok,
       body: {
-        Result: {
-          ...mockRemoteGetAttendanceModel().Result,
-        },
+        ...mockRemoteGetOrderListModel(),
       },
     };
 
-    const httpResponse = await sut.get(mockGetAttendanceParams());
+    const httpResponse = await sut.execute(mockGetOrderListParams());
 
-    expect(httpResponse).toEqual({
-      ...httpResult,
-      deliveryAddress: null,
-    });
+    expect(httpResponse).toEqual(httpResult);
   });
 });

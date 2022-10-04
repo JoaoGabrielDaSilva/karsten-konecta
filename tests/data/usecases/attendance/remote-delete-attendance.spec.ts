@@ -35,7 +35,10 @@ describe("RemoteDeleteAttendance", () => {
 
     expect(httpClientSpy.url).toBe(url);
     expect(httpClientSpy.method).toBe("delete");
-    expect(httpClientSpy.body).toBe(deleteAttendanceParams);
+    expect(httpClientSpy.body).toEqual({
+      IdAtendimento: deleteAttendanceParams.id,
+      IdPessoaLoja: deleteAttendanceParams.storeId,
+    });
   });
 
   it("should throw UnexpectedError if httpClient returns 422", async () => {
