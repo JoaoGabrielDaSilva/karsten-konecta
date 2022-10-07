@@ -5,7 +5,7 @@ import { Filter } from "../../models/filter-model";
 
 import { Container, Label, Value, RemoveIcon } from "./styles";
 
-type Props = Filter & {
+export type FilterTagProps = Filter & {
   handleRemove?: (params: { key: string }) => void;
   style?: StyleProp<ViewStyle>;
 };
@@ -15,9 +15,9 @@ export const FilterTag = ({
   value,
   hideRemove,
   handleRemove,
-  key,
+  filterKey,
   style,
-}: Props) => {
+}: FilterTagProps) => {
   return (
     <Container align="center" style={style}>
       <Value>
@@ -26,7 +26,7 @@ export const FilterTag = ({
       </Value>
       {!hideRemove && (
         <BorderlessButton
-          onPress={() => handleRemove({ key })}
+          onPress={() => handleRemove({ key: filterKey })}
           hitSlop={{ vertical: 20, horizontal: 20 }}
         >
           <RemoveIcon name="close" />

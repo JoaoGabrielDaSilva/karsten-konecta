@@ -4,21 +4,34 @@ import { Pressable, StyleProp, ViewStyle } from "react-native";
 import { Typography } from "../../utils";
 import { Check, Container, Fill, Label, StyledRow } from "./styles";
 
-type Props = {
+export type CheckboxProps = {
   name: string;
   label: string;
   control: Control<any, any>;
   defaultValue?: boolean;
   style?: StyleProp<ViewStyle>;
   disabled?: boolean;
+  testID?: string;
 };
 
-export const Checkbox = ({ label, style, disabled, ...props }: Props) => {
+export const Checkbox = ({
+  label,
+  style,
+  disabled,
+  testID,
+  defaultValue,
+  ...props
+}: CheckboxProps) => {
   return (
     <Controller
       {...props}
+      defaultValue={defaultValue || false}
       render={({ field: { value, onChange } }) => (
-        <Pressable onPress={() => onChange(!value)} disabled={disabled}>
+        <Pressable
+          onPress={() => onChange(!value)}
+          disabled={disabled}
+          testID={testID}
+        >
           <StyledRow align="center" style={style} disabled={disabled}>
             <Container>
               {value && (

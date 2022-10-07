@@ -18,9 +18,7 @@ import {
   StyledListRow,
 } from "./styles";
 
-export type OrderCardProps = GetOrderList.OrderListItem;
-
-type Props = OrderCardProps & {
+export type OrderCardProps = GetOrderList.OrderListItem & {
   style?: StyleProp<ViewStyle>;
   onPress?: (orderId: string) => void;
 };
@@ -34,7 +32,7 @@ export const OrderCard = ({
   totalProductsIn,
   onPress,
   style,
-}: Props) => {
+}: OrderCardProps) => {
   const theme = useTheme();
 
   return (

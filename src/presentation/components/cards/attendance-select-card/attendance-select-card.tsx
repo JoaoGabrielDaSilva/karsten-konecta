@@ -13,12 +13,11 @@ import {
   StyledListProduct,
 } from "./styles";
 
-export type AttendanceSelectCardProps = GetAttendanceList.AttendanceList;
-
-type Props = AttendanceSelectCardProps & {
+export type AttendanceSelectCardProps = GetAttendanceList.AttendanceList & {
   style?: StyleProp<ViewStyle>;
   onPress?: (params: { attendanceId: string }) => void;
   selected?: boolean;
+  testID?: string;
 };
 
 export const AttendanceSelectCard = ({
@@ -31,9 +30,10 @@ export const AttendanceSelectCard = ({
   onPress,
   selected,
   style,
-}: Props) => {
+  ...props
+}: AttendanceSelectCardProps) => {
   return (
-    <Pressable onPress={() => onPress({ attendanceId: id })}>
+    <Pressable onPress={() => onPress({ attendanceId: id })} {...props}>
       <Container style={style} justify="space-between">
         <Content>
           <Name variant="heading" bold>
@@ -63,7 +63,10 @@ export const AttendanceSelectCard = ({
             <StyledListProduct borderless {...lastAddedProduct} />
           )}
         </Content>
-        <RadioButton active={selected} />
+        <RadioButton
+          testID={`${props.testID}-radio-button`}
+          active={selected}
+        />
       </Container>
     </Pressable>
   );

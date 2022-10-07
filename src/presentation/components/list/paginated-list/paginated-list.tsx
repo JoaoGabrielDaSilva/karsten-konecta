@@ -74,12 +74,13 @@ export const PaginatedList = ({
               data={Object.values(filters)}
               horizontal
               showsHorizontalScrollIndicator={false}
-              keyExtractor={(item: Filter) => String(item.key)}
+              keyExtractor={(item: Filter) => String(item.filterKey)}
               renderItem={({ item }) => (
                 <StyledFilterTag
                   {...item}
                   handleRemove={() =>
-                    handleRemoveFilter && handleRemoveFilter({ key: item.key })
+                    handleRemoveFilter &&
+                    handleRemoveFilter({ key: item.filterKey })
                   }
                 />
               )}

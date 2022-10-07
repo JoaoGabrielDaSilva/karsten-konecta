@@ -1,5 +1,5 @@
 export type Filter = {
-  key: string;
+  filterKey: string;
   label: string;
   value: string;
   apiValue: string;

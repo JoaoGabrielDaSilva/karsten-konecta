@@ -14,7 +14,7 @@ import {
   NativeSyntheticEvent,
   StyleProp,
   TextInputFocusEventData,
-  TextInputProps,
+  TextInputProps as RNTextInputProps,
   ViewStyle,
   TextInput as TextInputBaseComponent,
   Pressable,
@@ -52,7 +52,7 @@ enum InputState {
   FOCUSED,
 }
 
-const PLACEHOLDER_POSITIONS = {
+export const TEXT_INPUT_PLACEHOLDER_POSITIONS = {
   [InputState.FOCUSED]: {
     left: 10,
     top: 0,
@@ -63,14 +63,22 @@ const PLACEHOLDER_POSITIONS = {
   },
 };
 
-type TypeConfig = {
+export type TextInputTypeConfig = {
   maxLength?: number;
   onChange: (value: string) => string;
   keyboardType?: KeyboardTypeOptions;
   returnKeyType?: ReturnKeyTypeOptions;
 };
 
-const inputConfigObject: { [key: string]: TypeConfig } = {
+type TextInputConfigObject = {
+  cpf: TextInputTypeConfig;
+  cnpj: TextInputTypeConfig;
+  cpfCnpj: TextInputTypeConfig;
+  cep: TextInputTypeConfig;
+  phone: TextInputTypeConfig;
+};
+
+export const textInputConfigObject: TextInputConfigObject = {
   cpf: {
     maxLength: 14,
     onChange: cpfMask,
@@ -103,10 +111,10 @@ const inputConfigObject: { [key: string]: TypeConfig } = {
   },
 };
 
-type Props = TextInputProps & {
+export type TextInputProps = RNTextInputProps & {
   name: string;
   control: any;
-  mask?: keyof typeof inputConfigObject;
+  mask?: keyof typeof textInputConfigObject;
   defaultValue?: string;
   style?: StyleProp<ViewStyle>;
   loading?: boolean;
@@ -137,8 +145,9 @@ export const TextInput = React.forwardRef(
       disableFloatingPlaceholder,
       returnKeyType,
       onChange,
+      testID,
       ...props
-    }: Props,
+    }: TextInputProps,
     componentRef: RefObject<TextInputRef>
   ) => {
     const ref = componentRef || useRef<TextInputBaseComponent>();
@@ -156,6 +165,7 @@ export const TextInput = React.forwardRef(
     const [isFocused, setIsFocused] = useState(!!state.value);
 
     const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
+      console.log("CHEGOUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU");
       if (!disableFloatingPlaceholder) {
         state.value = withTiming(InputState.FOCUSED);
       }
@@ -199,22 +209,22 @@ export const TextInput = React.forwardRef(
       return {
         top: !value
           ? interpolate(state.value, INPUT_RANGE, [
-              PLACEHOLDER_POSITIONS[InputState.FOCUSED].top,
-              PLACEHOLDER_POSITIONS[InputState.UNFOCUSED].top,
+              TEXT_INPUT_PLACEHOLDER_POSITIONS[InputState.FOCUSED].top,
+              TEXT_INPUT_PLACEHOLDER_POSITIONS[InputState.UNFOCUSED].top,
             ])
-          : PLACEHOLDER_POSITIONS[InputState.FOCUSED].top,
+          : TEXT_INPUT_PLACEHOLDER_POSITIONS[InputState.FOCUSED].top,
         left: !value
           ? interpolate(state.value, INPUT_RANGE, [
-              PLACEHOLDER_POSITIONS[InputState.FOCUSED].left,
-              PLACEHOLDER_POSITIONS[InputState.UNFOCUSED].left,
+              TEXT_INPUT_PLACEHOLDER_POSITIONS[InputState.FOCUSED].left,
+              TEXT_INPUT_PLACEHOLDER_POSITIONS[InputState.UNFOCUSED].left,
             ])
-          : PLACEHOLDER_POSITIONS[InputState.FOCUSED].left,
+          : TEXT_INPUT_PLACEHOLDER_POSITIONS[InputState.FOCUSED].left,
       };
     });
 
     useEffect(() => {
       if (value && mask) {
-        onTextChange(inputConfigObject[mask].onChange(value));
+        onTextChange(textInputConfigObject[mask].onChange(value));
       }
     }, [mask, value]);
 
@@ -234,6 +244,7 @@ export const TextInput = React.forwardRef(
     return (
       <Container style={style}>
         <InputContainer
+          testID={`${testID}-container`}
           style={[containerStyles]}
           align="center"
           size={size}
@@ -246,30 +257,33 @@ export const TextInput = React.forwardRef(
             render={() => (
               <>
                 <Input
+                  testID={testID}
                   ref={ref}
                   error={!!error}
                   value={value}
                   returnKeyType={
                     returnKeyType ||
-                    (mask ? inputConfigObject[mask].returnKeyType : "none")
+                    (mask ? textInputConfigObject[mask].returnKeyType : "none")
                   }
                   blurOnSubmit
                   onChangeText={(value) => {
                     mask
-                      ? onTextChange(inputConfigObject[mask].onChange(value))
+                      ? onTextChange(
+                          textInputConfigObject[mask].onChange(value)
+                        )
                       : onTextChange(value);
 
                     onChange && onChange(value);
 
                     if (
                       onMaxLength &&
-                      value.length === inputConfigObject[mask]?.maxLength
+                      value.length === textInputConfigObject[mask]?.maxLength
                     )
                       onMaxLength(value);
                   }}
                   maxLength={
                     props?.maxLength ||
-                    inputConfigObject[mask]?.maxLength ||
+                    textInputConfigObject[mask]?.maxLength ||
                     100
                   }
                   autoComplete="off"
@@ -287,7 +301,7 @@ export const TextInput = React.forwardRef(
                   editable={!loading && editable}
                   keyboardType={
                     keyboardType ||
-                    inputConfigObject[mask]?.keyboardType ||
+                    textInputConfigObject[mask]?.keyboardType ||
                     "default"
                   }
                   {...props}
@@ -298,19 +312,25 @@ export const TextInput = React.forwardRef(
                     onPress={() => ref?.current?.focus()}
                     style={placeholderContainerStyles}
                   >
-                    <Placeholder style={placeholderStyles}>
+                    <Placeholder
+                      testID={`${testID}-placeholder`}
+                      style={placeholderStyles}
+                    >
                       {placeholder}
                     </Placeholder>
                   </PlaceholderContainer>
                 ) : null}
                 {loading && (
-                  <ActivityIndicator color={theme.color.text.primary} />
+                  <ActivityIndicator
+                    testID={`${testID}-loader`}
+                    color={theme.color.text.primary}
+                  />
                 )}
               </>
             )}
           />
           {value && !loading && isFocused && (
-            <BorderlessButton onPress={clearValue}>
+            <BorderlessButton onPress={clearValue} testID={`${testID}-clear`}>
               <ClearIcon name="ios-close-circle-outline" />
             </BorderlessButton>
           )}

@@ -10,4 +10,5 @@ module.exports = {
     "@testing-library/jest-native/extend-expect",
     "./jest/setup-file.js",
   ],
+  setupFiles: ["./jest/setup-reanimated.js"],
 };

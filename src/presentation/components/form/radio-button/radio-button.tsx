@@ -4,13 +4,19 @@ import {
   RadioButtonProps,
 } from "../../buttons/radio-button/radio-button";
 
-type Props = Omit<RadioButtonProps, "active"> & {
+export type FormRadioButtonProps = Omit<RadioButtonProps, "active"> & {
   control: Control<any, any>;
   name: string;
   defaultValue?: boolean;
+  testID?: string;
 };
 
-export const FormRadioButton = ({ label, onPress, ...props }: Props) => {
+export const FormRadioButton = ({
+  label,
+  onPress,
+  testID,
+  ...props
+}: FormRadioButtonProps) => {
   return (
     <Controller
       {...props}
@@ -19,6 +25,7 @@ export const FormRadioButton = ({ label, onPress, ...props }: Props) => {
           variant="small"
           active={value}
           label={label}
+          testID={testID}
           onPress={() => {
             onChange(true);
             onPress && onPress();

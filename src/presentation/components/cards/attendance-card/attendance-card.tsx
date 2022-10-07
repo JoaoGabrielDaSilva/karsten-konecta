@@ -5,11 +5,10 @@ import { cpfMask } from "../../../utils/mask/cpf-mask";
 import { ListProduct } from "../../list/list-product/list-product";
 import { Container, Name, Label, Content, Value, StyledButton } from "./styles";
 
-export type AttendanceCardProps = GetAttendanceList.AttendanceList;
-
-type Props = AttendanceCardProps & {
+export type AttendanceCardProps = GetAttendanceList.AttendanceList & {
   style?: StyleProp<ViewStyle>;
   onButtonPress?: () => void;
+  testID?: string;
 };
 
 export const AttendanceCard = ({
@@ -20,9 +19,10 @@ export const AttendanceCard = ({
   lastAddedProduct,
   onButtonPress,
   style,
-}: Props) => {
+  ...props
+}: AttendanceCardProps) => {
   return (
-    <Container style={style} justify="space-between" align="center">
+    <Container style={style} justify="space-between" align="center" {...props}>
       <Content>
         <Name variant="heading" bold>
           {name}

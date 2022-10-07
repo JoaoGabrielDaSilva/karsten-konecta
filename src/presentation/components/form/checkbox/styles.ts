@@ -1,6 +1,7 @@
 import { MaterialIcons } from "@expo/vector-icons";
 import styled from "styled-components/native";
 import { Row, Typography } from "../../utils";
+import { View } from "react-native";
 
 export const StyledRow = styled(Row)<{ disabled: boolean }>`
   align-self: flex-start;
@@ -18,7 +19,7 @@ export const Container = styled.View`
   border-radius: ${({ theme }) => theme.radii.sm}px;
 `;
 
-export const Fill = styled.View<{ active: boolean }>`
+export const Fill = styled(View)<{ active: boolean }>`
   flex: 1;
   justify-content: center;
   align-items: center;

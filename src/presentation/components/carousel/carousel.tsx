@@ -9,14 +9,15 @@ import Animated, {
 
 import { Container, Image, Arrow, LeftSide, RightSide, Page } from "./styles";
 
-type Props = {
+export type CarouselProps = {
   images: string[];
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 };
 
 const { width } = Dimensions.get("window");
 
-export const Carousel = ({ images, style }: Props) => {
+export const Carousel = ({ images, testID, style }: CarouselProps) => {
   const ref = useAnimatedRef<Animated.ScrollView>();
 
   const translateX = useSharedValue(0);
@@ -59,6 +60,7 @@ export const Carousel = ({ images, style }: Props) => {
   return (
     <Container style={style}>
       <Animated.ScrollView
+        testID={testID}
         ref={ref}
         onScroll={scrollHandler}
         horizontal
@@ -67,7 +69,12 @@ export const Carousel = ({ images, style }: Props) => {
         decelerationRate="fast"
       >
         {images?.map((item, index) => (
-          <Image key={index} source={{ uri: item }} resizeMode="contain" />
+          <Image
+            key={index}
+            testID={`${testID}-image-${index}`}
+            source={{ uri: item }}
+            resizeMode="contain"
+          />
         ))}
       </Animated.ScrollView>
       <Page textAlign="center">

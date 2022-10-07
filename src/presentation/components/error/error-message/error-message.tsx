@@ -2,11 +2,11 @@ import React, { ReactNode } from "react";
 import { StyleProp, TextStyle } from "react-native";
 import { Text } from "./styles";
 
-type Props = {
+export type ErrorMessageProps = {
   children: ReactNode;
   style?: StyleProp<TextStyle>;
 };
 
-export const ErrorMessage = ({ children, style }: Props) => (
+export const ErrorMessage = ({ children, style }: ErrorMessageProps) => (
   <Text style={style}>{children}</Text>
 );

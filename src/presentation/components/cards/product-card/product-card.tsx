@@ -1,5 +1,6 @@
 import React from "react";
 import { StyleProp, ViewStyle, Pressable } from "react-native";
+import { ProductModel } from "../../../../domain/models/product";
 import {
   Container,
   ImageWrapper,
@@ -10,26 +11,30 @@ import {
   InfoWrapper,
 } from "./styles";
 
-type ProductCardProps = {
-  uri: string;
-  name: string;
-  code: string;
-  ean: string;
-};
-
-type Props = ProductCardProps & {
+export type ProductCardProps = Omit<
+  ProductModel,
+  "amount" | "hasAvailableAmount" | "price" | "weight"
+> & {
   onPress?: (params: ProductCardProps) => void;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 };
 
-export const ProductCard = ({ style, onPress, ...props }: Props) => {
+export const ProductCard = ({ style, onPress, ...props }: ProductCardProps) => {
   const { uri, name, code, ean } = props;
 
   return (
-    <Pressable onPress={() => onPress && onPress({ ...props })}>
+    <Pressable
+      onPress={() => onPress && onPress({ uri, name, code, ean })}
+      {...props}
+    >
       <Container style={style}>
         <ImageWrapper>
-          <Image source={{ uri }} resizeMode="contain" />
+          <Image
+            testID={`${props.testID}-image`}
+            source={{ uri }}
+            resizeMode="contain"
+          />
         </ImageWrapper>
         <InfoWrapper>
           <Title bold numberOfLines={3}>
