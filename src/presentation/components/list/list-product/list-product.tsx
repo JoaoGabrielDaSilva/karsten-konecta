@@ -17,9 +17,10 @@ import {
   Amount,
 } from "./styles";
 
-type Props = ProductModel & {
+export type ListProductProps = ProductModel & {
   borderless?: boolean;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 };
 
 export const ListProduct = ({
@@ -29,18 +30,20 @@ export const ListProduct = ({
   uri,
   borderless,
   amount,
-  hasAvailableAmount,
   style,
-}: Props) => {
+  testID,
+}: ListProductProps) => {
   return (
-    <Container borderless={borderless} style={style}>
+    <Container borderless={borderless} style={style} testID={testID}>
       <Left>
         <ImageWrapper>
           <Image source={{ uri }} resizeMode="cover" />
         </ImageWrapper>
-        {amount ? (
+        {amount || amount === 0 ? (
           <AmountContainer>
-            <Amount bold>{amount >= 100 ? "+99" : amount}</Amount>
+            <Amount bold testID={`${testID}-amount`}>
+              {amount >= 100 ? "+99" : amount}
+            </Amount>
           </AmountContainer>
         ) : null}
       </Left>

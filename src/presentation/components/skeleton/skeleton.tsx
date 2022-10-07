@@ -18,6 +18,7 @@ type Props = {
   style?: StyleProp<ViewStyle>;
   variant?: SkeletonVariant;
   children?: React.ReactNode;
+  testID?: string;
 };
 
 const VARIANT_COLORS = {
@@ -25,7 +26,12 @@ const VARIANT_COLORS = {
   dark: ["#bcbcbc", "#bcbcbcbc"],
 };
 
-export const Skeleton = ({ variant = "normal", children, ...props }: Props) => {
+export const Skeleton = ({
+  variant = "normal",
+  children,
+  testID,
+  ...props
+}: Props) => {
   const transition = useSharedValue(1);
 
   const animatedStyles = useAnimatedStyle(() => {
@@ -43,7 +49,7 @@ export const Skeleton = ({ variant = "normal", children, ...props }: Props) => {
   }, []);
 
   return (
-    <Container {...props}>
+    <Container {...props} testID={testID}>
       <Shimmer {...props} style={animatedStyles}>
         {children}
       </Shimmer>

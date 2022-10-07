@@ -146,6 +146,8 @@ export const TextInput = React.forwardRef(
       returnKeyType,
       onChange,
       testID,
+      onBlur,
+      onFocus,
       ...props
     }: TextInputProps,
     componentRef: RefObject<TextInputRef>
@@ -165,12 +167,11 @@ export const TextInput = React.forwardRef(
     const [isFocused, setIsFocused] = useState(!!state.value);
 
     const handleFocus = (e: NativeSyntheticEvent<TextInputFocusEventData>) => {
-      console.log("CHEGOUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU");
       if (!disableFloatingPlaceholder) {
         state.value = withTiming(InputState.FOCUSED);
       }
 
-      props.onFocus && props.onFocus(e);
+      onFocus && onFocus(e);
       setIsFocused(true);
     };
 
@@ -179,7 +180,7 @@ export const TextInput = React.forwardRef(
         state.value = withTiming(InputState.UNFOCUSED);
       }
 
-      props.onBlur && props.onBlur(e);
+      onBlur && onBlur(e);
       setIsFocused(false);
     };
 
@@ -288,7 +289,7 @@ export const TextInput = React.forwardRef(
                   }
                   autoComplete="off"
                   autoCapitalize="none"
-                  onFocus={handleFocus}
+                  onFocus={(e) => handleFocus(e)}
                   onBlur={handleBlur}
                   placeholder={disableFloatingPlaceholder ? placeholder : ""}
                   placeholderTextColor={

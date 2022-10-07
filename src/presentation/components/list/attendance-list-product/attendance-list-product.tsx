@@ -27,7 +27,7 @@ import {
   Pressable,
 } from "./styles";
 
-type Props = AttendanceProductModel & {
+export type AttendanceListProductProps = AttendanceProductModel & {
   borderless?: boolean;
   style?: StyleProp<ViewStyle>;
   onUpdateAmount?: ({ id, sum }: { id: string; sum: boolean }) => void;
@@ -42,14 +42,14 @@ export const AttendanceListProduct = ({
   name,
   code,
   ean,
-  amount,
+  amount = 0,
   uri,
   borderless,
   style,
   onPress,
   onUpdateAmount,
   onDelete,
-}: Props) => {
+}: AttendanceListProductProps) => {
   const theme = useTheme();
 
   const [loading, setLoading] = useState<ActionType>(null);

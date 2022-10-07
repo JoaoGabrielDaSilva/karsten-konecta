@@ -5,14 +5,14 @@ import {
   FlatList,
   FlatListProps,
   RefreshControl,
+  View,
 } from "react-native";
 import { useTheme } from "styled-components/native";
 import { Filter } from "../../../models/filter-model";
-import { FilterTag } from "../../filter-tag/filter-tag";
 import { StyledFilterTag, TotalResults, TotalResultsLoader } from "./styles";
 
-type Props = FlatListProps<any> & {
-  loading: boolean;
+export type PaginatedListProps = FlatListProps<any> & {
+  loading?: boolean;
   loaderComponent?: ReactNode;
   page?: number;
   enableRefresh?: boolean;
@@ -44,8 +44,10 @@ export const PaginatedList = ({
   filters,
   handleRemoveFilter,
   ListHeaderComponent,
+  testID,
+  onRefresh,
   ...props
-}: Props) => {
+}: PaginatedListProps) => {
   const theme = useTheme();
 
   const showTotalResults = totalResults !== undefined;
@@ -54,13 +56,14 @@ export const PaginatedList = ({
   return (
     <FlatList
       {...props}
+      testID={testID}
       onEndReachedThreshold={0.1}
       refreshing={refreshing}
       refreshControl={
         enableRefresh && (
           <RefreshControl
             refreshing={refreshing}
-            onRefresh={props.onRefresh}
+            onRefresh={onRefresh}
             tintColor="black"
             colors={["black"]}
           />
@@ -71,6 +74,7 @@ export const PaginatedList = ({
           {ListHeaderComponent && ListHeaderComponent}
           {filters && (
             <FlatList
+              testID={`${testID}-filters`}
               data={Object.values(filters)}
               horizontal
               showsHorizontalScrollIndicator={false}
@@ -92,6 +96,7 @@ export const PaginatedList = ({
             ) : (
               loaderComponent && (
                 <TotalResultsLoader
+                  testID={`${testID}-total-results-loader`}
                   variant="dark"
                   width={width * 0.4}
                   height={15}
@@ -113,13 +118,16 @@ export const PaginatedList = ({
       ListFooterComponent={
         <>
           {!refreshing && loading && !loaderComponent && !isFirstLoad && (
-            <ActivityIndicator color={theme.color.text.primary} />
+            <ActivityIndicator
+              testID={`${testID}-bottom-loader`}
+              color={theme.color.text.primary}
+            />
           )}
           {loading && loaderComponent && (
-            <>
+            <View testID={`${testID}-bottom-loader-container`}>
               {isFirstLoad && <>{loaderComponent}</>}
               {loaderComponent}
-            </>
+            </View>
           )}
         </>
       }

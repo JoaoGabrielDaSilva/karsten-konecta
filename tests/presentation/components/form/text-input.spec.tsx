@@ -3,24 +3,21 @@ import {
   fireEvent,
   renderHook,
   RenderResult,
-  waitFor,
 } from "@testing-library/react-native";
+import {
+  withReanimatedTimer,
+  advanceAnimationByTime,
+} from "react-native-reanimated/src/reanimated2/jestUtils";
+
 import React from "react";
-import { Control, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import {
   TextInput,
   textInputConfigObject,
   TextInputProps,
 } from "../../../../src/presentation/components/form/text-input/text-input";
-import {
-  getAnimatedStyle,
-  withReanimatedTimer,
-  advanceAnimationByTime,
-  advanceAnimationByFrame,
-} from "react-native-reanimated/src/reanimated2/jestUtils";
 
 import { renderWithProviders } from "../../mocks/app.provider";
-import { cpfMask } from "../../../../src/presentation/utils/mask/cpf-mask";
 
 type SutTypes = {
   sut: RenderResult;
@@ -44,7 +41,7 @@ const makeSut = (props: SutParams): SutTypes => {
   const mockedProps = mockProps(props.name);
 
   const sut = renderWithProviders({
-    Screen: () => <TextInput {...mockedProps} {...props} />,
+    Screen: () => <TextInput {...props} {...mockedProps} />,
   });
 
   return {
@@ -232,7 +229,6 @@ describe("TextInput", () => {
     sut.getByTestId(`${data.testID}-loader`);
   });
   it("should show clear button when is focused only", async () => {
-    const onFocus = jest.fn();
     const name = faker.random.word();
 
     const { result } = renderHook(() =>
@@ -246,11 +242,43 @@ describe("TextInput", () => {
     const { sut, data } = makeSut({
       name,
       control: result.current.control,
+    });
+
+    fireEvent(sut.getByTestId(data.testID), "focus");
+
+    await sut.findByTestId(`${data.testID}-clear`, {});
+  });
+  it("should clear text value when clear button is pressed", async () => {
+    const name = faker.random.word();
+    const text = faker.random.word();
+
+    const onFocus = jest.fn();
+
+    const { result } = renderHook(() =>
+      useForm({
+        defaultValues: {
+          [name]: text,
+        },
+      })
+    );
+
+    const { sut, data } = makeSut({
+      name,
+      control: result.current.control,
       onFocus,
     });
 
-    fireEvent(sut.getByTestId(`${data.testID}`), "focus");
+    const input = sut.getByTestId(data.testID);
 
-    await sut.findByTestId(`${data.testID}-clear`);
+    fireEvent(input, "focus");
+    expect(onFocus).toHaveBeenCalledTimes(1);
+
+    const clearButton = await sut.findByTestId(`${data.testID}-clear`, {});
+
+    expect(input.props.value).toBe(text);
+
+    fireEvent.press(clearButton);
+
+    expect(input.props.value).toBe("");
   });
 });

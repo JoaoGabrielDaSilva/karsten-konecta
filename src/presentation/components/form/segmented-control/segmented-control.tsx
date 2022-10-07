@@ -3,13 +3,14 @@ import { TouchableOpacity, View } from "react-native";
 import { Control, Controller, useController } from "react-hook-form";
 import { Container, Label, Option } from "./styles";
 
-type Props = {
+export type SegmentedControlProps = {
   label?: string;
   name: string;
   defaultValue?: string;
   options: { label: string; value: string }[];
   control: Control<any, any>;
   onChange?: (value: string) => void;
+  testID?: string;
 };
 
 export const SegmentedControl = ({
@@ -19,7 +20,7 @@ export const SegmentedControl = ({
   name,
   defaultValue,
   onChange,
-}: Props) => {
+}: SegmentedControlProps) => {
   const {
     field: { value, onChange: onPress },
   } = useController({
@@ -41,10 +42,12 @@ export const SegmentedControl = ({
       {label ? <Label>{label}</Label> : null}
       <Container>
         {options
-          ? options.map((option) => {
+          ? options.map((option, index) => {
               const isSelected = option.value === value;
               return (
                 <TouchableOpacity
+                  key={index}
+                  testID={`option-${option.value}`}
                   style={{ flex: 1 }}
                   activeOpacity={0.8}
                   disabled={isSelected}
