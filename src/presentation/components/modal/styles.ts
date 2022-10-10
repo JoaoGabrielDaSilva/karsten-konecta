@@ -1,4 +1,4 @@
-import { Dimensions } from "react-native";
+import { Dimensions, TouchableOpacity } from "react-native";
 import Animated from "react-native-reanimated";
 import styled from "styled-components/native";
 import { Typography } from "../../components/utils/typography/typography";
@@ -6,7 +6,7 @@ import { Row, SectionTitle } from "../../components/utils";
 
 const { width } = Dimensions.get("window");
 
-export const Overlay = styled.TouchableOpacity`
+export const Overlay = styled(TouchableOpacity)`
   flex: 1;
 
   justify-content: center;

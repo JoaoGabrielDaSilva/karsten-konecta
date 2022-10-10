@@ -1,16 +1,7 @@
-import { Route } from "@react-navigation/native";
-import { StackScreenProps } from "@react-navigation/stack";
-import { RootPrivateStackParamList } from "../../../src/presentation/routes";
-
-export function mockNavigationProps<
-  Route extends keyof RootPrivateStackParamList
->(
-  routeName: keyof RootPrivateStackParamList,
-  params?: StackScreenProps<RootPrivateStackParamList, Route, undefined>
-): StackScreenProps<RootPrivateStackParamList, Route, undefined> {
+export function mockNavigationProps(params?: {}) {
   return {
     route: {
-      name: routeName,
+      name: "",
       key: "",
       params,
       path: "",

@@ -1,5 +1,6 @@
 import mockAsyncStorage from "@react-native-async-storage/async-storage/jest/async-storage-mock";
 import "react-native-gesture-handler/jestSetup";
+import mockBackHandler from "react-native/Libraries/Utilities/__mocks__/BackHandler.js";
 
 global.window = {};
 global.window = global;
@@ -26,19 +27,6 @@ jest.mock("@react-native-async-storage/async-storage", () => mockAsyncStorage);
 
 // Silence the warning: Animated: `useNativeDriver` is not supported because the native animated module is missing
 jest.mock("react-native/Libraries/Animated/NativeAnimatedHelper");
-
-jest.mock("@react-navigation/native", () => {
-  const actualNav = jest.requireActual("@react-navigation/native");
-  return {
-    ...actualNav,
-    useNavigation: () => ({
-      getState: () => ({
-        routes: [],
-        index: 0,
-      }),
-    }),
-  };
-});
 
 jest.mock("@gorhom/bottom-sheet", () => {
   const react = require("react-native");

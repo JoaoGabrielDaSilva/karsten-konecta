@@ -18,7 +18,7 @@ import {
 import { Button } from "../buttons/button/button";
 import { useTheme } from "styled-components/native";
 
-type Props = {
+export type ModalProps = {
   title?: string;
   text?: string;
   visible?: boolean;
@@ -28,6 +28,7 @@ type Props = {
   ok?: () => void;
   confirm?: () => void;
   cancel?: () => void;
+  testID?: string;
 };
 
 const ANIMATION_DURATION = 250;
@@ -43,7 +44,8 @@ export const Modal = ({
   text,
 
   ok,
-}: Props) => {
+  testID,
+}: ModalProps) => {
   const theme = useTheme();
   const transition = useSharedValue(0);
 
@@ -54,15 +56,11 @@ export const Modal = ({
     transform: [{ scale: transition.value }],
   }));
 
-  const handleClose = (fn: () => void) => {
+  const closeModalMiddleware = (fn: () => void) => {
     fn();
     setTimeout(() => {
       setIsVisible(false);
     }, ANIMATION_DURATION);
-  };
-
-  const closeModalMiddleware = (fn: () => void) => {
-    handleClose(fn);
     transition.value = withTiming(0, { duration: ANIMATION_DURATION });
   };
 
@@ -74,12 +72,14 @@ export const Modal = ({
 
   return (
     <RNModal
+      testID={testID}
       visible={isVisible}
       transparent
       onRequestClose={() => closeModalMiddleware(onPressOverlay)}
       animationType="fade"
     >
       <Overlay
+        testID={`${testID}-overlay`}
         onPress={() => closeModalMiddleware(onPressOverlay)}
         activeOpacity={1}
       >

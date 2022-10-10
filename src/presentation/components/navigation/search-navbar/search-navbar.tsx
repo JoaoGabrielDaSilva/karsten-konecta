@@ -19,7 +19,7 @@ import { TextInputRef } from "../../form/text-input/text-input";
 
 type IconType = keyof typeof MaterialCommunityIcons.glyphMap;
 
-type Props = StackHeaderProps & {
+export type StackSearchNavbarProps = Pick<StackHeaderProps, "navigation"> & {
   headerLeftIcon?: IconType;
   rightIcon?: IconType;
   onLeftIconPress?: () => void;
@@ -46,14 +46,8 @@ export const StackSearchNavbar = ({
   defaultFocus,
   onFocus,
   onBlur,
-}: Props) => {
-  const { canGoBack, goBack, dispatch, push } = navigation;
-
-  const openDrawer = () => {
-    const action = DrawerActions.openDrawer();
-
-    dispatch(action);
-  };
+}: StackSearchNavbarProps) => {
+  const { canGoBack, goBack } = navigation;
 
   const inputRef = useRef<TextInputRef>();
 
@@ -109,7 +103,7 @@ export const StackSearchNavbar = ({
           </BorderlessButton>
         )}
         {drawer && (
-          <BorderlessButton onPress={openDrawer}>
+          <BorderlessButton onPress={DrawerActions.openDrawer}>
             <DrawerIcon name="menu" />
           </BorderlessButton>
         )}
