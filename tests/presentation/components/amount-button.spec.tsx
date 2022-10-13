@@ -9,7 +9,7 @@ import {
   AmountButtonProps,
 } from "../../../src/presentation/components/buttons/amount-button/amount-button";
 
-import { renderWithProviders } from "../mocks/app.provider";
+import { renderWithProviders } from "../__mocks__/app.provider";
 
 type SutTypes = {
   sut: RenderResult;

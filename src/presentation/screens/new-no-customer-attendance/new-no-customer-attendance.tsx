@@ -31,7 +31,12 @@ export const NewNoCustomerAttendance = ({ navigation }: Props) => {
         <Typography variant="subtitle" semibold>
           Digite o nome do cliente para iniciar um atendimento
         </Typography>
-        <CustomTextInput control={control} name="name" placeholder="Nome" />
+        <CustomTextInput
+          testID="name-input"
+          control={control}
+          name="name"
+          placeholder="Nome"
+        />
         <Button text="Iniciar Atendimento" onPress={handleSubmit(onSubmit)} />
       </Content>
     </Container>

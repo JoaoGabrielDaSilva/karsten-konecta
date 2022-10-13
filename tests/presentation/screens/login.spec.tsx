@@ -18,7 +18,7 @@ import { AuthenticationSpy } from "../../domain/mocks/mock-authentication";
 import { GetStoreListSpy } from "../../domain/mocks/store/mock-get-store-list";
 import { GetUserDataSpy } from "../../domain/mocks/user/mock-get-user-data";
 import { mockUserModel } from "../../domain/mocks/user/mock-user";
-import { renderWithProviders } from "../mocks/app.provider";
+import { renderWithProviders } from "../__mocks__/app.provider";
 import Toast from "react-native-toast-message";
 
 type SutTypes = {

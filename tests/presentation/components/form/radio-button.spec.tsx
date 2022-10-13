@@ -12,7 +12,7 @@ import {
   FormRadioButtonProps,
 } from "../../../../src/presentation/components/form/radio-button/radio-button";
 
-import { renderWithProviders } from "../../mocks/app.provider";
+import { renderWithProviders } from "../../__mocks__/app.provider";
 
 type SutTypes = {
   sut: RenderResult;

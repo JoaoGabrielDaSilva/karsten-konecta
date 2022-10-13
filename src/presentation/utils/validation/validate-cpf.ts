@@ -1,5 +1,5 @@
 export const validateCpf = (value: string) => {
-  if (!value) return;
+  if (!value) return false;
   value = value?.replace(/\D/g, "");
 
   if (!!value.match(/(\d)\1{10}/)) {

@@ -11,7 +11,7 @@ import { Skeleton } from "../../../../src/presentation/components/skeleton/skele
 
 import { Filter } from "../../../../src/presentation/models/filter-model";
 
-import { renderWithProviders } from "../../mocks/app.provider";
+import { renderWithProviders } from "../../__mocks__/app.provider";
 
 type SutTypes = {
   sut: RenderResult;

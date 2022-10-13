@@ -8,7 +8,7 @@ import {
   ErrorMessageProps,
 } from "../../../src/presentation/components/error/error-message/error-message";
 
-import { renderWithProviders } from "../mocks/app.provider";
+import { renderWithProviders } from "../__mocks__/app.provider";
 
 type SutTypes = {
   sut: RenderResult;

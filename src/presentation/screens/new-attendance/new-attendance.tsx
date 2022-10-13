@@ -35,8 +35,8 @@ type FormValues = {
 export const NewAttendance = ({ navigation, getCustomer }: Props) => {
   const [loading, setLoading] = useState(false);
 
-  const { data, setCustomer } = useCustomerStore();
   const { store } = useUserStore();
+  const { setCustomer } = useCustomerStore();
 
   const { control, handleSubmit, clearErrors, reset, watch, setValue } =
     useForm({
@@ -68,6 +68,7 @@ export const NewAttendance = ({ navigation, getCustomer }: Props) => {
         cpfCnpj,
         storeId: store.id,
       });
+
       setCustomer({
         ...customerData,
         id: String(customerData.id),
@@ -112,6 +113,7 @@ export const NewAttendance = ({ navigation, getCustomer }: Props) => {
           />
         </StyledRow>
         <CustomTextInput
+          testID="cpfCnpj"
           control={control}
           name="cpfCnpj"
           placeholder={naturalPersonField ? "CPF" : "CNPJ"}

@@ -4,17 +4,15 @@ import {
   waitFor,
 } from "@testing-library/react-native";
 
-import { renderWithProviders } from "../mocks/app.provider";
+import { renderWithProviders } from "../__mocks__/app.provider";
 import { Sales } from "../../../src/presentation/screens/sales/sales";
-import { mockNavigationProps } from "../mocks/navigation-prop";
+import { mockNavigationProps } from "../__mocks__/navigation-prop";
 
 type SutTypes = {
   sut: RenderResult;
 };
 
-type Route = "Sales";
-
-let mockedNavigation = mockNavigationProps<Route>("Sales");
+let mockedNavigation = mockNavigationProps();
 
 const makeSut = (): SutTypes => {
   const sut = renderWithProviders({

@@ -12,7 +12,7 @@ import {
   SegmentedControlProps,
 } from "../../../../src/presentation/components/form/segmented-control/segmented-control";
 
-import { renderWithProviders } from "../../mocks/app.provider";
+import { renderWithProviders } from "../../__mocks__/app.provider";
 
 type SutTypes = {
   sut: RenderResult;
@@ -22,11 +22,11 @@ type SutTypes = {
 const mockOptions = () => [
   {
     label: faker.random.word(),
-    value: faker.random.word(),
+    value: faker.random.numeric(10),
   },
   {
     label: faker.random.word(),
-    value: faker.random.word(),
+    value: faker.random.numeric(10),
   },
 ];
 

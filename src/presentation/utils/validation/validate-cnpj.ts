@@ -1,5 +1,5 @@
 export function validateCnpj(cnpjData: string) {
-  if (!cnpjData) return;
+  if (!cnpjData) return false;
   cnpjData = cnpjData.replace(/[^\d]+/g, "");
 
   if (cnpjData === "") {

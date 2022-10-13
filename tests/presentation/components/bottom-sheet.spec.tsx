@@ -14,7 +14,7 @@ import {
   BottomSheetRef,
 } from "../../../src/presentation/components/bottom-sheet/bottom-sheet";
 
-import { renderWithProviders } from "../mocks/app.provider";
+import { renderWithProviders } from "../__mocks__/app.provider";
 
 type SutTypes = {
   sut: RenderResult;

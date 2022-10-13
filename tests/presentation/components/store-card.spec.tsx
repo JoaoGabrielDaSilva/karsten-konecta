@@ -7,7 +7,7 @@ import {
 } from "../../../src/presentation/components/cards/store-card/store-card";
 import { cnpjMask } from "../../../src/presentation/utils/mask/cnpj-mask";
 
-import { renderWithProviders } from "../mocks/app.provider";
+import { renderWithProviders } from "../__mocks__/app.provider";
 
 type SutTypes = {
   sut: RenderResult;

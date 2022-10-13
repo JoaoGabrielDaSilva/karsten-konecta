@@ -8,7 +8,7 @@ import {
   FilterTagProps,
 } from "../../../src/presentation/components/filter-tag/filter-tag";
 
-import { renderWithProviders } from "../mocks/app.provider";
+import { renderWithProviders } from "../__mocks__/app.provider";
 
 type SutTypes = {
   sut: RenderResult;

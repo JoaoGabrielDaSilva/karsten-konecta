@@ -2,7 +2,7 @@ import { FlexAlignType, StyleProp, View, ViewStyle } from "react-native";
 import Animated from "react-native-reanimated";
 import styles from "./styles";
 
-type FlexJustifyType =
+export type FlexJustifyType =
   | "flex-start"
   | "flex-end"
   | "center"
@@ -11,7 +11,7 @@ type FlexJustifyType =
   | "space-evenly"
   | undefined;
 
-type Props = {
+export type RowProps = {
   align?: FlexAlignType;
   justify?: FlexJustifyType;
   style?: StyleProp<ViewStyle>;
@@ -25,7 +25,7 @@ export const Row = ({
   style,
   children,
   ...props
-}: Props) => {
+}: RowProps) => {
   return (
     <Animated.View
       style={[

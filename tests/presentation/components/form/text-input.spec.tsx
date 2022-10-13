@@ -17,7 +17,7 @@ import {
   TextInputProps,
 } from "../../../../src/presentation/components/form/text-input/text-input";
 
-import { renderWithProviders } from "../../mocks/app.provider";
+import { renderWithProviders } from "../../__mocks__/app.provider";
 
 type SutTypes = {
   sut: RenderResult;

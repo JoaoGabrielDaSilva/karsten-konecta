@@ -12,8 +12,8 @@ import {
   StackSearchNavbarProps,
 } from "../../../../src/presentation/components/navigation/search-navbar/search-navbar";
 
-import { renderWithProviders } from "../../mocks/app.provider";
-import { mockNavigationProps } from "../../mocks/navigation-prop";
+import { renderWithProviders } from "../../__mocks__/app.provider";
+import { mockNavigationProps } from "../../__mocks__/navigation-prop";
 
 const mockedOpenDrawer = jest.fn();
 

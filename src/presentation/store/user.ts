@@ -1,10 +1,10 @@
 import create from "zustand";
 import { persist } from "zustand/middleware";
-import { StoreModel } from "../models/Store";
 import { makeAsyncStorageAdapter } from "../../main/factories/cache/local-storage-adapter-factory";
 import { setCurrentAccountIdAdapter } from "../../main/adapters/current-account-id-adapter";
 import { MenuListModel } from "../../domain/models/menu-model";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { StoreModel } from "../../domain/models/store-model";
 
 type UserState = {
   name: string;

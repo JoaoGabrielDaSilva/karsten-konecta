@@ -10,7 +10,10 @@ import { TouchableOpacity } from "react-native";
 
 type IconType = keyof typeof MaterialCommunityIcons.glyphMap;
 
-type Props = StackHeaderProps & {
+export type StackNavbarProps = Pick<
+  StackHeaderProps,
+  "navigation" | "options"
+> & {
   headerLeftIcon?: IconType;
   rightIcon?: IconType;
   onLeftIconPress?: () => void;
@@ -30,14 +33,8 @@ export const StackNavbar = ({
   backArrow = true,
   drawer,
   rightIconsDisabled,
-}: Props) => {
-  const { canGoBack, goBack, dispatch } = navigation;
-
-  const openDrawer = () => {
-    const action = DrawerActions.openDrawer();
-
-    dispatch(action);
-  };
+}: StackNavbarProps) => {
+  const { canGoBack, goBack } = navigation;
 
   return (
     <Container align="center">
@@ -61,7 +58,7 @@ export const StackNavbar = ({
           </TouchableOpacity>
         )}
         {drawer && (
-          <BorderlessButton onPress={openDrawer}>
+          <BorderlessButton onPress={DrawerActions.openDrawer}>
             <HeaderIcon name="menu" />
           </BorderlessButton>
         )}

@@ -7,7 +7,7 @@ import {
 } from "../../../src/presentation/components/cards/order-card/order-card";
 import { cpfMask } from "../../../src/presentation/utils/mask/cpf-mask";
 
-import { renderWithProviders } from "../mocks/app.provider";
+import { renderWithProviders } from "../__mocks__/app.provider";
 
 type SutTypes = {
   sut: RenderResult;

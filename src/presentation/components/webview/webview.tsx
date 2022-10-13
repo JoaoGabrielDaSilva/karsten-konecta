@@ -2,11 +2,11 @@ import React from "react";
 import WebView, { WebViewProps } from "react-native-webview";
 import { Container } from "./styles";
 
-type Props = WebViewProps & {
+export type WebviewProps = WebViewProps & {
   uri: string;
 };
 
-export const Webview = ({ uri, ...props }: Props) => {
+export const Webview = ({ uri, ...props }: WebviewProps) => {
   return (
     <Container>
       <WebView

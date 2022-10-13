@@ -6,7 +6,7 @@ export type PaginatedListGetFunctionReturn<T> = {
   totalResults: number;
 };
 
-type UsePaginatedListParams<T> = {
+export type UsePaginatedListParams<T> = {
   getFunction: (page: number) => Promise<PaginatedListGetFunctionReturn<T>>;
   filters?: {
     [key: string]: Filter;
@@ -18,7 +18,7 @@ type GetDataMiddlewareParams = { reset?: boolean };
 
 type ResetParams = { refresh?: boolean };
 
-type UsePaginatedListReturn<T> = {
+export type UsePaginatedListReturn<T> = {
   data: T[];
   page: number;
   loading: boolean;

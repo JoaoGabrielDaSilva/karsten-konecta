@@ -3,12 +3,12 @@ import { StyleProp, ViewStyle } from "react-native";
 import { ShippingModel } from "../../models/Shipping";
 import { Container, Label, Value } from "./styles";
 
-type Props = ShippingModel & {
+export type ShippingInfoProps = ShippingModel & {
   days: number;
   style?: StyleProp<ViewStyle>;
 };
 
-export const ShippingInfo = ({ days, style }: Props) => {
+export const ShippingInfo = ({ days, style }: ShippingInfoProps) => {
   return (
     <Container style={style}>
       <Label>Padrão</Label>

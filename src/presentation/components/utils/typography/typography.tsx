@@ -18,7 +18,7 @@ export type TypographyProps = TextProps & {
 
 const AnimatedText = Animated.createAnimatedComponent(Text);
 
-const textAlignDictionary: { [key: string]: TextAlign } = {
+export const typographyTextAlignDictionary = {
   heading: "auto",
   paragraph: "justify",
   text: "auto",
@@ -27,7 +27,7 @@ const textAlignDictionary: { [key: string]: TextAlign } = {
 export const Typography = ({
   children,
   variant = "text",
-  textAlign = textAlignDictionary.text,
+  textAlign = typographyTextAlignDictionary[variant],
   ...props
 }: TypographyProps) => {
   return (

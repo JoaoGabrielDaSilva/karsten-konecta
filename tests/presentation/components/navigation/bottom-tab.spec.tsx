@@ -1,7 +1,7 @@
 import { fireEvent, RenderResult } from "@testing-library/react-native";
 import { BottomTab } from "../../../../src/presentation/components/navigation/bottom-tab/bottom-tab";
 
-import { renderWithProviders } from "../../mocks/app.provider";
+import { renderWithProviders } from "../../__mocks__/app.provider";
 
 const mockedReset = jest.fn();
 
