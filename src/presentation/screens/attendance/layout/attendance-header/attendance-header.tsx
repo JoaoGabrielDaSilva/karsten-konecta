@@ -36,6 +36,8 @@ export const AttendanceHeader = ({ loading }: Props) => {
 
   const document = customer?.cpfCnpj || attendanceCpfCnpj;
 
+  console.log("ASDASDSAD", cpfMask(document));
+
   return (
     <Container align="center" justify="space-between">
       <Row align="center">
@@ -60,6 +62,7 @@ export const AttendanceHeader = ({ loading }: Props) => {
           )}
         </View>
       </Row>
+      {console.log("IDDDDDDDDDDD", customer?.id)}
       <RectButton onPress={() => navigate("CustomerRegister")}>
         {!loading ? (
           <CustomerActionLabel semibold>

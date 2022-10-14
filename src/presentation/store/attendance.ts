@@ -51,7 +51,7 @@ const initialState: AttendanceState = {
   productAmount: 0,
 };
 
-export const useAttendanceStore = create<AttendanceState>()((set) => ({
+export const useAttendanceStore = create<AttendanceState>((set) => ({
   ...initialState,
   setAttendance: (data: AttendanceModel) => {
     const productAmount = data.productList.reduce(

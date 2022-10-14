@@ -1,6 +1,7 @@
 import { faker } from "@faker-js/faker";
 import { RemoteGetAttendance } from "../../../src/data/usecases/attendance/remote-get-attendance";
 import { CustomerAddressModel } from "../../../src/domain/models/address";
+import { AttendanceModel } from "../../../src/domain/models/attendance";
 import { AttendanceProductModel } from "../../../src/domain/models/product";
 import { GetAttendance } from "../../../src/domain/usecases/attendance/get-attendance";
 
@@ -95,3 +96,19 @@ export const mockGetAttendanceModel = (): GetAttendance.Model => ({
   productList,
   cpfCnpj,
 });
+
+export class GetAttendanceSpy implements GetAttendance {
+  params: GetAttendance.Params;
+  data: GetAttendance.Model = mockGetAttendanceModel();
+  callsCount: number = 0;
+
+  async get(params: GetAttendance.Params): Promise<GetAttendance.Model> {
+    this.params = params;
+    this.callsCount++;
+
+    return {
+      ...this.data,
+      id: params.id,
+    };
+  }
+}

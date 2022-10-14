@@ -134,7 +134,7 @@ export const AttendanceAddress = ({
     if ((deliveryAddress && deliveryAddress?.cep) || cep) {
       loadShippingInfo({ cep: deliveryAddress?.cep || cep });
     }
-  }, [productList, pickUpAddress]);
+  }, [productList, pickUpAddress, deliveryAddress]);
 
   return !loading ? (
     productList.length > 0 ? (

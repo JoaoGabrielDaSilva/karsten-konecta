@@ -4,7 +4,7 @@ import { PersonType } from "../../../../src/domain/models/customer";
 import { Gender } from "../../../../src/presentation/constants/enums/Gender";
 import { formatDate } from "../../../../src/presentation/utils/date/format-date";
 
-export const mockAuthenticationModel = (): GetCustomer.Model => ({
+export const mockGetCustomerModel = (): GetCustomer.Model => ({
   id: faker.random.numeric(4),
   name: faker.name.fullName(),
   email: faker.internet.email(),
@@ -29,7 +29,7 @@ export const mockAuthenticationModel = (): GetCustomer.Model => ({
 });
 
 export class GetCustomerSpy implements GetCustomer {
-  data = mockAuthenticationModel();
+  data = mockGetCustomerModel();
   params: GetCustomer.Params;
   callsCount = 0;
 

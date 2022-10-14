@@ -14,6 +14,7 @@ import { BorderlessButton } from "react-native-gesture-handler";
 import { useTheme } from "styled-components/native";
 import { RemoteGetAttendance } from "../../../data/usecases/attendance/remote-get-attendance";
 import { SalesModality } from "../../../domain/models/attendance";
+import { CustomerModel } from "../../../domain/models/customer";
 import { AttendanceProductModel } from "../../../domain/models/product";
 import { CreateAttendance } from "../../../domain/usecases/attendance/create-attendance";
 import { DeleteAttendance } from "../../../domain/usecases/attendance/delete-attendance";
@@ -96,6 +97,8 @@ export const Attendance = ({
 }: Props) => {
   const params = route.params;
 
+  console.log("params", params);
+
   const attendanceName = params?.name;
 
   const [loading, setLoading] = useState(true);
@@ -103,6 +106,8 @@ export const Attendance = ({
   const [deleting, setDeleting] = useState(false);
   const [loadingShipping, setLoadingShipping] = useState(false);
   const [updatingProduct, setUpdatingProduct] = useState(false);
+
+  const { store } = useUserStore();
   const {
     productList,
     setAttendance,
@@ -113,7 +118,6 @@ export const Attendance = ({
     ...attendance
   } = useAttendanceStore();
   const { data: customer, clearCustomer, setCustomer } = useCustomerStore();
-  const { store } = useUserStore();
 
   const { control, handleSubmit, watch } = useForm<AttendanceFormValues>({
     resolver: yupResolver(orderResponsibleSchema),
@@ -149,6 +153,10 @@ export const Attendance = ({
           ...customer,
           id: String(customer.id),
         });
+        return await getAttendanceData({
+          ...customer,
+          id: String(customer.id),
+        });
       }
 
       await getAttendanceData();
@@ -157,7 +165,7 @@ export const Attendance = ({
     }
   };
 
-  const getAttendanceData = async () => {
+  const getAttendanceData = async (customer?: CustomerModel) => {
     try {
       if (params?.id) {
         setLoading(true);
@@ -172,6 +180,8 @@ export const Attendance = ({
         });
 
         loadAttendance(retrievedAttendance.id);
+      } else {
+        createNewAttendance();
       }
     } catch (error) {
       createNewAttendance();
@@ -182,9 +192,9 @@ export const Attendance = ({
   const createNewAttendance = async () => {
     try {
       const createdAttendance = await createAttendance.create({
-        name: customer.name || attendanceName,
-        cpfCnpj: customer.cpfCnpj,
-        customerId: customer.id,
+        name: customer?.name ? customer.name : attendanceName,
+        cpfCnpj: customer?.cpfCnpj,
+        customerId: customer?.id,
         storeId: store.id,
       });
 

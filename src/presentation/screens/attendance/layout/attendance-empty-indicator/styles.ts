@@ -10,12 +10,12 @@ export const SubTitle = styled(Typography)`
   padding: 0 20px;
 
   color: ${({ theme }) => theme.color.text.secondary};
-  font-size: ${({ theme }) => theme.fontSize.lg};
+  font-size: ${({ theme }) => theme.fontSize.lg}px;
 `;
 
 export const Title = styled(Typography)`
   margin: 20px 0;
 
   color: ${({ theme }) => theme.color.text.secondary};
-  font-size: ${({ theme }) => theme.fontSize.lg};
+  font-size: ${({ theme }) => theme.fontSize.lg}px;
 `;

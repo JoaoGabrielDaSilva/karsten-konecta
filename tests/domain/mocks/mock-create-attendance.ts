@@ -21,3 +21,18 @@ export const mockRemoteCreateAttendanceModel =
       Id: id,
     },
   });
+
+export class CreateAttendanceSpy implements CreateAttendance {
+  data: CreateAttendance.Model = mockCreateAttendanceModel();
+  callsCount: number = 0;
+  params: CreateAttendance.Params;
+
+  async create(
+    params: CreateAttendance.Params
+  ): Promise<CreateAttendance.Model> {
+    this.params = params;
+    this.callsCount++;
+
+    return this.data;
+  }
+}
