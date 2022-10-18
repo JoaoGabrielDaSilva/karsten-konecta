@@ -126,15 +126,17 @@ export const AttendanceAddress = ({
     [productList, pickUpAddress]
   );
 
-  useEffect(() => {
-    if (!productList || productList.length === 0) return;
+  // useEffect(() => {
+  //   if (productList && productList.length > 0) {
+  //     console.log("CHEGOU ONDE NAO ERA 2", productList);
 
-    const cep = watch("cep");
+  //     const cep = watch("cep");
 
-    if ((deliveryAddress && deliveryAddress?.cep) || cep) {
-      loadShippingInfo({ cep: deliveryAddress?.cep || cep });
-    }
-  }, [productList, pickUpAddress, deliveryAddress]);
+  //     if ((deliveryAddress && deliveryAddress?.cep) || cep) {
+  //       loadShippingInfo({ cep: deliveryAddress?.cep || cep });
+  //     }
+  //   }
+  // }, [productList, pickUpAddress, deliveryAddress]);
 
   return !loading ? (
     productList.length > 0 ? (

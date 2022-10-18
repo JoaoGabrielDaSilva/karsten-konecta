@@ -5,7 +5,7 @@ import { Row, Typography } from "../../utils";
 
 export const Container = styled(Row)`
   width: 100%;
-  height: 90px;
+  height: 70px;
 
   background-color: ${({ theme }) => theme.color.background.primary};
 

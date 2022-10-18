@@ -22,9 +22,6 @@ jest.mock("@react-navigation/native", () => {
 
   return {
     ...actualNav,
-    DrawerActions: {
-      openDrawer: () => mockedOpenDrawer(),
-    },
   };
 });
 
@@ -59,7 +56,7 @@ describe("StackNavbar", () => {
   afterEach(() => mockedOpenDrawer.mockClear());
 
   it("should toggle drawer", async () => {
-    const { sut } = makeSut({
+    const { sut, data } = makeSut({
       drawer: true,
     });
 
@@ -69,7 +66,10 @@ describe("StackNavbar", () => {
       })
     );
 
-    expect(mockedOpenDrawer).toHaveBeenCalledTimes(1);
+    expect(data.navigation.dispatch).toHaveBeenCalledTimes(1);
+    expect(data.navigation.dispatch).toHaveBeenCalledWith(
+      DrawerActions.openDrawer
+    );
   });
   it("should show title", async () => {
     const title = faker.random.word();

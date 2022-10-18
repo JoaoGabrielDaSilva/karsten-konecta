@@ -33,13 +33,14 @@ const ROUTES: Route[] = [
 ];
 
 export const BottomTab = () => {
-  const { getState, reset } =
+  const { getState, navigate } =
     useNavigation<NavigationProp<RootPrivateStackParamList>>();
   const { routes, index } = getState();
   const activeRoute = routes[index]?.name;
 
   const handlePress = (initialRoute: keyof RootPrivateStackParamList) => {
-    reset({ routes: [{ name: initialRoute }] });
+    // reset({ routes: [{ name: initialRoute }] });
+    navigate(initialRoute);
   };
 
   return (

@@ -1,4 +1,5 @@
 import React, { RefObject, useRef, useState } from "react";
+import { TouchableOpacity } from "react-native";
 
 import {
   Center,
@@ -74,10 +75,9 @@ export const StackSearchNavbar = ({
     <Container align="center">
       <HeaderLeft>
         {((canGoBack() && backArrow) || headerLeftIcon) && (
-          <LeftIcon
-            name={headerLeftIcon || "chevron-left"}
-            onPress={handleBackArrowPress}
-          />
+          <TouchableOpacity onPress={handleBackArrowPress}>
+            <LeftIcon name={headerLeftIcon || "chevron-left"} />
+          </TouchableOpacity>
         )}
         <Center>
           <StyledTextInput

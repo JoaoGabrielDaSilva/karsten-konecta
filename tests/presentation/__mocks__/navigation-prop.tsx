@@ -6,7 +6,7 @@ import { RootPrivateStackParamList } from "../../../src/presentation/routes";
 export function mockNavigationProps<
   Route extends keyof RootPrivateStackParamList
 >(
-  name: keyof RootPrivateStackParamList,
+  name?: keyof RootPrivateStackParamList,
   params?: Pick<RouteProp<RootPrivateStackParamList, Route>, "params">
 ): StackScreenProps<RootPrivateStackParamList, Route> {
   return {

@@ -34,13 +34,16 @@ export const StackNavbar = ({
   drawer,
   rightIconsDisabled,
 }: StackNavbarProps) => {
-  const { canGoBack, goBack } = navigation;
+  const { canGoBack, goBack, dispatch } = navigation;
 
   return (
     <Container align="center">
       <HeaderLeft>
         {((canGoBack() && backArrow) || headerLeftIcon) && (
-          <TouchableOpacity onPress={onLeftIconPress || goBack}>
+          <TouchableOpacity
+            onPress={onLeftIconPress || goBack}
+            hitSlop={{ top: 10, left: 10, right: 10, bottom: 10 }}
+          >
             <HeaderIcon name={headerLeftIcon || "chevron-left"} />
           </TouchableOpacity>
         )}
@@ -58,7 +61,7 @@ export const StackNavbar = ({
           </TouchableOpacity>
         )}
         {drawer && (
-          <BorderlessButton onPress={DrawerActions.openDrawer}>
+          <BorderlessButton onPress={() => dispatch(DrawerActions.openDrawer)}>
             <HeaderIcon name="menu" />
           </BorderlessButton>
         )}

@@ -27,12 +27,12 @@ export const LeftSide = styled(Row)`
 `;
 
 export const Label = styled(Typography)<{ color: string }>`
-  font-size: ${({ theme }) => theme.fontSize.lg}px;
+  font-size: ${({ theme }) => theme.fontSize.md}px;
   color: ${({ theme, color }) => color || theme.color.text.secondary};
 `;
 
 export const Value = styled(Typography)<{ color: string }>`
-  font-size: ${({ theme }) => theme.fontSize.lg}px;
+  font-size: ${({ theme }) => theme.fontSize.md}px;
   color: ${({ theme, color }) => color || theme.color.text.secondary};
 `;
 

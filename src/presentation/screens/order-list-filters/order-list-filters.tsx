@@ -1,5 +1,6 @@
 import { StackScreenProps } from "@react-navigation/stack";
 import { useEffect } from "react";
+import { View } from "react-native";
 import { useForm } from "react-hook-form";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview";
 

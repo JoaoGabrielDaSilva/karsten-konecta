@@ -19,5 +19,5 @@ export const ItemContainer = styled.View`
 export const MenuItem = styled(ListRow).attrs(({ theme }) => ({
   color: theme.color.text.primary,
 }))`
-  padding: ${({ theme }) => theme.spacing.xxl}px 0px;
+  padding: ${({ theme }) => theme.spacing.xl}px 0px;
 `;

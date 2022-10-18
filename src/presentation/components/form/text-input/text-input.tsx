@@ -59,7 +59,7 @@ export const TEXT_INPUT_PLACEHOLDER_POSITIONS = {
   },
   [InputState.UNFOCUSED]: {
     left: 20,
-    top: width * 0.15 * 0.3,
+    top: width * 0.15 * 0.5 - 12,
   },
 };
 
@@ -311,7 +311,10 @@ export const TextInput = React.forwardRef(
                   <PlaceholderContainer
                     activeOpacity={1}
                     onPress={() => ref?.current?.focus()}
-                    style={placeholderContainerStyles}
+                    style={[
+                      placeholderContainerStyles,
+                      { zIndex: isFocused ? 10 : -1 },
+                    ]}
                   >
                     <Placeholder
                       testID={`${testID}-placeholder`}

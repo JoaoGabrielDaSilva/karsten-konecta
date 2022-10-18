@@ -102,7 +102,10 @@ export const CustomerSearch = ({
 
   return (
     <Container>
-      <ScrollView showsVerticalScrollIndicator={false}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="never"
+      >
         <Form>
           <StyledTextInput
             control={control}
