@@ -1,4 +1,4 @@
-import React from "react";
+import React, { ReactNode } from "react";
 
 import { Container, HeaderIcon, HeaderLeft, HeaderRight } from "./styles";
 import { BorderlessButton } from "react-native-gesture-handler";
@@ -21,6 +21,7 @@ export type StackNavbarProps = Pick<
   backArrow?: boolean;
   drawer?: boolean;
   rightIconsDisabled?: boolean;
+  renderHeaderRight?: () => ReactNode | ReactNode[];
 };
 
 export const StackNavbar = ({
@@ -33,6 +34,7 @@ export const StackNavbar = ({
   backArrow = true,
   drawer,
   rightIconsDisabled,
+  renderHeaderRight,
 }: StackNavbarProps) => {
   const { canGoBack, goBack, dispatch } = navigation;
 
@@ -52,7 +54,8 @@ export const StackNavbar = ({
         {options.title}
       </Typography>
       <HeaderRight>
-        {rightIcon && (
+        {renderHeaderRight && renderHeaderRight()}
+        {rightIcon && !renderHeaderRight && (
           <TouchableOpacity
             disabled={rightIconsDisabled}
             onPress={() => onRightIconPress && onRightIconPress()}
@@ -60,7 +63,7 @@ export const StackNavbar = ({
             <HeaderIcon name={rightIcon} disabled={rightIconsDisabled} />
           </TouchableOpacity>
         )}
-        {drawer && (
+        {drawer && !renderHeaderRight && (
           <BorderlessButton onPress={() => dispatch(DrawerActions.openDrawer)}>
             <HeaderIcon name="menu" />
           </BorderlessButton>

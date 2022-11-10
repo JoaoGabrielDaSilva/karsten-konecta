@@ -7,6 +7,11 @@ import { NavigationContainer } from "@react-navigation/native";
 import { PublicRoutes } from "./public-routes";
 import { StatusBar } from "expo-status-bar";
 import Toast from "react-native-toast-message";
+import {
+  SafeAreaProvider,
+  useSafeAreaFrame,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 
 export const Router = () => {
   const theme = useTheme();

@@ -1,5 +1,5 @@
 import React, { RefObject, useRef, useState } from "react";
-import { TouchableOpacity } from "react-native";
+import { TouchableOpacity, TouchableWithoutFeedback } from "react-native";
 
 import {
   Center,
@@ -10,6 +10,8 @@ import {
   RightIcon,
   LeftIcon,
   StyledTextInput,
+  FakeInputContainer,
+  FakeInputPlaceholder,
 } from "./styles";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -32,6 +34,8 @@ export type StackSearchNavbarProps = Pick<StackHeaderProps, "navigation"> & {
   defaultFocus?: boolean;
   onFocus?: () => void;
   onBlur?: () => void;
+  onPress?: () => void;
+  fakeInput?: boolean;
 };
 
 export const StackSearchNavbar = ({
@@ -47,6 +51,8 @@ export const StackSearchNavbar = ({
   defaultFocus,
   onFocus,
   onBlur,
+  onPress,
+  fakeInput,
 }: StackSearchNavbarProps) => {
   const { canGoBack, goBack } = navigation;
 
@@ -80,18 +86,24 @@ export const StackSearchNavbar = ({
           </TouchableOpacity>
         )}
         <Center>
-          <StyledTextInput
-            ref={inputRef}
-            size="small"
-            control={control}
-            name="search"
-            onFocus={handleFocus}
-            onBlur={handleBlur}
-            disableFloatingPlaceholder
-            placeholder="Buscar produtos..."
-            onSubmitEditing={handleSubmit}
-            autoFocus={defaultFocus}
-          />
+          {!fakeInput ? (
+            <StyledTextInput
+              ref={inputRef}
+              size="small"
+              control={control}
+              name="search"
+              onFocus={handleFocus}
+              onBlur={handleBlur}
+              disableFloatingPlaceholder
+              placeholder="Buscar produtos..."
+              onSubmitEditing={handleSubmit}
+              autoFocus={defaultFocus}
+            />
+          ) : (
+            <FakeInputContainer onPress={onPress} activeOpacity={1}>
+              <FakeInputPlaceholder>Buscar produtos...</FakeInputPlaceholder>
+            </FakeInputContainer>
+          )}
         </Center>
       </HeaderLeft>
       <HeaderRight>

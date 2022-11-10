@@ -1,5 +1,5 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Platform, FlatList } from "react-native";
 import { useTheme } from "styled-components/native";
 import { AddProduct } from "../../../domain/usecases/attendance/add-product";
@@ -37,6 +37,7 @@ import { Row, SectionTitle } from "../../components/utils";
 import { ProductCardLoader } from "../../components/cards/product-card/loader/product-card-loader";
 import { BottomTab } from "../../components/navigation/bottom-tab/bottom-tab";
 import { ProductGridLoader } from "./layout/product-grid/loader/product-grid-loader";
+import { ScrollView } from "react-native-gesture-handler";
 
 type NavigationProps = StackScreenProps<
   RootPrivateStackParamList,
@@ -69,6 +70,8 @@ export const ProductDetails = ({
 
   const { store } = useUserStore();
 
+  const scrollviewRef = useRef<ScrollView>();
+
   const [selectedProductColorCode, setSelectedProductColorCode] =
     useState<string>(code);
   const [selectedProductSizeCode, setSelectedProductSizeCode] =
@@ -92,7 +95,11 @@ export const ProductDetails = ({
   const handleChangeProductSizeCode = (code: string) =>
     setSelectedProductSizeCode(code);
 
-  const handleChangeProduct = (code: string) => loadProductDetails(code);
+  const handleChangeProduct = (code: string) => {
+    loadProductDetails(code);
+    setProductAmount(1);
+    scrollviewRef.current.scrollTo({ y: 0 });
+  };
 
   const handleAddProduct = async () => {
     try {
@@ -171,6 +178,7 @@ export const ProductDetails = ({
   return (
     <Container>
       <KeyboardAwareScrollView
+        ref={scrollviewRef}
         contentContainerStyle={{
           paddingBottom: theme.spacing.xxl * 2,
         }}

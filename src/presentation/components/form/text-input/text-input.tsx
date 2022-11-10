@@ -170,8 +170,8 @@ export const TextInput = React.forwardRef(
       if (!disableFloatingPlaceholder) {
         state.value = withTiming(InputState.FOCUSED);
       }
-
       onFocus && onFocus(e);
+
       setIsFocused(true);
     };
 

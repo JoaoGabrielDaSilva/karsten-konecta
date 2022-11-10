@@ -27,18 +27,17 @@ import TableIcon from "../../assets/icons/catalog/table.svg";
 import BathIcon from "../../assets/icons/catalog/bath.svg";
 import BeachIcon from "../../assets/icons/catalog/beach.svg";
 import MenuIcon from "../../assets/icons/catalog/all.svg";
-import {
-  BottomSheet,
-  BottomSheetRef,
-} from "../../components/bottom-sheet/bottom-sheet";
+
 import {
   BottomSheetFlatList,
+  BottomSheetModal,
   BottomSheetView,
   useBottomSheetDynamicSnapPoints,
 } from "@gorhom/bottom-sheet";
 import { ListRow } from "../../components/list/list-row/list-row";
 import { useProductListFiltersStore } from "../../store/product-list-filters";
 import { GetProductCategories } from "../../../domain/usecases/product/get-product-categories";
+import { BottomSheet } from "../../components/bottom-sheet/bottom-sheet";
 
 type Props = StackScreenProps<RootPrivateStackParamList, "Catalog"> & {
   getRecentProducts: GetRecentProducts;
@@ -66,7 +65,7 @@ const fixedCategories = [
 ];
 
 export const Catalog = ({
-  navigation: { setOptions, push },
+  navigation: { setOptions, navigate },
   getRecentProducts,
   getBestSellersProducts,
   getProductCategories,
@@ -75,7 +74,7 @@ export const Catalog = ({
   const { store } = useUserStore();
   const { control } = useForm<{ search: string }>();
 
-  const bottomSheetRef = useRef<BottomSheetRef>();
+  const bottomSheetRef = useRef<BottomSheetModal>();
 
   const [refreshing, setRefreshing] = useState(false);
 
@@ -138,14 +137,14 @@ export const Catalog = ({
   const handleCategoryClick = (category: string) => {
     setFilters({
       category: {
-        key: "category",
+        filterKey: "category",
         label: "Categoria",
         apiValue: category,
         value: category,
       },
     });
 
-    push("ProductList");
+    navigate("ProductList");
   };
 
   useEffect(() => {
@@ -155,7 +154,8 @@ export const Catalog = ({
           {...props}
           control={control}
           backArrow={false}
-          onFocus={() => push("ProductList", { defaultFocus: true })}
+          fakeInput
+          onPress={() => navigate("ProductList", { defaultFocus: true })}
           drawer
         />
       ),
@@ -170,7 +170,7 @@ export const Catalog = ({
   };
 
   const handlePressProduct = (product: ProductModel) => {
-    push("ProductDetails", { code: product.code, ean: product.ean });
+    navigate("ProductDetails", { code: product.code, ean: product.ean });
   };
 
   return (
@@ -192,7 +192,7 @@ export const Catalog = ({
         {!loadingCategories && !refreshingCategories ? (
           <TouchableOpacity
             onPress={() => {
-              bottomSheetRef?.current?.open();
+              bottomSheetRef?.current?.present();
             }}
             activeOpacity={0.5}
           >
@@ -263,10 +263,7 @@ export const Catalog = ({
       <BottomTab />
       <BottomSheet
         ref={bottomSheetRef}
-        onClose={() => {
-          bottomSheetRef?.current?.close();
-        }}
-        snapPoints={["90%"]}
+        snapPoints={["60%"]}
         enableOverDrag={false}
       >
         <BottomSheetFlatList
@@ -281,6 +278,9 @@ export const Catalog = ({
                 onPress={() => {
                   handleCategoryClick(item.value);
                   bottomSheetRef?.current?.close();
+                }}
+                textStyle={{
+                  fontWeight: "bold",
                 }}
               />
             </TouchableOpacity>

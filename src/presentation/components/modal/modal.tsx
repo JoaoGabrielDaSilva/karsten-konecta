@@ -6,7 +6,11 @@ import {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import { Modal as RNModal, TouchableOpacity } from "react-native";
+import {
+  ActivityIndicator,
+  Modal as RNModal,
+  TouchableOpacity,
+} from "react-native";
 import {
   ButtonContainer,
   Container,
@@ -29,6 +33,7 @@ export type ModalProps = {
   confirm?: () => void;
   cancel?: () => void;
   testID?: string;
+  loading?: boolean;
 };
 
 const ANIMATION_DURATION = 250;
@@ -42,7 +47,7 @@ export const Modal = ({
   cancel,
   title,
   text,
-
+  loading,
   ok,
   testID,
 }: ModalProps) => {
@@ -56,8 +61,8 @@ export const Modal = ({
     transform: [{ scale: transition.value }],
   }));
 
-  const closeModalMiddleware = (fn: () => void) => {
-    fn();
+  const closeModalMiddleware = (fn?: () => void) => {
+    fn && fn();
     setTimeout(() => {
       setIsVisible(false);
     }, ANIMATION_DURATION);
@@ -65,7 +70,7 @@ export const Modal = ({
   };
 
   useEffect(() => {
-    if (!visible) return;
+    if (!visible) return closeModalMiddleware();
     setIsVisible(true);
     transition.value = withTiming(1, { duration: ANIMATION_DURATION });
   }, [visible]);
@@ -88,19 +93,29 @@ export const Modal = ({
             <TopSide>
               <StyledSectionTitle>{title}</StyledSectionTitle>
               <Text>{text}</Text>
-            </TopSide>
-            <ButtonContainer
-              align="center"
-              justify={ok ? "center" : "space-between"}
-            >
-              {ok ? (
-                <Button
-                  text="OK"
-                  onPress={() => closeModalMiddleware(ok)}
-                  containerStyle={{ flex: 1 }}
+              {loading && (
+                <ActivityIndicator
+                  color={theme.color.text.primary}
+                  style={{
+                    margin: 30,
+                  }}
+                  size="large"
                 />
-              ) : (
-                <>
+              )}
+            </TopSide>
+            {(ok || cancel || confirm) && (
+              <ButtonContainer
+                align="center"
+                justify={ok ? "center" : "space-between"}
+              >
+                {ok && (
+                  <Button
+                    text="OK"
+                    onPress={() => closeModalMiddleware(ok)}
+                    containerStyle={{ flex: 1 }}
+                  />
+                )}
+                {cancel && (
                   <Button
                     text={cancelLabel}
                     containerStyle={{ marginRight: theme.spacing.lg, flex: 1 }}
@@ -112,14 +127,16 @@ export const Modal = ({
                     }}
                     onPress={() => closeModalMiddleware(cancel)}
                   />
+                )}
+                {confirm && (
                   <Button
                     text={confirmLabel}
                     onPress={() => closeModalMiddleware(confirm)}
                     containerStyle={{ flex: 1 }}
                   />
-                </>
-              )}
-            </ButtonContainer>
+                )}
+              </ButtonContainer>
+            )}
           </Container>
         </TouchableOpacity>
       </Overlay>

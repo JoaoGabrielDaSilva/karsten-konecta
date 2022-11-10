@@ -41,7 +41,7 @@ const initialState: AttendanceState = {
   id: null,
   name: "",
   cpfCnpj: "",
-  customer: null,
+  hasCustomer: false,
   deliveryAddress: null,
   pickUpAddress: null,
   deliveryMode: DeliveryMode.DELIVERY,

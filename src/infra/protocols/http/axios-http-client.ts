@@ -29,11 +29,12 @@ export class AxiosHttpClient implements HttpClient {
 }
 
 axios.interceptors.request.use((config) => {
-  // console.log("API", {
-  //   url: config.url,
-  //   params: config.params,
-  //   data: config.data,
-  // });
+  console.log("API", {
+    url: config.url,
+    params: config.params,
+    data: config.data,
+    headers: config.headers,
+  });
 
   return config;
 });

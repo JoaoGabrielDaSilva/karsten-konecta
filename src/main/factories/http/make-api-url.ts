@@ -1,4 +1,4 @@
-const ENV = "PRD";
+const ENV = "HML";
 
 const URLs = {
   auth: `https://m2pfccboh1.execute-api.us-east-1.amazonaws.com/${ENV}/v1`,

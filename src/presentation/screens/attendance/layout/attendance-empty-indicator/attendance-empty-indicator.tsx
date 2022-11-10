@@ -7,7 +7,7 @@ import { Container, Title, SubTitle } from "./styles";
 export const AttendanceEmptyIndicator = () => {
   return (
     <Container>
-      {/* <Image /> */}
+      <Image />
       <Title semibold>Este carrinho está vazio.</Title>
       <SubTitle semibold>Adicione produtos para realizar a venda.</SubTitle>
     </Container>

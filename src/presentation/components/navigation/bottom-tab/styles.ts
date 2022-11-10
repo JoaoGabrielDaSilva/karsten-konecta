@@ -1,11 +1,12 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { Platform } from "react-native";
 import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
 import { Row, Typography } from "../../utils";
 
 export const Container = styled(Row)`
   width: 100%;
-  height: 70px;
+  height: ${Platform.OS === "ios" ? 90 : 70}px;
 
   background-color: ${({ theme }) => theme.color.background.primary};
 

@@ -21,6 +21,7 @@ import {
 export type OrderCardProps = GetOrderList.OrderListItem & {
   style?: StyleProp<ViewStyle>;
   onPress?: (orderId: string) => void;
+  onIconPress?: () => void;
 };
 
 export const OrderCard = ({
@@ -31,6 +32,7 @@ export const OrderCard = ({
   createdAt,
   totalProductsIn,
   onPress,
+  onIconPress,
   style,
 }: OrderCardProps) => {
   const theme = useTheme();
@@ -46,6 +48,7 @@ export const OrderCard = ({
             vertical: theme.spacing.lg,
             horizontal: theme.spacing.lg,
           }}
+          onPress={onIconPress}
         >
           <CopyIcon name="content-copy" />
         </BorderlessButton>

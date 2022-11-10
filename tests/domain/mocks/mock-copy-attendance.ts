@@ -1,5 +1,5 @@
 import { faker } from "@faker-js/faker";
-import { CopyAttendance } from "../../../src/domain/usecases/attendance/copy-attendance";
+import { CopyAttendance } from "../../../src/domain/usecases/attendance/duplicate-order";
 
 export const mockCopyAttendanceParams = (): CopyAttendance.Params => ({
   id: faker.random.numeric(4),

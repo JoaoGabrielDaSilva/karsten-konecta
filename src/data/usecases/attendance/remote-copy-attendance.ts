@@ -1,29 +1,42 @@
+import { string } from "yup";
 import { UnexpectedError } from "../../../domain/errors/unexpected-error";
-import { CopyAttendance } from "../../../domain/usecases/attendance/copy-attendance";
+import { DuplicateOrder } from "../../../domain/usecases/attendance/duplicate-order";
 import { HttpClient, HttpStatusCode } from "../../protocols/http/http-client";
 
-export class RemoteCopyAttendance implements CopyAttendance {
+export class RemoteDuplicateOrder implements DuplicateOrder {
   constructor(
     private readonly url: string,
-    private readonly httpClient: HttpClient<CopyAttendance.Model>
+    private readonly httpClient: HttpClient<RemoteDuplicateOrder.Model>
   ) {}
 
-  async copy(params: CopyAttendance.Params): Promise<CopyAttendance.Model> {
+  async execute({
+    attendanceId,
+    storeId,
+  }: DuplicateOrder.Params): Promise<DuplicateOrder.Model> {
     const httpResponse = await this.httpClient.request({
       url: this.url,
       method: "post",
-      body: params,
+      body: {
+        IdAtendimento: String(attendanceId),
+        IdPessoaLoja: storeId,
+      },
     });
 
     switch (httpResponse.statusCode) {
       case HttpStatusCode.ok:
-        return httpResponse.body;
+        return {
+          id: httpResponse.body.Result.Id,
+        };
       default:
         throw new UnexpectedError();
     }
   }
 }
 
-export namespace RemoteCopyAttendance {
-  export type Model = CopyAttendance.Model;
+export namespace RemoteDuplicateOrder {
+  export type Model = {
+    Result: {
+      Id: string;
+    };
+  };
 }

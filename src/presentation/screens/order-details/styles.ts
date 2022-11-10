@@ -1,3 +1,5 @@
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { RFValue } from "react-native-responsive-fontsize";
 import styled from "styled-components/native";
 import { Address } from "../../components/address/address";
 import { ListProduct } from "../../components/list/list-product/list-product";
@@ -44,4 +46,13 @@ export const StyledListProduct = styled(ListProduct)`
 
 export const StyledListProductLoader = styled(ListProductLoader)`
   padding: ${({ theme }) => theme.spacing.lg}px;
+`;
+
+export const HeaderIcon = styled(MaterialCommunityIcons)<{
+  disabled?: boolean;
+}>`
+  font-size: ${({ theme }) => RFValue(theme.fontSize.lg + 2)}px;
+  color: ${({ theme }) => theme.color.text.primary};
+
+  opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
 `;

@@ -1,9 +1,10 @@
 import { StackScreenProps } from "@react-navigation/stack";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ListRenderItemInfo } from "react-native";
 import { useTheme } from "styled-components/native";
 import { GetOrderList } from "../../../domain/usecases/attendance/get-order-list";
 import { OrderCardLoader } from "../../components/cards/order-card/loader/order-card-loader";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 import {
   OrderCard,
@@ -20,20 +21,26 @@ import { useOrderListFiltersStore } from "../../store/order-list-filters";
 import { useUserStore } from "../../store/user";
 
 import { Container } from "./styles";
+import { DuplicateOrder } from "../../../domain/usecases/attendance/duplicate-order";
+import { Modal } from "../../components/modal/modal";
 
 type NavigationProps = StackScreenProps<RootPrivateStackParamList, "OrderList">;
 
 type Props = NavigationProps & {
   getOrderList: GetOrderList;
+  duplicateOrder: DuplicateOrder;
 };
 
 export const OrderList = ({
   navigation: { navigate },
   getOrderList,
+  duplicateOrder,
 }: Props) => {
   const theme = useTheme();
   const { filters, removeFilter, clearFilters } = useOrderListFiltersStore();
   const { store } = useUserStore();
+
+  const [duplicatingOrder, setDuplicatingOrder] = useState(false);
 
   const { data, loading, refreshing, page, totalResults, onEndReached, reset } =
     usePaginatedList({
@@ -69,6 +76,27 @@ export const OrderList = ({
     }
   }
 
+  const handleDuplicateOrder = async (
+    attendanceId: string,
+    cpfCnpj: string
+  ) => {
+    try {
+      setDuplicatingOrder(true);
+      const { id } = await duplicateOrder.execute({
+        storeId: store.id,
+        attendanceId,
+      });
+
+      setDuplicatingOrder(false);
+      navigate("Attendance", {
+        id,
+      });
+    } catch (error) {
+      setDuplicatingOrder(false);
+      console.log(error.response.data);
+    }
+  };
+
   const goToOrderDeails = (orderId: string) =>
     navigate("OrderDetails", {
       attendanceId: orderId,
@@ -82,6 +110,12 @@ export const OrderList = ({
 
   return (
     <Container>
+      <Modal
+        title="Aguarde!"
+        text="Aguarde enquanto seu pedido está sendo duplicado!"
+        visible={duplicatingOrder}
+        loading={duplicatingOrder}
+      />
       <PaginatedList
         data={data}
         filters={filters}
@@ -98,6 +132,7 @@ export const OrderList = ({
             {...item}
             style={{ marginBottom: theme.spacing.lg }}
             onPress={goToOrderDeails}
+            onIconPress={() => handleDuplicateOrder(item.attendanceId)}
           />
         )}
         loaderComponent={

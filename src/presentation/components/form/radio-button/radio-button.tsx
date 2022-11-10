@@ -15,13 +15,19 @@ export const FormRadioButton = ({
   label,
   onPress,
   testID,
+  name,
+  defaultValue,
+  control,
   ...props
 }: FormRadioButtonProps) => {
   return (
     <Controller
-      {...props}
+      name={name}
+      defaultValue={defaultValue}
+      control={control}
       render={({ field: { value, onChange } }) => (
         <RadioButton
+          {...props}
           variant="small"
           active={value}
           label={label}

@@ -29,8 +29,16 @@ export class RemoteGetAttendance implements GetAttendance {
           name: result?.Consumidor
             ? result?.Consumidor.NomeConsumidor
             : result.NomeAtendimento,
+          hasCustomer: !!result?.Consumidor?.CpfConsumidor,
+          customer: result?.Consumidor
+            ? {
+                cpfCnpj: result.Consumidor.CpfConsumidor,
+                id: result.Consumidor?.IdCosumidor,
+                name: result.Consumidor.NomeConsumidor,
+              }
+            : null,
           cpfCnpj:
-            result?.CpfCnpjConsumidor || result?.Consumidor.CpfConsumidor,
+            result?.CpfCnpjConsumidor || result?.Consumidor?.CpfConsumidor,
           productList: result.ListaAtendimentoItens.map((product) => ({
             id: String(product.IdAtendimentoItem),
             code: product.Produto.Codigo,
@@ -85,6 +93,7 @@ export namespace RemoteGetAttendance {
     Result: {
       CpfCnpjConsumidor: string;
       Consumidor: {
+        IdCosumidor: string;
         CpfConsumidor: string;
         NomeConsumidor: string;
       };

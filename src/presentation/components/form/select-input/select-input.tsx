@@ -1,4 +1,5 @@
-import { BottomSheetFlatList } from "@gorhom/bottom-sheet";
+import { BottomSheetFlatList, BottomSheetModal } from "@gorhom/bottom-sheet";
+import BottomSheetRef from "@gorhom/bottom-sheet";
 import React, { RefObject, useEffect, useMemo, useRef, useState } from "react";
 import { useImperativeHandle } from "react";
 import { Control, Controller, useController } from "react-hook-form";
@@ -20,7 +21,7 @@ import {
   withTiming,
 } from "react-native-reanimated";
 import { useTheme } from "styled-components/native";
-import { BottomSheet, BottomSheetRef } from "../../bottom-sheet/bottom-sheet";
+import { BottomSheet } from "../../bottom-sheet/bottom-sheet";
 
 import { ListRow } from "../../list/list-row/list-row";
 import {
@@ -111,7 +112,7 @@ export const SelectInput = React.forwardRef(
       [value]
     );
 
-    const bottomSheetRef = useRef<BottomSheetRef>();
+    const bottomSheetRef = useRef<BottomSheetModal>();
 
     const clearValue = () => {
       onChange("");
@@ -119,7 +120,7 @@ export const SelectInput = React.forwardRef(
 
     const openModal = () => {
       onFocus();
-      bottomSheetRef?.current?.open();
+      bottomSheetRef?.current?.present();
     };
 
     const closeModal = () => {
@@ -234,8 +235,9 @@ export const SelectInput = React.forwardRef(
         </Container>
         <BottomSheet
           ref={bottomSheetRef}
-          snapPoints={options?.length > 5 ? ["95%"] : ["50%", "95%"]}
-          onClose={onBlur}
+          snapPoints={["50%"]}
+          onDismiss={onBlur}
+          enablePanDownToClose
         >
           <BottomSheetFlatList
             data={options}

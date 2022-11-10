@@ -105,7 +105,10 @@ export const CustomerRegister = ({
   } = useForm({
     resolver: yupResolver(customerRegisterSchema),
     shouldFocusError: true,
-    defaultValues: customer,
+    defaultValues: {
+      ...customer,
+      cpfCnpj: customer?.cpfCnpj || attendance?.cpfCnpj,
+    },
   });
 
   const onSubmit = async (data: FormValues) => {

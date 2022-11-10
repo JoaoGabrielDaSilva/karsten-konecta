@@ -80,7 +80,9 @@ export const NewAttendance = ({ navigation, getCustomer }: Props) => {
       });
     } catch (error) {
       setLoading(false);
-      console.log(error);
+      setCustomer({ cpfCnpj });
+      console.log(error.response);
+
       navigation.navigate("NewNoCustomerAttendance");
     }
   };
@@ -103,6 +105,7 @@ export const NewAttendance = ({ navigation, getCustomer }: Props) => {
             control={control}
             name="naturalPerson"
             onPress={() => setValue("legalPerson", false)}
+            disabled={loading}
           />
           <FormRadioButton
             variant="small"
@@ -110,6 +113,7 @@ export const NewAttendance = ({ navigation, getCustomer }: Props) => {
             control={control}
             name="legalPerson"
             onPress={() => setValue("naturalPerson", false)}
+            disabled={loading}
           />
         </StyledRow>
         <CustomTextInput

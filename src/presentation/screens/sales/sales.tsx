@@ -2,8 +2,10 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import { StackScreenProps } from "@react-navigation/stack";
 import React from "react";
 import { BottomTab } from "../../components/navigation/bottom-tab/bottom-tab";
+import { ToolTip } from "../../components/tooltip/Tooltip";
 import { RootPrivateStackParamList } from "../../routes";
 import { Container, ItemContainer, MenuItem } from "./styles";
+import { Text, View } from "react-native";
 
 type NavigationProps = StackScreenProps<RootPrivateStackParamList, "Sales">;
 

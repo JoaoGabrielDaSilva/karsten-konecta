@@ -8,6 +8,7 @@ import { Theme } from "./src/presentation/constants/enums/Theme";
 import { Router } from "./src/presentation/routes/router";
 import { useThemeStore } from "./src/presentation/store/theme";
 import { darkTheme, lightTheme } from "./src/presentation/themes";
+import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
 
 export default function App() {
   const { theme } = useThemeStore();
@@ -16,7 +17,9 @@ export default function App() {
     <View style={{ flex: 1 }}>
       <ThemeProvider theme={theme === Theme.DARK ? darkTheme : lightTheme}>
         <QueryClientProvider client={queryClient}>
-          <Router />
+          <BottomSheetModalProvider>
+            <Router />
+          </BottomSheetModalProvider>
         </QueryClientProvider>
       </ThemeProvider>
     </View>

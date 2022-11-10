@@ -1,7 +1,10 @@
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
+import { Dimensions, TouchableOpacity } from "react-native";
 import styled from "styled-components/native";
 import { TextInput } from "../../form/text-input/text-input";
 import { Row } from "../../utils";
+
+const { width } = Dimensions.get("window");
 
 export const Container = styled(Row)`
   background-color: ${({ theme }) => theme.color.background.primary};
@@ -15,17 +18,6 @@ export const Container = styled(Row)`
 export const Center = styled.View`
   flex: 1;
 `;
-
-export const HeaderLeft = styled(Row).attrs(() => ({
-  align: "center",
-}))`
-  flex: 1;
-`;
-
-export const HeaderRight = styled(Row).attrs(() => ({
-  align: "center",
-  justify: "flex-end",
-}))``;
 
 export const LeftIcon = styled(MaterialCommunityIcons)`
   font-size: ${({ theme }) => theme.fontSize.xl}px;
@@ -48,3 +40,34 @@ export const DrawerIcon = styled(MaterialCommunityIcons)`
 `;
 
 export const StyledTextInput = styled(TextInput)``;
+
+export const FakeInputContainer = styled(TouchableOpacity)<{
+  editable?: boolean;
+}>`
+  height: ${width * 0.11}px;
+
+  background-color: ${({ theme }) => theme.color.background.primary};
+
+  border-radius: ${({ theme }) => theme.radii.sm}px;
+
+  border: 1.5px solid ${({ theme }) => theme.color.background.secondary};
+
+  justify-content: center;
+
+  padding: ${({ theme }) => theme.spacing.md}px;
+`;
+
+export const FakeInputPlaceholder = styled.Text`
+  color: ${({ theme }) => theme.color.text.secondary};
+`;
+
+export const HeaderLeft = styled(Row).attrs(() => ({
+  align: "center",
+}))`
+  flex: 1;
+`;
+
+export const HeaderRight = styled(Row).attrs(() => ({
+  align: "center",
+  justify: "flex-end",
+}))``;

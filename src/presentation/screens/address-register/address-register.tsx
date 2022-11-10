@@ -8,6 +8,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scrollview"
 
 import { useTheme } from "styled-components/native";
 import { CustomerAddressModel } from "../../../domain/models/address";
+import { GetAttendance } from "../../../domain/usecases/attendance/get-attendance";
 import { GetAddressByCep } from "../../../domain/usecases/cep/get-address-by-cep";
 import { CreateCustomerAddress } from "../../../domain/usecases/customer/create-customer-address";
 import { EditCustomerAddress } from "../../../domain/usecases/customer/edit-customer-address";
@@ -19,7 +20,9 @@ import { TextInputRef } from "../../components/form/text-input/text-input";
 import { Toast } from "../../components/toast/toast";
 
 import { RootPrivateStackParamList } from "../../routes";
+import { useAttendanceStore } from "../../store/attendance";
 import { useCustomerStore } from "../../store/customer";
+import { useUserStore } from "../../store/user";
 import { addressRegisterSchema } from "./schema";
 import {
   Container,
@@ -39,6 +42,7 @@ type Props = NavigationProps & {
   createAddress: CreateCustomerAddress;
   editAddress: EditCustomerAddress;
   getAddressByCep: GetAddressByCep;
+  getAttendance: GetAttendance;
 };
 
 const stateOptions = [
@@ -161,10 +165,13 @@ export const AddressRegister = ({
   createAddress,
   editAddress,
   getAddressByCep,
+  getAttendance,
 }: Props) => {
   const address = route.params?.address;
 
   const { data: customer, setCustomer } = useCustomerStore();
+  const { setAttendance, ...attendance } = useAttendanceStore();
+  const { store } = useUserStore();
 
   const hasNoAddress = customer.addressList.length === 0;
   const hasOnlyOneAddress = customer.addressList.length === 1;
@@ -213,6 +220,17 @@ export const AddressRegister = ({
         title: "Sucesso!",
         message: `Endereço ${!address ? "cadastrado" : "editado"} com sucesso!`,
       });
+      if (attendance?.id) {
+        const attendanceDetails = await getAttendance.get({
+          id: String(attendance.id),
+          storeId: store.id,
+        });
+
+        setAttendance({
+          ...attendanceDetails,
+          id: String(attendanceDetails.id),
+        });
+      }
       goBack();
     } catch (error) {
       Toast({

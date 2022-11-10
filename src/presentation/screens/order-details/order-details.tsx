@@ -5,6 +5,7 @@ import { RootPrivateStackParamList } from "../../routes";
 import {
   Container,
   Content,
+  HeaderIcon,
   StyledAddress,
   StyledListProduct,
   StyledListProductLoader,
@@ -12,12 +13,14 @@ import {
   StyledListRowLoader,
   StyledSectionTitle,
 } from "./styles";
-import { ScrollView } from "react-native";
+import { ScrollView, TouchableOpacity, View, Text } from "react-native";
 import { useUserStore } from "../../store/user";
 import { useTheme } from "styled-components/native";
 import { StackNavbar } from "../../components/navigation/stack-navbar/stack-navbar";
 import { StyledSectionTitleLoader } from "../attendance/layout/attendance-address/styles";
 import { cpfMask } from "../../utils/mask/cpf-mask";
+import { Row } from "../../components/utils";
+import { ToolTip } from "../../components/tooltip/Tooltip";
 
 type NavigationProps = StackScreenProps<
   RootPrivateStackParamList,
@@ -71,11 +74,32 @@ export const OrderDetails = ({
               routes: [{ name: "Sales" }],
             })
           }
-          onRightIconPress={() =>
-            props.navigation.navigate("OrderTracking", {
-              url: order?.trackingURL,
-            })
-          }
+          renderHeaderRight={() => (
+            <Row align="center">
+              <TouchableOpacity
+                activeOpacity={0.7}
+                onPress={() =>
+                  props.navigation.navigate("OrderTracking", {
+                    url: order?.trackingURL,
+                  })
+                }
+              >
+                <HeaderIcon name="map-marker-outline" />
+              </TouchableOpacity>
+
+              <ToolTip
+                placement="bottom"
+                backgroundColor="transparent"
+                content={
+                  <View>
+                    <Text>123</Text>
+                  </View>
+                }
+              >
+                <HeaderIcon name="dots-vertical" />
+              </ToolTip>
+            </Row>
+          )}
           {...props}
         />
       ),

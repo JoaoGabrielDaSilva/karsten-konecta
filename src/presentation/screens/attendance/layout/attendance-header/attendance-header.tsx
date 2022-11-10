@@ -46,7 +46,7 @@ export const AttendanceHeader = ({ loading }: Props) => {
               <AttendanceName semibold>{name}</AttendanceName>
               {document ? (
                 <AttendanceDocument>
-                  {document.length <= 11
+                  {document.length <= 14
                     ? cpfMask(document)
                     : cnpjMask(document)}
                 </AttendanceDocument>
@@ -63,7 +63,7 @@ export const AttendanceHeader = ({ loading }: Props) => {
       <RectButton onPress={() => navigate("CustomerRegister")}>
         {!loading ? (
           <CustomerActionLabel semibold>
-            {customer?.id ? "Editar" : "Finalizar cadastro"}
+            {!!customer?.id ? "Editar" : "Finalizar cadastro"}
           </CustomerActionLabel>
         ) : (
           <Skeleton width={60} height={15} />

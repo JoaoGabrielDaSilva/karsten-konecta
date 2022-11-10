@@ -12,9 +12,14 @@ export enum SalesModality {
 export type AttendanceModel = {
   id?: string;
   name: string;
+  hasCustomer?: boolean;
   cpfCnpj: string;
   productList: AttendanceProductModel[];
-  customer?: CustomerModel;
+  customer?: {
+    name: string;
+    cpfCnpj: string;
+    id: string;
+  };
   deliveryAddress?: CustomerAddressModel;
   pickUpAddress?: StoreAddressModel;
   shipping?: ShippingModel;

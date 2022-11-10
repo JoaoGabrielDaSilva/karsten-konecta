@@ -15,7 +15,7 @@ export type RowProps = {
   align?: FlexAlignType;
   justify?: FlexJustifyType;
   style?: StyleProp<ViewStyle>;
-  children?: React.ReactNode;
+  children?: React.ReactNode | React.ReactNode[];
   testID?: string;
 };
 

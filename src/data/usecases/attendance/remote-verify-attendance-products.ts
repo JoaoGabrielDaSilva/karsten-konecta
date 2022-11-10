@@ -1,6 +1,6 @@
 import { UnexpectedError } from "../../../domain/errors/unexpected-error";
 import { SalesModality } from "../../../domain/models/attendance";
-import { CopyAttendance } from "../../../domain/usecases/attendance/copy-attendance";
+import { CopyAttendance } from "../../../domain/usecases/attendance/duplicate-order";
 import { VerifyAttendanceProducts } from "../../../domain/usecases/attendance/verify-attendance-products";
 import { HttpClient, HttpStatusCode } from "../../protocols/http/http-client";
 

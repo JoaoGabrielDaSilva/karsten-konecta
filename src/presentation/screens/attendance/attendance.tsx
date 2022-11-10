@@ -133,6 +133,10 @@ export const Attendance = ({
       storeId: store.id,
     });
 
+    if (!customer.id && attendance.hasCustomer) {
+      await handleGetCustomer(attendance.customer.cpfCnpj);
+    }
+
     setAttendance({
       ...attendance,
       id: String(id),
@@ -140,19 +144,23 @@ export const Attendance = ({
     setLoading(false);
   };
 
+  const handleGetCustomer = async (cpfCnpj: string) => {
+    const customer = await getCustomer.get({
+      storeId: store.id,
+      cpfCnpj,
+    });
+
+    setCustomer({
+      ...customer,
+      id: String(customer.id),
+    });
+  };
+
   const loadData = async () => {
     try {
       if (params?.cpfCnpj && !customer?.id) {
         if (!loading) setLoading(true);
-        const customer = await getCustomer.get({
-          storeId: store.id,
-          cpfCnpj: params?.cpfCnpj,
-        });
-
-        setCustomer({
-          ...customer,
-          id: String(customer.id),
-        });
+        handleGetCustomer(params?.cpfCnpj);
         return await getAttendanceData({
           ...customer,
           id: String(customer.id),
@@ -161,6 +169,7 @@ export const Attendance = ({
 
       await getAttendanceData();
     } catch (error) {
+      await getAttendanceData();
       console.log(error);
     }
   };
@@ -197,6 +206,7 @@ export const Attendance = ({
         customerId: customer?.id,
         storeId: store.id,
       });
+      ("");
 
       loadAttendance(createdAttendance.id);
     } catch (error) {
