@@ -7,6 +7,7 @@ import {
   TouchableWithoutFeedback,
   ViewStyle,
 } from "react-native";
+import { Flex } from "native-base";
 import { RectButton } from "react-native-gesture-handler";
 import {
   Container,
@@ -19,6 +20,7 @@ import {
   RightSide,
   Value,
 } from "./styles";
+import { Row, RowProps } from "../../utils";
 
 type IconFamily = "material" | "feather";
 
@@ -41,7 +43,7 @@ export type ListRowProps = {
   onPress?: () => void;
   numberOfLines?: number;
   testID?: string;
-};
+} & RowProps;
 
 export const ListRow = ({
   label,
@@ -54,11 +56,23 @@ export const ListRow = ({
   textStyle,
   onPress,
   numberOfLines,
+
   ...props
 }: ListRowProps) => {
   return (
     <TouchableOpacity onPress={onPress} activeOpacity={0.5}>
-      <Container justify="space-between" align="center" {...props}>
+      <Row
+        justify="space-between"
+        align="flex-end"
+        borderWidth="1"
+        borderColor="transparent"
+        borderBottomColor={props.borderless ? "transparent" : "border.default"}
+        _light={{
+          borderRadius: "2xl",
+          ...props._light,
+        }}
+        {...props}
+      >
         <LeftSide align="center">
           {leftIcon ? (
             leftIconFamily === "material" ? (
@@ -95,7 +109,7 @@ export const ListRow = ({
             )
           ) : null}
         </RightSide>
-      </Container>
+      </Row>
     </TouchableOpacity>
   );
 };

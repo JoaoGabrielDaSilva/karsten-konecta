@@ -1,43 +1,48 @@
-import { Control, Controller } from "react-hook-form";
-import {
-  RadioButton,
-  RadioButtonProps,
-} from "../../buttons/radio-button/radio-button";
+import { Path, Control, useController } from "react-hook-form";
+import { Radio, Flex } from "native-base";
 
-export type FormRadioButtonProps = Omit<RadioButtonProps, "active"> & {
-  control: Control<any, any>;
-  name: string;
-  defaultValue?: boolean;
-  testID?: string;
+export type RadioButtonGroupItem<I> = {
+  label: string;
+  value: I;
 };
 
-export const FormRadioButton = ({
-  label,
-  onPress,
-  testID,
+export type RadioButtonGroupProps<T, I = string> = {
+  name: Path<T>;
+  control: Control<T, any>;
+  options: RadioButtonGroupItem<I>[];
+  onChange: (value: I) => void;
+};
+
+export const RadioButtonGroup = <T, I>({
+  options,
   name,
-  defaultValue,
   control,
-  ...props
-}: FormRadioButtonProps) => {
+  onChange,
+}: RadioButtonGroupProps<T, I>) => {
+  const {
+    field: { value, onChange: onPress },
+  } = useController({ name, control });
+
+  const handlePress = (option: I) => {
+    onPress(option);
+    onChange && onChange(option);
+  };
+
   return (
-    <Controller
-      name={name}
-      defaultValue={defaultValue}
-      control={control}
-      render={({ field: { value, onChange } }) => (
-        <RadioButton
-          {...props}
-          variant="small"
-          active={value}
-          label={label}
-          testID={testID}
-          onPress={() => {
-            onChange(true);
-            onPress && onPress();
-          }}
-        />
-      )}
-    />
+    <Radio.Group
+      name="type"
+      onChange={(item) => handlePress(item as I)}
+      defaultValue={value as string}
+    >
+      <Flex direction="row" justify="space-between" w="full" mb="4">
+        {options
+          ? options.map((option, index) => (
+              <Radio key={index} value={option.value as string}>
+                {option.label}
+              </Radio>
+            ))
+          : null}
+      </Flex>
+    </Radio.Group>
   );
 };

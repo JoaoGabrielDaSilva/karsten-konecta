@@ -3,17 +3,14 @@ import React, { ReactNode } from "react";
 import { Container, HeaderIcon, HeaderLeft, HeaderRight } from "./styles";
 import { BorderlessButton } from "react-native-gesture-handler";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
-import { StackHeaderProps } from "@react-navigation/stack";
 import { Typography } from "../../utils";
-import { DrawerActions } from "@react-navigation/native";
+import { DrawerActions, useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
 
 type IconType = keyof typeof MaterialCommunityIcons.glyphMap;
 
-export type StackNavbarProps = Pick<
-  StackHeaderProps,
-  "navigation" | "options"
-> & {
+export type StackNavbarProps = {
+  title?: string;
   headerLeftIcon?: IconType;
   rightIcon?: IconType;
   onLeftIconPress?: () => void;
@@ -25,8 +22,7 @@ export type StackNavbarProps = Pick<
 };
 
 export const StackNavbar = ({
-  options,
-  navigation,
+  title,
   onRightIconPress,
   rightIcon,
   onLeftIconPress,
@@ -36,7 +32,7 @@ export const StackNavbar = ({
   rightIconsDisabled,
   renderHeaderRight,
 }: StackNavbarProps) => {
-  const { canGoBack, goBack, dispatch } = navigation;
+  const { canGoBack, goBack, dispatch } = useNavigation();
 
   return (
     <Container align="center">
@@ -50,9 +46,11 @@ export const StackNavbar = ({
           </TouchableOpacity>
         )}
       </HeaderLeft>
-      <Typography variant="heading" textAlign="center" bold>
-        {options.title}
-      </Typography>
+      {title ? (
+        <Typography variant="heading" textAlign="center" bold>
+          {title}
+        </Typography>
+      ) : null}
       <HeaderRight>
         {renderHeaderRight && renderHeaderRight()}
         {rightIcon && !renderHeaderRight && (

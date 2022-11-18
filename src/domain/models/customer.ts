@@ -1,8 +1,8 @@
 import { CustomerAddressModel } from "./address";
 
 export enum PersonType {
-  NATURAL,
-  LEGAL,
+  NATURAL = "Natural",
+  LEGAL = "Legal",
 }
 
 export enum Gender {

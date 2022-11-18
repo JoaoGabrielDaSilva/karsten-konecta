@@ -1,23 +1,23 @@
-import React, { useEffect, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
 import * as yup from "yup";
 
 import { yupResolver } from "@hookform/resolvers/yup";
 import { RootPrivateStackParamList } from "../../routes";
 import { makeCpfRule } from "../../utils/yup-schemas/cpf-rule";
+import { FormControl, Box } from "native-base";
 
-import { Container, Content, CustomTextInput, StyledRow } from "./styles";
-import { Typography } from "../../components/utils";
 import { Button } from "../../components/buttons/button/button";
-import { Keyboard, View } from "react-native";
 import { GetCustomer } from "../../../domain/usecases/customer/get-customer";
 import { StackScreenProps } from "@react-navigation/stack";
 import { useCustomerStore } from "../../store/customer";
-import { RadioButton } from "../../components/buttons/radio-button/radio-button";
 import { PersonType } from "../../../domain/models/customer";
 import { makeCnpjRule } from "../../utils/yup-schemas/cnpj-rule";
-import { FormRadioButton } from "../../components/form/radio-button/radio-button";
+import { RadioButtonGroup } from "../../components/form/radio-button/radio-button";
 import { useUserStore } from "../../store/user";
+import { TextInput } from "../../components/form/text-input/text-input";
+import { Keyboard } from "react-native";
+import { StackNavbar } from "../../components/navigation/stack-navbar/stack-navbar";
 
 type NavigationProps = StackScreenProps<
   RootPrivateStackParamList,
@@ -30,36 +30,37 @@ type Props = NavigationProps & {
 
 type FormValues = {
   cpfCnpj: string;
+  personType: PersonType;
 };
 
 export const NewAttendance = ({ navigation, getCustomer }: Props) => {
   const [loading, setLoading] = useState(false);
 
+  const [currentPersonType, setCurrentPersonType] = useState(
+    PersonType.NATURAL
+  );
+
   const { store } = useUserStore();
   const { setCustomer } = useCustomerStore();
 
-  const { control, handleSubmit, clearErrors, reset, watch, setValue } =
-    useForm({
-      resolver: yupResolver(
-        yup.object().shape({
-          cpfCnpj: yup.string().when("naturalPerson", {
-            is: true,
-            then: makeCpfRule(),
-            otherwise: makeCnpjRule(),
-          }),
-        })
-      ),
-      defaultValues: {
-        cpfCnpj: "",
-        naturalPerson: true,
-        legalPerson: false,
-      },
-    });
+  const { control, handleSubmit, clearErrors, reset } = useForm({
+    resolver: yupResolver(
+      yup.object().shape({
+        cpfCnpj: yup.string().when("personType", {
+          is: PersonType.NATURAL,
+          then: makeCpfRule(),
+          otherwise: makeCnpjRule(),
+        }),
+      })
+    ),
+    defaultValues: {
+      cpfCnpj: "",
+      personType: currentPersonType,
+    },
+    mode: "onSubmit",
+  });
 
-  const naturalPersonField = watch("naturalPerson");
-  const legalPersonField = watch("legalPerson");
-
-  const fetchCustomer = async ({ cpfCnpj }: FormValues) => {
+  const fetchCustomer = async ({ cpfCnpj, personType }: FormValues) => {
     try {
       Keyboard.dismiss();
       setLoading(true);
@@ -72,65 +73,73 @@ export const NewAttendance = ({ navigation, getCustomer }: Props) => {
       setCustomer({
         ...customerData,
         id: String(customerData.id),
+        personType,
       });
 
       setLoading(false);
-      navigation.navigate("Attendance", {
-        cpfCnpj,
-      });
+      navigation.navigate("Attendance");
     } catch (error) {
       setLoading(false);
       setCustomer({ cpfCnpj });
       console.log(error.response);
 
-      navigation.navigate("NewNoCustomerAttendance");
+      navigation.navigate("Attendance", {
+        screen: "NewNoCustomerAttendance",
+      });
     }
   };
 
-  useEffect(() => {
+  const resetForm = (option: PersonType) => {
     clearErrors();
-    setValue("cpfCnpj", "");
-  }, [naturalPersonField, legalPersonField]);
+    reset({
+      cpfCnpj: "",
+    });
+    setCurrentPersonType(option);
+  };
 
   return (
-    <Container>
-      <Content>
-        <Typography variant="subtitle" semibold>
-          Digite um CPF para iniciar um atendimento
-        </Typography>
-        <StyledRow align="center" justify="space-between">
-          <FormRadioButton
-            variant="small"
-            label="Pessoa Física"
+    <Box bg="secondary.500" flex="1">
+      <StackNavbar title="Novo Atendimento" />
+      <Box bg="white" p="4">
+        <FormControl>
+          <RadioButtonGroup<FormValues, PersonType>
+            name="personType"
             control={control}
-            name="naturalPerson"
-            onPress={() => setValue("legalPerson", false)}
-            disabled={loading}
+            onChange={resetForm}
+            options={[
+              { label: "Pessoa Física", value: PersonType.NATURAL },
+              { label: "Pessoa Jurídica", value: PersonType.LEGAL },
+            ]}
           />
-          <FormRadioButton
-            variant="small"
-            label="Pessoa Jurídica"
+          <TextInput<FormValues>
             control={control}
-            name="legalPerson"
-            onPress={() => setValue("naturalPerson", false)}
-            disabled={loading}
+            name="cpfCnpj"
+            containerStyle={{
+              mt: "2",
+              mb: "4",
+            }}
+            mb="2"
+            onMaxLength={() => handleSubmit(fetchCustomer)()}
+            fetching={loading}
+            mask={currentPersonType === PersonType.NATURAL ? "cpf" : "cnpj"}
+            placeholder={
+              currentPersonType === PersonType.NATURAL ? "CPF" : "CNPJ"
+            }
+            returnKeyType="done"
           />
-        </StyledRow>
-        <CustomTextInput
-          testID="cpfCnpj"
-          control={control}
-          name="cpfCnpj"
-          placeholder={naturalPersonField ? "CPF" : "CNPJ"}
-          mask={naturalPersonField ? "cpf" : "cnpj"}
-          onMaxLength={() => handleSubmit(fetchCustomer)()}
-          loading={loading}
-        />
+        </FormControl>
+
         <Button
-          text="Atendimento sem Cliente"
-          onPress={() => navigation.navigate("NewNoCustomerAttendance")}
+          onPress={() =>
+            navigation.navigate("Attendance", {
+              screen: "NewNoCustomerAttendance",
+            })
+          }
           disabled={loading}
-        />
-      </Content>
-    </Container>
+        >
+          Atendimento sem Cliente
+        </Button>
+      </Box>
+    </Box>
   );
 };

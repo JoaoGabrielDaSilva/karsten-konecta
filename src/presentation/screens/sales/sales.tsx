@@ -5,19 +5,25 @@ import { BottomTab } from "../../components/navigation/bottom-tab/bottom-tab";
 import { ToolTip } from "../../components/tooltip/Tooltip";
 import { RootPrivateStackParamList } from "../../routes";
 import { Container, ItemContainer, MenuItem } from "./styles";
-import { Text, View } from "react-native";
+import { Box, useColorMode } from "native-base";
+import { Pressable, Text, TouchableOpacity } from "react-native";
 
 type NavigationProps = StackScreenProps<RootPrivateStackParamList, "Sales">;
 
 type Props = NavigationProps;
 
 export const Sales = ({ navigation: { navigate } }: Props) => {
+  const { toggleColorMode } = useColorMode();
   return (
     <Container>
       <ItemContainer>
         <MenuItem
           label="Novo Atendimento"
-          onPress={() => navigate("NewAttendance")}
+          onPress={() =>
+            navigate("Attendance", {
+              screen: "NewAttendance",
+            })
+          }
           rightIconFamily="feather"
           rightIcon="chevron-right"
           testID="new-attendance-menu"
@@ -36,7 +42,9 @@ export const Sales = ({ navigation: { navigate } }: Props) => {
           borderless
         />
       </ItemContainer>
-
+      <TouchableOpacity onPress={() => toggleColorMode()}>
+        <Text>Toggle theme</Text>
+      </TouchableOpacity>
       <BottomTab />
     </Container>
   );

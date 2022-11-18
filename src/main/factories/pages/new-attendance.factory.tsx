@@ -6,6 +6,6 @@ import { makeRemoteGetCustomer } from "../../usecases/customer/remote-get-custom
 
 type Props = StackScreenProps<RootPrivateStackParamList, "NewAttendance">;
 
-export const makeNewAttendance = (props: Props) => {
+export const MakeNewAttendance = (props: Props) => {
   return <NewAttendance getCustomer={makeRemoteGetCustomer()} {...props} />;
 };

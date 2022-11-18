@@ -1,15 +1,10 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-
-import { createSharedElementStackNavigator } from "react-navigation-shared-element";
-import { useTheme } from "styled-components/native";
 import { makeAddressSelect } from "../../main/factories/pages/address-select-factory";
 import { makeAddressRegister } from "../../main/factories/pages/address-register-factory";
-import { makeAttendance } from "../../main/factories/pages/attendance-factory";
 import { makeAttendanceList } from "../../main/factories/pages/attendance-list-factory";
 import { makeAttendanceSelect } from "../../main/factories/pages/attendance-select-factory";
 import { makeCustomerRegister } from "../../main/factories/pages/customer-register-factory";
-import { makeNewAttendance } from "../../main/factories/pages/new-attendance.factory";
-import { makeNewNoCustomerAttendance } from "../../main/factories/pages/new-no-customer-attendance-factory";
+
 import { makeOrderList } from "../../main/factories/pages/order-list-factory";
 import { makeProductDetails } from "../../main/factories/pages/product-details-factory";
 import { makeProductList } from "../../main/factories/pages/product-list-factory";
@@ -37,11 +32,15 @@ import { makeAttendanceRefreshedProducts } from "../../main/factories/pages/atte
 import { CustomerSearch } from "../screens/customer-search/customer-search";
 import { makeCustomerSearch } from "../../main/factories/pages/customer-search-factory";
 import { Customer360Model } from "../../domain/models/customer-360-model";
-import { CustomerList } from "../screens/customer-list/customer-list";
 import { makeCustomerList } from "../../main/factories/pages/customer-list-factory";
 import { makeOrderDetails } from "../../main/factories/pages/order-details-factory";
 import { OrderTracking } from "../screens/order-tracking/order-tracking";
 import { makeSaleLinkAttendance } from "../../main/factories/pages/sale-link-attendance-factory";
+import {
+  AttendanceStack,
+  AttendanceStackParamList,
+} from "./navigators/attendance";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 export type RootPrivateStackParamList = {
   Sales: undefined;
@@ -49,9 +48,7 @@ export type RootPrivateStackParamList = {
   NewAttendance: undefined;
   NewNoCustomerAttendance: undefined;
   Attendance: {
-    id?: string;
-    name?: string;
-    cpfCnpj?: string;
+    screen: keyof AttendanceStackParamList;
   };
   SaleLinkAttendance: undefined;
   AttendanceRefreshedProducts: {
@@ -101,7 +98,7 @@ export type RootPrivateDrawerParamList = {
   Root: undefined;
 };
 
-const Stack = createSharedElementStackNavigator<RootPrivateStackParamList>();
+const Stack = createNativeStackNavigator<RootPrivateStackParamList>();
 const Drawer = createDrawerNavigator<RootPrivateDrawerParamList>();
 
 export const PrivateRoutes = () => {
@@ -109,33 +106,22 @@ export const PrivateRoutes = () => {
 };
 
 const StackNavigator = () => {
-  const theme = useTheme();
-
   return (
-    <Stack.Navigator initialRouteName="Sales">
-      <Stack.Screen
-        name="NewAttendance"
-        component={makeNewAttendance}
-        options={{
-          title: "Novo Atendimento",
-          header: (props) => <StackNavbar {...props} />,
-        }}
-      />
-      <Stack.Screen
-        name="NewNoCustomerAttendance"
-        component={makeNewNoCustomerAttendance}
-        options={{
-          title: "Novo Atendimento sem Cliente",
-          header: (props) => <StackNavbar {...props} />,
-        }}
-      />
-      <Stack.Screen
+    <Stack.Navigator
+      initialRouteName="Sales"
+      screenOptions={{
+        headerShown: false,
+      }}
+    >
+      <Stack.Screen name="Attendance" component={AttendanceStack} />
+
+      {/* <Stack.Screen
         name="Attendance"
         component={makeAttendance}
         options={{
           title: "Carrinho",
         }}
-      />
+      /> */}
       <Stack.Screen
         name="SaleLinkAttendance"
         component={makeSaleLinkAttendance}
@@ -151,7 +137,6 @@ const StackNavigator = () => {
           title: "Carrinho Atualizado",
           header: (props) => <StackNavbar {...props} />,
           presentation: "modal",
-          cardOverlayEnabled: false,
         }}
       />
       <Stack.Screen
@@ -178,7 +163,6 @@ const StackNavigator = () => {
             />
           ),
           presentation: "modal",
-          cardOverlayEnabled: false,
         }}
       />
       <Stack.Screen
@@ -220,21 +204,21 @@ const StackNavigator = () => {
           header: (props) => (
             <StackNavbar drawer {...props} backArrow={false} />
           ),
-          animationEnabled: false,
+          animation: "none",
         }}
       />
       <Stack.Screen
         name="Catalog"
         component={makeCatalog}
         options={{
-          animationEnabled: false,
+          animation: "none",
         }}
       />
       <Stack.Screen
         name="CustomerSearch"
         component={makeCustomerSearch}
         options={{
-          animationEnabled: false,
+          animation: "none",
           title: "Consultar Cliente",
           header: (props) => (
             <StackNavbar drawer {...props} backArrow={false} />
@@ -245,7 +229,7 @@ const StackNavigator = () => {
         name="ProductList"
         component={makeProductList}
         options={{
-          animationEnabled: false,
+          animation: "none",
         }}
         initialParams={{
           defaultFocus: false,
@@ -286,7 +270,6 @@ const StackNavigator = () => {
         options={{
           title: "Filtros",
           presentation: "modal",
-          cardOverlayEnabled: false,
         }}
       />
       <Stack.Screen
@@ -313,7 +296,6 @@ const StackNavigator = () => {
           title: "Filtros",
           header: (props) => <StackNavbar {...props} />,
           presentation: "modal",
-          cardOverlayEnabled: false,
         }}
       />
       <Stack.Screen
@@ -339,7 +321,6 @@ const StackNavigator = () => {
           title: "Filtros",
           header: (props) => <StackNavbar {...props} />,
           presentation: "modal",
-          cardOverlayEnabled: false,
         }}
       />
     </Stack.Navigator>
